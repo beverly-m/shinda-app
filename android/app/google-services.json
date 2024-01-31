@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "969857981323",
+    "project_id": "shinda-app",
+    "storage_bucket": "shinda-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:969857981323:android:7812189ed2360f3e66ad8e",
+        "android_client_info": {
+          "package_name": "com.zurishaddai.shinda_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1q_5bl5VPjGr5QQzt3COqFjzSxI2FCEg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
