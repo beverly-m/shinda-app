@@ -2,6 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shinda_app/firebase_options.dart';
+import 'package:shinda_app/views/login_view.dart';
+import 'package:shinda_app/views/register_view.dart';
+import 'package:shinda_app/views/verify_email_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +17,10 @@ void main() {
         useMaterial3: true,
       ),
       home: const HomePage(),
+      routes: {
+        '/login/': (context) => const LoginView(),
+        '/register/': (context) => const RegisterView(),
+      },
     ),
   );
 }
@@ -28,75 +35,40 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
+    return FutureBuilder(
+      future: Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
       ),
-      body: FutureBuilder(
-        future: Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        ),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.done:
-              User? user = FirebaseAuth.instance.currentUser;
-              refreshUser(user);
-              user = FirebaseAuth.instance.currentUser;
-              print(user);
-              if (user?.emailVerified ?? false) {
-                print('You are a verified user.');
-              } else {
-                print('You need to verify your email.');
-                return const EmailVerificationView();
-              }
-              return const Center(
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            User? user = FirebaseAuth.instance.currentUser;
+            refreshUser(user);
+            user = FirebaseAuth.instance.currentUser;
+            print(user);
+            if (user == null) {
+              return const LoginView();
+            } else if (user.emailVerified) {
+              print('You are a verified user.');
+            } else {
+              print('You need to verify your email.');
+              return const VerifyEmailView();
+            }
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text("Logged In!"),
+              ),
+              body: const Center(
                 child: Text('Done'),
-              );
+              ),
+            );
 
-            default:
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-          }
-        },
-      ),
-    );
-  }
-}
-
-class EmailVerificationView extends StatefulWidget {
-  const EmailVerificationView({super.key});
-
-  @override
-  State<EmailVerificationView> createState() => _EmailVerificationViewState();
-}
-
-class _EmailVerificationViewState extends State<EmailVerificationView> {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          const Text("Please verify your email address."),
-          TextButton(
-            onPressed: () async {
-              final user = FirebaseAuth.instance.currentUser;
-              try {
-                await user?.sendEmailVerification();
-                print("Sent");
-              } on FirebaseAuthException catch (e) {
-                if (e.code == "network-request-failed") {
-                  print(
-                      "Oops! Failed to send due to network connectivity. Try again.");
-                } else {
-                  print(e.code);
-                }
-              }
-            },
-            child: const Text("Send Email Verification"),
-          )
-        ],
-      ),
+          default:
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+        }
+      },
     );
   }
 }
