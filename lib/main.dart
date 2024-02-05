@@ -22,6 +22,7 @@ void main() {
       routes: {
         '/login/': (context) => const LoginView(),
         '/register/': (context) => const RegisterView(),
+        '/home/': (context) => const HomeView(),
       },
     ),
   );
