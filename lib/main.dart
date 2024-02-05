@@ -6,6 +6,7 @@ import 'package:shinda_app/views/home_view.dart';
 import 'package:shinda_app/views/login_view.dart';
 import 'package:shinda_app/views/register_view.dart';
 import 'package:shinda_app/views/verify_email_view.dart';
+import 'dart:developer' as devtools show log;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,13 +47,13 @@ class InitApp extends StatelessWidget {
             User? user = FirebaseAuth.instance.currentUser;
             refreshUser(user);
             user = FirebaseAuth.instance.currentUser;
-            print(user);
+            devtools.log(user.toString());
             if (user == null) {
               return const LoginView();
             } else if (user.emailVerified) {
-              print('You are a verified user.');
+              devtools.log('You are a verified user.');
             } else {
-              print('You need to verify your email.');
+              devtools.log('You need to verify your email.');
               return const VerifyEmailView();
             }
             return const HomeView();

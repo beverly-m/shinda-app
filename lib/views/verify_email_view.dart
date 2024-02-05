@@ -1,3 +1,5 @@
+import 'dart:developer' as devtools show log;
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -24,13 +26,12 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                 final user = FirebaseAuth.instance.currentUser;
                 try {
                   await user?.sendEmailVerification();
-                  print("Sent");
                 } on FirebaseAuthException catch (e) {
                   if (e.code == "network-request-failed") {
-                    print(
+                    devtools.log(
                         "Oops! Failed to send due to network connectivity. Try again.");
                   } else {
-                    print(e.code);
+                    devtools.log(e.code);
                   }
                 }
               },
