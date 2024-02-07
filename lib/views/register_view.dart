@@ -73,10 +73,13 @@ class _RegisterViewState extends State<RegisterView> {
               } on FirebaseAuthException catch (e) {
                 if (e.code == "invalid-email") {
                   devtools.log("Invalid email address.");
+                  
                 } else if (e.code == "weak-password") {
                   devtools.log("Password should be at least 6 characters.");
+
                 } else if (e.code == "email-already-in-use") {
                   devtools.log("The email address is already in use.");
+
                 } else {
                   devtools.log(e.code);
                 }
