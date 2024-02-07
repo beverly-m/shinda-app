@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:shinda_app/constants/routes.dart';
 import 'package:shinda_app/firebase_options.dart';
 import 'package:shinda_app/views/home_view.dart';
 import 'package:shinda_app/views/login_view.dart';
@@ -20,9 +21,9 @@ void main() {
       ),
       home: const InitApp(),
       routes: {
-        '/login/': (context) => const LoginView(),
-        '/register/': (context) => const RegisterView(),
-        '/home/': (context) => const HomeView(),
+        loginRoute: (context) => const LoginView(),
+        registerRoute: (context) => const RegisterView(),
+        homeRoute: (context) => const HomeView(),
       },
     ),
   );
