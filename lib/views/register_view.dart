@@ -1,8 +1,8 @@
-import 'dart:developer' as devtools show log;
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shinda_app/constants/routes.dart';
+import 'package:shinda_app/utilities/show_error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -64,24 +64,53 @@ class _RegisterViewState extends State<RegisterView> {
               final password = _password.text;
 
               try {
-                final userCredential =
-                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                await FirebaseAuth.instance.createUserWithEmailAndPassword(
                   email: email,
                   password: password,
                 );
-                devtools.log(userCredential.toString());
+
+                await FirebaseAuth.instance.currentUser
+                    ?.sendEmailVerification();
+
+                if (context.mounted) {
+                  Navigator.of(context).pushNamed(verifyEmailRoute);
+                }
               } on FirebaseAuthException catch (e) {
                 if (e.code == "invalid-email") {
-                  devtools.log("Invalid email address.");
-                  
+                  if (context.mounted) {
+                    await showErrorDialog(
+                      context,
+                      "Invalid email address.",
+                    );
+                  }
                 } else if (e.code == "weak-password") {
-                  devtools.log("Password should be at least 6 characters.");
-
+                  if (context.mounted) {
+                    await showErrorDialog(
+                      context,
+                      "Password should be at least 6 characters.",
+                    );
+                  }
                 } else if (e.code == "email-already-in-use") {
-                  devtools.log("The email address is already in use.");
-
+                  if (context.mounted) {
+                    await showErrorDialog(
+                      context,
+                      "The email address is already in use.",
+                    );
+                  }
                 } else {
-                  devtools.log(e.code);
+                  if (context.mounted) {
+                    await showErrorDialog(
+                      context,
+                      "Error: ${e.code}",
+                    );
+                  }
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  await showErrorDialog(
+                    context,
+                    e.toString(),
+                  );
                 }
               }
             },
