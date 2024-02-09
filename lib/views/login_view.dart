@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' show UserCredential, FirebaseAuth, FirebaseAuthException;
 import 'package:flutter/material.dart';
 import 'package:shinda_app/constants/routes.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
