@@ -1,10 +1,8 @@
 import 'dart:developer' as devtools show log;
-
-import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
 import 'package:flutter/material.dart';
 import 'package:shinda_app/constants/routes.dart';
-
-enum MenuAction { logout }
+import 'package:shinda_app/enums/menu_action.dart';
+import 'package:shinda_app/services/auth/auth_service.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -26,7 +24,7 @@ class _HomeViewState extends State<HomeView> {
                 final isLogout = await showLogOutDialog(context);
                 devtools.log(isLogout.toString());
                 if (isLogout) {
-                  await FirebaseAuth.instance.signOut();
+                  await AuthService.firebase().logOut();
                   if (context.mounted) {
                     Navigator.of(context).pushNamedAndRemoveUntil(
                       loginRoute,

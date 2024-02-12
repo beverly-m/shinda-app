@@ -1,7 +1,7 @@
-
-import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth, FirebaseAuthException;
 import 'package:flutter/material.dart';
 import 'package:shinda_app/constants/routes.dart';
+import 'package:shinda_app/services/auth/auth_exceptions.dart';
+import 'package:shinda_app/services/auth/auth_service.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
@@ -64,52 +64,49 @@ class _RegisterViewState extends State<RegisterView> {
               final password = _password.text;
 
               try {
-                await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                await AuthService.firebase().createUser(
                   email: email,
                   password: password,
                 );
 
-                await FirebaseAuth.instance.currentUser
-                    ?.sendEmailVerification();
+                await AuthService.firebase().sendEmailVerification();
 
                 if (context.mounted) {
                   Navigator.of(context).pushNamed(verifyEmailRoute);
                 }
-              } on FirebaseAuthException catch (e) {
-                if (e.code == "invalid-email") {
-                  if (context.mounted) {
-                    await showErrorDialog(
-                      context,
-                      "Invalid email address.",
-                    );
-                  }
-                } else if (e.code == "weak-password") {
-                  if (context.mounted) {
-                    await showErrorDialog(
-                      context,
-                      "Password should be at least 6 characters.",
-                    );
-                  }
-                } else if (e.code == "email-already-in-use") {
-                  if (context.mounted) {
-                    await showErrorDialog(
-                      context,
-                      "The email address is already in use.",
-                    );
-                  }
-                } else {
-                  if (context.mounted) {
-                    await showErrorDialog(
-                      context,
-                      "Error: ${e.code}",
-                    );
-                  }
-                }
-              } catch (e) {
+              } on InvalidEmailAuthException {
                 if (context.mounted) {
                   await showErrorDialog(
                     context,
-                    e.toString(),
+                    "Invalid email address.",
+                  );
+                }
+              } on WeakPasswordAuthException {
+                if (context.mounted) {
+                  await showErrorDialog(
+                    context,
+                    "Password should be at least 6 characters.",
+                  );
+                }
+              } on EmailAlreadyInUseAuthException {
+                if (context.mounted) {
+                  await showErrorDialog(
+                    context,
+                    "The email address is already in use.",
+                  );
+                }
+              } on NetworkRequestedFailedAuthException {
+                if (context.mounted) {
+                  await showErrorDialog(
+                    context,
+                    "Network error. Make sure you have stable connection and try again.",
+                  );
+                }
+              } on GenericAuthException {
+                if (context.mounted) {
+                  await showErrorDialog(
+                    context,
+                    "Failed to register. Try again.",
                   );
                 }
               }

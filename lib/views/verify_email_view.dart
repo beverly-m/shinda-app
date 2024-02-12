@@ -1,6 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth, FirebaseAuthException;
 import 'package:flutter/material.dart';
 import 'package:shinda_app/constants/routes.dart';
+import 'package:shinda_app/services/auth/auth_exceptions.dart';
+import 'package:shinda_app/services/auth/auth_service.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
 
 class VerifyEmailView extends StatefulWidget {
@@ -28,30 +29,20 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
             const Text("Haven't received the email verification link?"),
             TextButton(
               onPressed: () async {
-                final user = FirebaseAuth.instance.currentUser;
                 try {
-                  await user?.sendEmailVerification();
-                } on FirebaseAuthException catch (e) {
-                  if (e.code == "network-request-failed") {
-                    if (context.mounted) {
-                      await showErrorDialog(
-                        context,
-                        "Oops! Failed to send due to network connectivity. Try again.",
-                      );
-                    }
-                  } else {
-                    if (context.mounted) {
-                      await showErrorDialog(
-                        context,
-                        "Error: ${e.code}",
-                      );
-                    }
-                  }
-                } catch (e) {
+                  await AuthService.firebase().sendEmailVerification();
+                } on NetworkRequestedFailedAuthException {
                   if (context.mounted) {
                     await showErrorDialog(
                       context,
-                      e.toString(),
+                      "Oops! Failed to send due to network connectivity. Try again.",
+                    );
+                  }
+                } on GenericAuthException {
+                  if (context.mounted) {
+                    await showErrorDialog(
+                      context,
+                      "Error occurred. Try again.",
                     );
                   }
                 }
@@ -65,32 +56,23 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
             TextButton(
               onPressed: () async {
                 try {
-                  await FirebaseAuth.instance.signOut();
+                  await AuthService.firebase().logOut();
                   if (context.mounted) {
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil(loginRoute, (route) => false);
                   }
-                } on FirebaseAuthException catch (e) {
-                  if (e.code == "network-request-failed") {
-                    if (context.mounted) {
-                      await showErrorDialog(
-                        context,
-                        "Oops! Failed to send due to network connectivity. Try again.",
-                      );
-                    }
-                  } else {
-                    if (context.mounted) {
-                      await showErrorDialog(
-                        context,
-                        "Error: ${e.code}",
-                      );
-                    }
-                  }
-                } catch (e) {
+                } on NetworkRequestedFailedAuthException {
                   if (context.mounted) {
                     await showErrorDialog(
                       context,
-                      e.toString(),
+                      "Oops! Failed to send due to network connectivity. Try again.",
+                    );
+                  }
+                } on GenericAuthException {
+                  if (context.mounted) {
+                    await showErrorDialog(
+                      context,
+                      "Error occurred. Try again.",
                     );
                   }
                 }

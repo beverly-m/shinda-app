@@ -1,8 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart' show User, FirebaseAuth;
-import 'package:firebase_core/firebase_core.dart' show Firebase;
 import 'package:flutter/material.dart';
 import 'package:shinda_app/constants/routes.dart';
-import 'package:shinda_app/firebase_options.dart';
+import 'package:shinda_app/services/auth/auth_service.dart';
 import 'package:shinda_app/views/home_view.dart';
 import 'package:shinda_app/views/login_view.dart';
 import 'package:shinda_app/views/register_view.dart';
@@ -24,7 +22,7 @@ void main() {
         loginRoute: (context) => const LoginView(),
         registerRoute: (context) => const RegisterView(),
         homeRoute: (context) => const HomeView(),
-        verifyEmailRoute:(context) => const VerifyEmailView(),
+        verifyEmailRoute: (context) => const VerifyEmailView(),
       },
     ),
   );
@@ -33,34 +31,29 @@ void main() {
 class InitApp extends StatelessWidget {
   const InitApp({super.key});
 
-  void refreshUser(User? user) async {
-    await user?.reload();
+  Future<void> refreshUser() async {
+    await AuthService.firebase().refreshUserCredentials();
     return;
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      ),
+      future: AuthService.firebase().initialize(),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            User? user = FirebaseAuth.instance.currentUser;
-            refreshUser(user);
-            user = FirebaseAuth.instance.currentUser;
-            devtools.log(user.toString());
+            refreshUser();
+            final user = AuthService.firebase().currentUser;
             if (user == null) {
               return const LoginView();
-            } else if (user.emailVerified) {
+            } else if (user.isEmailVerified) {
               devtools.log('You are a verified user.');
+              return const HomeView();
             } else {
               devtools.log('You need to verify your email.');
               return const VerifyEmailView();
             }
-            return const HomeView();
-
           default:
             return const Center(
               child: CircularProgressIndicator(),

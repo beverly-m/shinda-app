@@ -1,6 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart' show UserCredential, FirebaseAuth, FirebaseAuthException;
 import 'package:flutter/material.dart';
 import 'package:shinda_app/constants/routes.dart';
+import 'package:shinda_app/services/auth/auth_exceptions.dart';
+import 'package:shinda_app/services/auth/auth_service.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
 
 class LoginView extends StatefulWidget {
@@ -63,13 +64,14 @@ class _LoginViewState extends State<LoginView> {
               final password = _password.text;
 
               try {
-                UserCredential user =
-                    await FirebaseAuth.instance.signInWithEmailAndPassword(
+                await AuthService.firebase().logInEmailPassword(
                   email: email,
                   password: password,
                 );
 
-                if (user.user!.emailVerified) {
+                final user = AuthService.firebase().currentUser;
+
+                if (user?.isEmailVerified ?? false) {
                   if (context.mounted) {
                     Navigator.of(context).pushNamedAndRemoveUntil(
                       homeRoute,
@@ -84,34 +86,32 @@ class _LoginViewState extends State<LoginView> {
                     );
                   }
                 }
-              } on FirebaseAuthException catch (e) {
-                if (e.code == "invalid-credential") {
-                  if (context.mounted) {
-                    await showErrorDialog(
-                      context,
-                      "Wrong email or password.",
-                    );
-                  }
-                } else if (e.code == "invalid-email") {
-                  if (context.mounted) {
-                    await showErrorDialog(
-                      context,
-                      "Invalid email address.",
-                    );
-                  }
-                } else {
-                  if (context.mounted) {
-                    await showErrorDialog(
-                      context,
-                      "Error: ${e.code}",
-                    );
-                  }
-                }
-              } catch (e) {
+              } on InvalidCredentialAuthException {
                 if (context.mounted) {
                   await showErrorDialog(
                     context,
-                    e.toString(),
+                    "Wrong email or password.",
+                  );
+                }
+              } on InvalidEmailAuthException {
+                if (context.mounted) {
+                  await showErrorDialog(
+                    context,
+                    "Invalid email address.",
+                  );
+                }
+              } on NetworkRequestedFailedAuthException {
+                if (context.mounted) {
+                  await showErrorDialog(
+                    context,
+                    "Network error. Make sure you have stable connection and try again.",
+                  );
+                }
+              } on GenericAuthException {
+                if (context.mounted) {
+                  await showErrorDialog(
+                    context,
+                    "Authentication error. Try again.",
                   );
                 }
               }
