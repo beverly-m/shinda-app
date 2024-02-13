@@ -55,8 +55,10 @@ class InitApp extends StatelessWidget {
               return const VerifyEmailView();
             }
           default:
-            return const Center(
-              child: CircularProgressIndicator(),
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
             );
         }
       },
