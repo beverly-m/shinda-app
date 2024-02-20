@@ -1,72 +1,83 @@
+import 'dart:developer' as devtools;
+
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:shinda_app/firebase_options.dart';
+import 'package:shinda_app/constants/supabase.dart';
 import 'package:shinda_app/services/auth/auth_exceptions.dart';
 import 'package:shinda_app/services/auth/auth_provider.dart' as auth_provider;
-import 'package:shinda_app/services/auth/auth_user.dart';
+import 'package:shinda_app/services/auth/auth_user.dart' as user;
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class FirebaseAuthProvider implements auth_provider.AuthProvider {
+class SupabaseAuthProvider implements auth_provider.AuthProvider {
   @override
   Future<void> initialize() async {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
+    await Supabase.initialize(
+      url: "https://hdbygttixkijaqnefgij.supabase.co",
+      anonKey:
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkYnlndHRpeGtpamFxbmVmZ2lqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDgyODY2MjcsImV4cCI6MjAyMzg2MjYyN30.k30IsfVyU49RJySCVm6Ajuz4OcltTM2ZbbK6RU_ZSm0",
     );
   }
 
   @override
-  Future<AuthUser> createUser({
+  Future<user.AuthUser> createUser({
     required String email,
     required String password,
     required Map<String, dynamic> data,
   }) async {
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      // final supabase = Supabase.instance.client;
+
+      await supabase.auth.signUp(
         email: email,
         password: password,
+        data: data,
       );
 
       final user = currentUser;
-
       if (user != null) {
         return user;
       } else {
         throw UserNotLoggedInAuthException();
       }
-    } on FirebaseAuthException catch (e) {
-      if (e.code == "invalid-email") {
+      // final Session? session = res.session;
+      // final user = res.user;
+
+      // devtools.log(session.toString());
+      // devtools.log(user.toString());
+    } on AuthException catch (e) {
+      if (e.statusCode == "422") {
         throw InvalidEmailAuthException();
-      } else if (e.code == "weak-password") {
-        throw WeakPasswordAuthException();
-      } else if (e.code == "email-already-in-use") {
-        throw EmailAlreadyInUseAuthException();
-      } else if (e.code == "network-request-failed") {
-        throw NetworkRequestedFailedAuthException();
+      } else if (e.statusCode == "429") {
+        throw GenericAuthException();
       } else {
+        devtools.log(e.statusCode ?? "None");
+        devtools.log(e.message);
         throw GenericAuthException();
       }
-    } catch (_) {
+    } catch (e) {
+      devtools.log(e.toString());
       throw GenericAuthException();
     }
   }
 
   @override
-  AuthUser? get currentUser {
-    final user = FirebaseAuth.instance.currentUser;
+  user.AuthUser? get currentUser {
+    final supabase = Supabase.instance.client;
 
-    if (user != null) {
-      return AuthUser.fromFirebase(user);
+    final currentUser = supabase.auth.currentUser;
+    if (currentUser != null) {
+      return user.AuthUser.fromSupabase(currentUser);
     } else {
       return null;
     }
   }
 
   @override
-  Future<AuthUser> logInEmailPassword({
+  Future<user.AuthUser> logInEmailPassword({
     required email,
     required password,
   }) async {
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await supabase.auth.signInWithPassword(
         email: email,
         password: password,
       );
@@ -78,17 +89,16 @@ class FirebaseAuthProvider implements auth_provider.AuthProvider {
       } else {
         throw UserNotLoggedInAuthException();
       }
-    } on FirebaseAuthException catch (e) {
-      if (e.code == "invalid-credential") {
+    } on AuthException catch (e) {
+      if (e.statusCode == "400") {
         throw InvalidCredentialAuthException();
-      } else if (e.code == "invalid-email") {
-        throw InvalidEmailAuthException();
-      } else if (e.code == "network-request-failed") {
-        throw NetworkRequestedFailedAuthException();
       } else {
+        devtools.log(e.statusCode ?? "None");
+        devtools.log(e.message);
         throw GenericAuthException();
       }
     } catch (_) {
+      devtools.log(_.toString());
       throw GenericAuthException();
     }
   }
@@ -139,7 +149,7 @@ class FirebaseAuthProvider implements auth_provider.AuthProvider {
 
   @override
   Future<void> refreshUserCredentials() async {
-    final User? user = FirebaseAuth.instance.currentUser;
+    final user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
       await user.reload();

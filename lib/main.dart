@@ -39,12 +39,13 @@ class InitApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: AuthService.firebase().initialize(),
+      future: AuthService.supabase().initialize(),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
             refreshUser();
-            final user = AuthService.firebase().currentUser;
+            final user = AuthService.supabase().currentUser;
+            devtools.log(user.toString());
             if (user == null) {
               return const LoginView();
             } else if (user.isEmailVerified) {

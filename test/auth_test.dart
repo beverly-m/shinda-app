@@ -113,6 +113,7 @@ class MockAuthProvider implements AuthProvider {
   Future<AuthUser> createUser({
     required email,
     required password,
+    data
   }) async {
     if (!isInitialized) throw NotInitializedException();
     await Future.delayed(const Duration(seconds: 1));

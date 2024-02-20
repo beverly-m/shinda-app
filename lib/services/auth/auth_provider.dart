@@ -11,8 +11,9 @@ abstract class AuthProvider {
   });
 
   Future<AuthUser> createUser({
-    required email,
-    required password,
+    required String email,
+    required String password,
+    required Map<String, dynamic> data,
   });
 
   Future<void> logOut();

@@ -12,8 +12,11 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  final user = AuthService.supabase().currentUser;
+
   @override
   Widget build(BuildContext context) {
+    devtools.log(user.toString());
     return Scaffold(
       appBar: AppBar(title: const Text("Home"), actions: [
         PopupMenuButton<MenuAction>(
