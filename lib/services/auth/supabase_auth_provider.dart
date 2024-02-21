@@ -24,8 +24,6 @@ class SupabaseAuthProvider implements auth_provider.AuthProvider {
     required Map<String, dynamic> data,
   }) async {
     try {
-      // final supabase = Supabase.instance.client;
-
       await supabase.auth.signUp(
         email: email,
         password: password,
@@ -38,21 +36,18 @@ class SupabaseAuthProvider implements auth_provider.AuthProvider {
       } else {
         throw UserNotLoggedInAuthException();
       }
-      // final Session? session = res.session;
-      // final user = res.user;
-
-      // devtools.log(session.toString());
-      // devtools.log(user.toString());
     } on AuthException catch (e) {
       if (e.statusCode == "422") {
         throw InvalidEmailAuthException();
-      } else if (e.statusCode == "429") {
+      } else if (e.statusCode == "429" || e.statusCode == "500") {
         throw GenericAuthException();
       } else {
         devtools.log(e.statusCode ?? "None");
         devtools.log(e.message);
         throw GenericAuthException();
       }
+    } on UserNotLoggedInAuthException {
+      throw UserNotLoggedInAuthException();
     } catch (e) {
       devtools.log(e.toString());
       throw GenericAuthException();
@@ -91,12 +86,20 @@ class SupabaseAuthProvider implements auth_provider.AuthProvider {
       }
     } on AuthException catch (e) {
       if (e.statusCode == "400") {
+        devtools.log(e.message);
+        if (e.message == "Email not confirmed") {
+          throw UnverifiedUserAuthException();
+        }
         throw InvalidCredentialAuthException();
       } else {
         devtools.log(e.statusCode ?? "None");
         devtools.log(e.message);
         throw GenericAuthException();
       }
+    } on UserNotLoggedInAuthException {
+      throw UserNotLoggedInAuthException();
+    } on UnverifiedUserAuthException {
+      throw UnverifiedUserAuthException();
     } catch (_) {
       devtools.log(_.toString());
       throw GenericAuthException();
@@ -105,19 +108,18 @@ class SupabaseAuthProvider implements auth_provider.AuthProvider {
 
   @override
   Future<void> logOut() async {
-    final user = FirebaseAuth.instance.currentUser;
+    final user = supabase.auth.currentUser;
+
     try {
       if (user != null) {
-        await FirebaseAuth.instance.signOut();
+        await supabase.auth.signOut();
       } else {
         throw UserNotLoggedInAuthException();
       }
-    } on FirebaseAuthException catch (e) {
-      if (e.code == "network-request-failed") {
-        throw NetworkRequestedFailedAuthException();
-      } else {
-        throw GenericAuthException();
-      }
+    } on AuthException catch (e) {
+      devtools.log(e.statusCode ?? "None");
+      devtools.log(e.message);
+      throw GenericAuthException();
     } on UserNotLoggedInAuthException {
       throw UserNotLoggedInAuthException();
     } catch (_) {

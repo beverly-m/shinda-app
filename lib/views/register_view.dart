@@ -48,6 +48,10 @@ class _RegisterViewState extends State<RegisterView> {
       final password = _password.text;
       final fullName = _fullName.text;
 
+      _email.clear();
+      _password.clear();
+      _fullName.clear();
+
       try {
         await AuthService.supabase().createUser(
           email: email,
@@ -57,10 +61,6 @@ class _RegisterViewState extends State<RegisterView> {
           },
         );
 
-        _email.clear();
-        _password.clear();
-        _fullName.clear();
-
         setState(() {
           _isLoading = false;
         });
@@ -68,12 +68,13 @@ class _RegisterViewState extends State<RegisterView> {
         if (context.mounted) {
           Navigator.of(context).pushNamed(loginRoute);
         }
-
-        // await AuthService.firebase().sendEmailVerification();
-
-        // if (context.mounted) {
-        //   Navigator.of(context).pushNamed(verifyEmailRoute);
-        // }
+      } on UserNotLoggedInAuthException {
+        setState(() {
+          _isLoading = false;
+        });
+        if (context.mounted) {
+          Navigator.of(context).pushNamed(loginRoute);
+        }
       } on InvalidEmailAuthException {
         setState(() {
           _isLoading = false;
@@ -111,7 +112,6 @@ class _RegisterViewState extends State<RegisterView> {
         ),
         child: Form(
           key: _formKey,
-          autovalidateMode: AutovalidateMode.always,
           child: Column(
             children: [
               TextFormField(

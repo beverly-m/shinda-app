@@ -1,8 +1,9 @@
-import 'dart:developer' as devtools show log;
 import 'package:flutter/material.dart';
 import 'package:shinda_app/constants/routes.dart';
 import 'package:shinda_app/enums/menu_action.dart';
+import 'package:shinda_app/services/auth/auth_exceptions.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
+import 'package:shinda_app/utilities/show_error_dialog.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -16,23 +17,43 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    devtools.log(user.toString());
     return Scaffold(
       appBar: AppBar(title: const Text("Home"), actions: [
         PopupMenuButton<MenuAction>(
           onSelected: (value) async {
-            devtools.log(value.toString());
             switch (value) {
               case MenuAction.logout:
                 final isLogout = await showLogOutDialog(context);
-                devtools.log(isLogout.toString());
                 if (isLogout) {
-                  await AuthService.firebase().logOut();
-                  if (context.mounted) {
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      loginRoute,
-                      (_) => false,
-                    );
+                  try {
+                    await AuthService.supabase().logOut();
+                    if (context.mounted) {
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        loginRoute,
+                        (_) => false,
+                      );
+                    }
+                  } on UserNotLoggedInAuthException {
+                    if (context.mounted) {
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        loginRoute,
+                        (_) => false,
+                      );
+                    }
+                  } on GenericAuthException {
+                    if (context.mounted) {
+                      await showErrorDialog(
+                        context,
+                        "An error occurred. Try again.",
+                      );
+                    }
+                  } catch (_) {
+                    if (context.mounted) {
+                      await showErrorDialog(
+                        context,
+                        "An error occurred. Try again.",
+                      );
+                    }
                   }
                 }
                 break;

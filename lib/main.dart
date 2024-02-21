@@ -31,11 +31,6 @@ void main() {
 class InitApp extends StatelessWidget {
   const InitApp({super.key});
 
-  Future<void> refreshUser() async {
-    await AuthService.firebase().refreshUserCredentials();
-    return;
-  }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -43,7 +38,6 @@ class InitApp extends StatelessWidget {
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            refreshUser();
             final user = AuthService.supabase().currentUser;
             devtools.log(user.toString());
             if (user == null) {

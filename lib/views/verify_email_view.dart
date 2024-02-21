@@ -16,57 +16,29 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Verify Email"),
+        title: const Text("Verify Account"),
       ),
       body: Center(
         child: Column(
           children: [
             const Text(
-                "We've sent you a email verification link to your registered email address. Please verify your account to proceed using the application features."),
+                "We've sent you a verification link to your registered email address or phone number. Please verify your account to proceed using the application features."),
             const SizedBox(
-              height: 16,
-            ),
-            const Text("Haven't received the email verification link?"),
-            TextButton(
-              onPressed: () async {
-                try {
-                  await AuthService.firebase().sendEmailVerification();
-                } on NetworkRequestedFailedAuthException {
-                  if (context.mounted) {
-                    await showErrorDialog(
-                      context,
-                      "Oops! Failed to send due to network connectivity. Try again.",
-                    );
-                  }
-                } on GenericAuthException {
-                  if (context.mounted) {
-                    await showErrorDialog(
-                      context,
-                      "Error occurred. Try again.",
-                    );
-                  }
-                }
-              },
-              child: const Text("Send Email Verification"),
-            ),
-            const SizedBox(
-              height: 16,
+              height: 48,
             ),
             const Text("Already verified?"),
             TextButton(
               onPressed: () async {
                 try {
-                  await AuthService.firebase().logOut();
+                  await AuthService.supabase().logOut();
                   if (context.mounted) {
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil(loginRoute, (route) => false);
                   }
-                } on NetworkRequestedFailedAuthException {
+                } on UserNotLoggedInAuthException {
                   if (context.mounted) {
-                    await showErrorDialog(
-                      context,
-                      "Oops! Failed to send due to network connectivity. Try again.",
-                    );
+                    Navigator.of(context)
+                        .pushNamedAndRemoveUntil(loginRoute, (route) => false);
                   }
                 } on GenericAuthException {
                   if (context.mounted) {
@@ -75,9 +47,14 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                       "Error occurred. Try again.",
                     );
                   }
+                } catch (_) {
+                  if (context.mounted) {
+                    Navigator.of(context)
+                        .pushNamedAndRemoveUntil(loginRoute, (route) => false);
+                  }
                 }
               },
-              child: const Text("Restart"),
+              child: const Text("Proceed to Login"),
             ),
           ],
         ),
