@@ -4,6 +4,7 @@ import 'package:shinda_app/firebase_options.dart';
 import 'package:shinda_app/services/auth/auth_exceptions.dart';
 import 'package:shinda_app/services/auth/auth_provider.dart' as auth_provider;
 import 'package:shinda_app/services/auth/auth_user.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
 class FirebaseAuthProvider implements auth_provider.AuthProvider {
   @override
@@ -147,4 +148,8 @@ class FirebaseAuthProvider implements auth_provider.AuthProvider {
       throw UserNotLoggedInAuthException();
     }
   }
+
+  @override
+  // TODO: implement currentSession
+  supabase.Session? get currentSession => throw UnimplementedError();
 }

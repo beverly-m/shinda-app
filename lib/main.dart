@@ -5,7 +5,6 @@ import 'package:shinda_app/views/home_view.dart';
 import 'package:shinda_app/views/login_view.dart';
 import 'package:shinda_app/views/register_view.dart';
 import 'package:shinda_app/views/verify_email_view.dart';
-import 'dart:developer' as devtools show log;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +23,7 @@ void main() {
         homeRoute: (context) => const HomeView(),
         verifyEmailRoute: (context) => const VerifyEmailView(),
       },
+      debugShowCheckedModeBanner: false,
     ),
   );
 }
@@ -38,17 +38,15 @@ class InitApp extends StatelessWidget {
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            final user = AuthService.supabase().currentUser;
-            devtools.log(user.toString());
-            if (user == null) {
+
+            final session = AuthService.supabase().currentSession;
+
+            if (session == null) {
               return const LoginView();
-            } else if (user.isEmailVerified) {
-              devtools.log('You are a verified user.');
-              return const HomeView();
             } else {
-              devtools.log('You need to verify your email.');
-              return const VerifyEmailView();
-            }
+              return const HomeView();
+            } 
+            
           default:
             return const Scaffold(
               body: Center(

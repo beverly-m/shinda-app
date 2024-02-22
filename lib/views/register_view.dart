@@ -68,6 +68,16 @@ class _RegisterViewState extends State<RegisterView> {
         if (context.mounted) {
           Navigator.of(context).pushNamed(loginRoute);
         }
+      } on EmailAlreadyInUseAuthException {
+        setState(() {
+          _isLoading = false;
+        });
+        if (context.mounted) {
+          await showErrorDialog(
+            context,
+            "Email already in use by another account.",
+          );
+        }
       } on UserNotLoggedInAuthException {
         setState(() {
           _isLoading = false;

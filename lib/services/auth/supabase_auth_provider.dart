@@ -5,7 +5,7 @@ import 'package:shinda_app/constants/supabase.dart';
 import 'package:shinda_app/services/auth/auth_exceptions.dart';
 import 'package:shinda_app/services/auth/auth_provider.dart' as auth_provider;
 import 'package:shinda_app/services/auth/auth_user.dart' as user;
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' show Supabase, Session, AuthException;
 
 class SupabaseAuthProvider implements auth_provider.AuthProvider {
   @override
@@ -24,6 +24,19 @@ class SupabaseAuthProvider implements auth_provider.AuthProvider {
     required Map<String, dynamic> data,
   }) async {
     try {
+      final isEmailExist = await supabase
+          .from('users')
+          .select('email')
+          .eq('email', email)
+          .limit(1)
+          .maybeSingle();
+
+      devtools.log(isEmailExist?['email'].toString() ?? "none");
+
+      if (isEmailExist != null && isEmailExist['email'].toString().isNotEmpty) {
+        throw EmailAlreadyInUseAuthException();
+      }
+
       await supabase.auth.signUp(
         email: email,
         password: password,
@@ -48,6 +61,8 @@ class SupabaseAuthProvider implements auth_provider.AuthProvider {
       }
     } on UserNotLoggedInAuthException {
       throw UserNotLoggedInAuthException();
+    } on EmailAlreadyInUseAuthException {
+      throw EmailAlreadyInUseAuthException();
     } catch (e) {
       devtools.log(e.toString());
       throw GenericAuthException();
@@ -56,11 +71,20 @@ class SupabaseAuthProvider implements auth_provider.AuthProvider {
 
   @override
   user.AuthUser? get currentUser {
-    final supabase = Supabase.instance.client;
-
+    
     final currentUser = supabase.auth.currentUser;
     if (currentUser != null) {
       return user.AuthUser.fromSupabase(currentUser);
+    } else {
+      return null;
+    }
+  }
+
+  @override
+  Session? get currentSession {
+    final currentSess = supabase.auth.currentSession;
+    if (currentSess != null) {
+      return currentSess;
     } else {
       return null;
     }
@@ -159,4 +183,5 @@ class SupabaseAuthProvider implements auth_provider.AuthProvider {
       throw UserNotLoggedInAuthException();
     }
   }
+  
 }
