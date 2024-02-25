@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shinda_app/components/dashboard.dart';
+import 'package:shinda_app/components/dashboard_drawer_desktop.dart';
 
 class DesktopScaffold extends StatefulWidget {
   const DesktopScaffold({super.key});
@@ -15,7 +15,7 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
       appBar: dashboardAppbar,
       // drawer: const DashboardDrawer(),
       body: const Row(
-        children: [DashboardDrawer()],
+        children: [DashboardDrawerDesktop()],
       ),
     );
   }

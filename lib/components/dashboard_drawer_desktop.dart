@@ -4,8 +4,8 @@ import 'package:shinda_app/components/drawer_item.dart';
 import 'package:shinda_app/constants/drawer_items.dart';
 import 'package:shinda_app/utilities/navigation_provider.dart';
 
-class DashboardDrawer extends StatelessWidget {
-  const DashboardDrawer({super.key});
+class DashboardDrawerDesktop extends StatelessWidget {
+  const DashboardDrawerDesktop({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +20,7 @@ class DashboardDrawer extends StatelessWidget {
         width: isCollapsed ? MediaQuery.of(context).size.width * 0.065 : null,
         child: Padding(
           padding: const EdgeInsets.only(left: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: ListView(
             children: [
               const SizedBox(height: 16.0),
               Row(
@@ -62,10 +61,11 @@ Widget buildDrawerItems({
         final item = items[index];
 
         return buildMenuItem(
-            isCollapsed: isCollapsed,
-            text: item.title,
-            icon: item.icon,
-            onClicked: () {});
+          isCollapsed: isCollapsed,
+          text: item.title,
+          icon: item.icon,
+          onClicked: () {},
+        );
       },
       shrinkWrap: true,
       primary: false,
@@ -106,7 +106,7 @@ Widget buildCollapseIcon({
   required BuildContext context,
   required bool isCollapsed,
 }) {
-  final icon = isCollapsed ? Icons.arrow_forward_ios : Icons.menu;
+  final icon = isCollapsed ? Icons.menu : Icons.arrow_back_ios;
 
   return Material(
     color: Colors.transparent,
@@ -138,8 +138,9 @@ Widget buildHeader({required bool isCollapsed}) => isCollapsed
         child: const Column(
           children: [
             Icon(
-              Icons.calculate,
+              Icons.calculate_outlined,
               size: 24.0,
+              color: Colors.black54,
             ),
             SizedBox(height: 16.0),
             Divider(thickness: 0.5),
@@ -156,7 +157,7 @@ Widget buildHeader({required bool isCollapsed}) => isCollapsed
             Row(
               children: [
                 Icon(
-                  Icons.calculate,
+                  Icons.calculate_outlined,
                   size: 24.0,
                   color: Colors.black54,
                 ),
@@ -164,10 +165,10 @@ Widget buildHeader({required bool isCollapsed}) => isCollapsed
                 Padding(
                   padding: EdgeInsets.only(top: 1.0),
                   child: Text(
-                    "Shinda",
+                    "SHINDA",
                     style: TextStyle(
                       color: Colors.black54,
-                      fontSize: 20,
+                      fontSize: 16,
                       letterSpacing: 1.5,
                     ),
                   ),

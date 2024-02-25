@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shinda_app/components/dashboard.dart';
+import 'package:shinda_app/components/dashboard_drawer_desktop.dart';
+import 'package:shinda_app/components/dashboard_drawer_mobile_tablet.dart';
 
 class MobileScaffold extends StatefulWidget {
   const MobileScaffold({super.key});
@@ -13,7 +14,7 @@ class _MobileScaffoldState extends State<MobileScaffold> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: dashboardAppbar,
-      drawer: dashboardDrawer,
+      drawer: const DashboardDrawerMobileTablet(),
     );
   }
 }
