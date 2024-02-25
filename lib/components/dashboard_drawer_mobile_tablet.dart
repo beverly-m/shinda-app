@@ -11,8 +11,7 @@ class DashboardDrawerMobileTablet extends StatelessWidget {
         EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top);
 
     return Drawer(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: ListView(
         children: [
           const SizedBox(height: 16.0),
           Container(

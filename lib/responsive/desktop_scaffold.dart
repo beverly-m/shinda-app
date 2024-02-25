@@ -12,7 +12,7 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: dashboardAppbar,
+      appBar: AppBar(),
       // drawer: const DashboardDrawer(),
       body: const Row(
         children: [DashboardDrawerDesktop()],
