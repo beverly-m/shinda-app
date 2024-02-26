@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shinda_app/components/drawer_item.dart';
 import 'package:shinda_app/constants/drawer_items.dart';
+import 'package:shinda_app/constants/routes.dart';
+import 'package:shinda_app/views/dashboard/dashboard_view.dart';
 
 class DashboardDrawerMobileTablet extends StatelessWidget {
   const DashboardDrawerMobileTablet({super.key});
@@ -37,13 +39,30 @@ Widget buildDrawerItems({
         return buildMenuItem(
           text: item.title,
           icon: item.icon,
-          onClicked: () {},
+          onClicked: () => selectItem(context, index),
         );
       },
       shrinkWrap: true,
       primary: false,
       itemCount: items.length,
     );
+
+void selectItem(
+  BuildContext context,
+  int index,
+) {
+  Navigator.of(context).pop();
+
+  switch (index) {
+    case 0:
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const DashboardView(),
+        ),
+      );
+      break;
+  }
+}
 
 Widget buildMenuItem({
   required String text,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shinda_app/components/drawer_item.dart';
 import 'package:shinda_app/constants/drawer_items.dart';
+import 'package:shinda_app/constants/routes.dart';
 import 'package:shinda_app/utilities/navigation_provider.dart';
 
 class DashboardDrawerDesktop extends StatelessWidget {

@@ -7,10 +7,18 @@ import 'package:shinda_app/responsive/responsive_layout.dart';
 import 'package:shinda_app/responsive/tablet_scaffold.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
 import 'package:shinda_app/utilities/navigation_provider.dart';
-import 'package:shinda_app/views/home_view.dart';
-import 'package:shinda_app/views/login_view.dart';
-import 'package:shinda_app/views/register_view.dart';
-import 'package:shinda_app/views/verify_email_view.dart';
+import 'package:shinda_app/views/dashboard/dashboard_view.dart';
+import 'package:shinda_app/views/dashboard/debtors_view.dart';
+import 'package:shinda_app/views/dashboard/home_view.dart';
+import 'package:shinda_app/views/auth/login_view.dart';
+import 'package:shinda_app/views/auth/register_view.dart';
+import 'package:shinda_app/views/auth/verify_email_view.dart';
+import 'package:shinda_app/views/dashboard/inventory_view.dart';
+import 'package:shinda_app/views/dashboard/products_view.dart';
+import 'package:shinda_app/views/dashboard/reports_view.dart';
+import 'package:shinda_app/views/dashboard/sales_view.dart';
+import 'package:shinda_app/views/dashboard/settings_view.dart';
+import 'package:shinda_app/views/dashboard/users_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +38,14 @@ void main() {
           registerRoute: (context) => const RegisterView(),
           homeRoute: (context) => const HomeView(),
           verifyEmailRoute: (context) => const VerifyEmailView(),
+          dashboardRoute: (context) => const DashboardView(),
+          salesRoute: (context) => const SalesView(),
+          inventoryRoute: (context) => const InventoryView(),
+          productsRoute: (context) => const ProductsView(),
+          debtorsRoute: (context) => const DebtorsView(),
+          reportsRoute: (context) => const ReportsView(),
+          usersRoute: (context) => const UsersView(),
+          settingsRoute: (context) => const SettingsView(),
         },
         debugShowCheckedModeBanner: false,
       ),
@@ -52,12 +68,7 @@ class InitApp extends StatelessWidget {
             if (session == null) {
               return const LoginView();
             } else {
-              // return const HomeView();
-              return const ResponsiveLayout(
-                mobileScaffold: MobileScaffold(),
-                tabletScaffold: TabletScaffold(),
-                desktopScaffold: DesktopScaffold(),
-              );
+              return const HomeView();
             }
 
           default:
