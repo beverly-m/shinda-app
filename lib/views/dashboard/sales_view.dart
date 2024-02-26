@@ -5,8 +5,14 @@ class SalesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Sales")),
+    return const Center(
+      child: Text(
+        "Sales",
+        style: TextStyle(
+          fontSize: 32,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 }

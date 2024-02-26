@@ -5,8 +5,14 @@ class UsersView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Users")),
+    return const Center(
+      child: Text(
+        "Users",
+        style: TextStyle(
+          fontSize: 32,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 }

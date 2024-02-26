@@ -5,8 +5,14 @@ class InventoryView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Inventory")),
+    return const Center(
+      child: Text(
+        "Inventory",
+        style: TextStyle(
+          fontSize: 32,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 }
