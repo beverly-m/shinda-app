@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shinda_app/constants/routes.dart';
-import 'package:shinda_app/responsive/desktop_scaffold.dart';
-import 'package:shinda_app/responsive/mobile_scaffold.dart';
-import 'package:shinda_app/responsive/responsive_layout.dart';
-import 'package:shinda_app/responsive/tablet_scaffold.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
 import 'package:shinda_app/utilities/navigation_provider.dart';
 import 'package:shinda_app/views/dashboard/dashboard_view.dart';
