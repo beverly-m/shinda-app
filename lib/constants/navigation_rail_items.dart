@@ -7,7 +7,7 @@ final List<NavigationRailDestination> navigationRailItems = [
     selectedIcon: Icon(Icons.home),
   ),
   const NavigationRailDestination(
-    label: Text("SALES"),
+    label: Text("TRANSACTIONS"),
     icon: Icon(Icons.sell_outlined),
     selectedIcon: Icon(Icons.sell),
   ),
@@ -16,11 +16,11 @@ final List<NavigationRailDestination> navigationRailItems = [
     icon: Icon(Icons.inventory_2_outlined),
     selectedIcon: Icon(Icons.inventory),
   ),
-  const NavigationRailDestination(
-    label: Text("PRODUCTS"),
-    icon: Icon(Icons.shopping_cart_outlined),
-    selectedIcon: Icon(Icons.shopping_cart),
-  ),
+  // const NavigationRailDestination(
+  //   label: Text("PRODUCTS"),
+  //   icon: Icon(Icons.shopping_cart_outlined),
+  //   selectedIcon: Icon(Icons.shopping_cart),
+  // ),
   const NavigationRailDestination(
     label: Text("DEBTORS"),
     icon: Icon(Icons.monetization_on_outlined),
@@ -32,9 +32,9 @@ final List<NavigationRailDestination> navigationRailItems = [
     selectedIcon: Icon(Icons.auto_graph),
   ),
   const NavigationRailDestination(
-    label: Text("USERS"),
-    icon: Icon(Icons.person_outlined),
-    selectedIcon: Icon(Icons.person),
+    label: Text("MANAGE WORKSPACE"),
+    icon: Icon(Icons.person_4_outlined),
+    selectedIcon: Icon(Icons.person_4),
   ),
   const NavigationRailDestination(
     label: Text("SETTINGS"),

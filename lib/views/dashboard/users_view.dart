@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class UsersView extends StatelessWidget {
-  const UsersView({super.key});
+class ManageWorkspaceView extends StatelessWidget {
+  const ManageWorkspaceView({super.key});
 
   @override
   Widget build(BuildContext context) {
