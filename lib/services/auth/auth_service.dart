@@ -1,7 +1,6 @@
 
 import 'package:shinda_app/services/auth/auth_provider.dart' as auth_provider;
 import 'package:shinda_app/services/auth/auth_user.dart';
-import 'package:shinda_app/services/auth/firebase_auth_provider.dart';
 import 'package:shinda_app/services/auth/supabase_auth_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase show Session;
 
@@ -10,8 +9,8 @@ class AuthService implements auth_provider.AuthProvider {
 
   AuthService({required this.provider});
 
-  factory AuthService.firebase() =>
-      AuthService(provider: FirebaseAuthProvider());
+  // factory AuthService.firebase() =>
+  //     AuthService(provider: FirebaseAuthProvider());
 
   factory AuthService.supabase() =>
       AuthService(provider: SupabaseAuthProvider());

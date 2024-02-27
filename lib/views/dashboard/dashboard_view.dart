@@ -1,6 +1,10 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:shinda_app/services/auth/auth_exceptions.dart';
+import 'package:shinda_app/services/auth/auth_service.dart';
+import 'package:shinda_app/services/workspace/workspace_service.dart';
+import 'package:shinda_app/utilities/show_error_dialog.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
@@ -20,13 +24,32 @@ class _DashboardViewState extends State<DashboardView> {
     _workspaceName = TextEditingController();
   }
 
-  void _createWorkspace() {
+  void _createWorkspace() async {
     final isValid = _formKey.currentState?.validate();
+    final workspaceName = _workspaceName.text.trim();
 
     if (isValid != null && isValid) {
       log("Creating workspace...");
       log(_workspaceName.text.trim());
       _workspaceName.clear();
+      Navigator.of(context).pop();
+      log(AuthService.supabase().currentUser?.id ?? "no id");
+      try {
+        await WorkspaceService().getWorkspaceDetails(
+          workspaceName: workspaceName,
+          creatorId: AuthService.supabase().currentUser!.id,
+        );
+        log("Workspace created!");
+        // log(workspaceData.toString());
+      } on GenericAuthException {
+        if (context.mounted) {
+          showErrorDialog(context, "Some error occurred");
+        }
+      } catch (e) {
+        if (context.mounted) {
+          showErrorDialog(context, e.toString());
+        }
+      }
     }
   }
 
