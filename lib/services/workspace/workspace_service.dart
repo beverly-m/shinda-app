@@ -7,7 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class WorkspaceService implements WorkspaceProvider {
   @override
-  Future<void> getWorkspaceDetails({
+  Future<void> createWorkspace({
     required String workspaceName,
     required String creatorId,
   }) async {
@@ -17,10 +17,10 @@ class WorkspaceService implements WorkspaceProvider {
         "creator_id": creatorId,
       });
 
-      final workspaceData =
-          await supabase.from("workspace").select().eq("creator_id", creatorId);
+      // final workspaceData =
+      //     await supabase.from("workspace").select().eq("creator_id", creatorId);
 
-      log(workspaceData.toString());
+      // log(workspaceData[0].toString());
 
       // return workspaceData;
     } on PostgrestException catch (e) {
@@ -29,6 +29,30 @@ class WorkspaceService implements WorkspaceProvider {
       throw GenericWorkspaceException();
     } catch (e) {
       log(e.toString());
+      throw GenericWorkspaceException();
+    }
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getWorkspaceData(
+      {required String userId}) async {
+    try {
+      final workspaceData = await supabase.from("workspace_member").select('''
+        workspace_id, 
+        workspace:workspace_id ( name, creator_id )
+        ''').eq(
+        "user_id",
+        userId,
+      );
+      for (var element in workspaceData) {
+        log(element.toString());
+      }
+      return workspaceData;
+    } on PostgrestException catch (e) {
+      log(e.code ?? "Error occurred");
+      log(e.message);
+      throw GenericWorkspaceException();
+    } catch (e) {
       throw GenericWorkspaceException();
     }
   }

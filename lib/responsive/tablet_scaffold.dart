@@ -4,6 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:shinda_app/components/drawer_item.dart';
 import 'package:shinda_app/constants/drawer_items.dart';
 import 'package:shinda_app/constants/drawer_views.dart';
+import 'package:shinda_app/constants/routes.dart';
+import 'package:shinda_app/services/auth/auth_exceptions.dart';
+import 'package:shinda_app/services/auth/auth_service.dart';
+import 'package:shinda_app/utilities/show_error_dialog.dart';
+import 'package:shinda_app/views/dashboard/home_view.dart';
 
 class TabletScaffold extends StatefulWidget {
   const TabletScaffold({super.key});
@@ -111,7 +116,7 @@ class _TabletScaffoldState extends State<TabletScaffold> {
         ),
       );
 
-  void _selectItem({required int index}) {
+  void _selectItem({required int index}) async {
     Navigator.pop(context);
     if (index != (drawerViews.length)) {
       setState(() {
@@ -119,6 +124,39 @@ class _TabletScaffoldState extends State<TabletScaffold> {
       });
     } else {
       log("Logout");
+      final isLogout = await showLogOutDialog(context);
+      if (isLogout) {
+        try {
+          await AuthService.supabase().logOut();
+          if (context.mounted) {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              loginRoute,
+              (_) => false,
+            );
+          }
+        } on UserNotLoggedInAuthException {
+          if (context.mounted) {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              loginRoute,
+              (_) => false,
+            );
+          }
+        } on GenericAuthException {
+          if (context.mounted) {
+            await showErrorDialog(
+              context,
+              "An error occurred. Try again.",
+            );
+          }
+        } catch (_) {
+          if (context.mounted) {
+            await showErrorDialog(
+              context,
+              "An error occurred. Try again.",
+            );
+          }
+        }
+      }
     }
   }
 }

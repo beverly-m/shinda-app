@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:shinda_app/services/auth/auth_exceptions.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
+import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
 
@@ -17,11 +18,32 @@ class _DashboardViewState extends State<DashboardView> {
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   late final TextEditingController _workspaceName;
+  List<Map<String, dynamic>>? workspaceData;
 
   @override
   void initState() {
     super.initState();
     _workspaceName = TextEditingController();
+    _getWorkspaceData();
+  }
+
+  void _getWorkspaceData() async {
+    try {
+      final List<Map<String, dynamic>> workspaces = await WorkspaceService()
+          .getWorkspaceData(userId: AuthService.supabase().currentUser!.id);
+      setState(() {
+        workspaceData = workspaces;
+      });
+      // if (workspaceData != null) {
+      //   for (var element in workspaceData!) {
+      //     log(element["workspace"].toString());
+      //   }
+      // }
+    } on GenericWorkspaceException {
+      log("Error occurred");
+    } catch (e) {
+      log(e.toString());
+    }
   }
 
   void _createWorkspace() async {
@@ -35,13 +57,14 @@ class _DashboardViewState extends State<DashboardView> {
       Navigator.of(context).pop();
       log(AuthService.supabase().currentUser?.id ?? "no id");
       try {
-        await WorkspaceService().getWorkspaceDetails(
+        await WorkspaceService().createWorkspace(
           workspaceName: workspaceName,
           creatorId: AuthService.supabase().currentUser!.id,
         );
         log("Workspace created!");
         // log(workspaceData.toString());
-      } on GenericAuthException {
+        _getWorkspaceData();
+      } on GenericWorkspaceException {
         if (context.mounted) {
           showErrorDialog(context, "Some error occurred");
         }
@@ -56,8 +79,10 @@ class _DashboardViewState extends State<DashboardView> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
               "Dashboard",
@@ -66,6 +91,37 @@ class _DashboardViewState extends State<DashboardView> {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            const SizedBox(height: 24.0),
+            workspaceData != null
+                ? Container(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ListView.builder(
+                      itemBuilder: (context, index) {
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 16.0),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color:
+                                      const Color.fromARGB(100, 141, 166, 255),
+                                  width: 2),
+                              borderRadius: BorderRadius.circular(8)),
+                          child: SizedBox(
+                            width: 300.0,
+                            child: ListTile(
+                              title: Text(
+                                  workspaceData![index]["workspace"]['name']),
+                              subtitle:
+                                  Text(workspaceData![index]['workspace_id']),
+                            ),
+                          ),
+                        );
+                      },
+                      itemCount: workspaceData!.length,
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                    ),
+                  )
+                : const SizedBox(),
             const SizedBox(height: 48.0),
             FilledButton(
               onPressed: () async {
