@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:shinda_app/services/auth/auth_exceptions.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
@@ -16,33 +15,46 @@ class DashboardView extends StatefulWidget {
 
 class _DashboardViewState extends State<DashboardView> {
   final GlobalKey<FormState> _formKey = GlobalKey();
-
   late final TextEditingController _workspaceName;
   List<Map<String, dynamic>>? workspaceData;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
+
     _workspaceName = TextEditingController();
     _getWorkspaceData();
   }
 
+  @override
+  void dispose() {
+    _workspaceName.dispose();
+
+    super.dispose();
+  }
+
   void _getWorkspaceData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     try {
-      final List<Map<String, dynamic>> workspaces = await WorkspaceService()
-          .getWorkspaceData(userId: AuthService.supabase().currentUser!.id);
+      final List<Map<String, dynamic>> workspaces =
+          await WorkspaceService().getWorkspaceData(
+        userId: AuthService.supabase().currentUser!.id,
+      );
+
       setState(() {
         workspaceData = workspaces;
+        _isLoading = false;
       });
-      // if (workspaceData != null) {
-      //   for (var element in workspaceData!) {
-      //     log(element["workspace"].toString());
-      //   }
-      // }
     } on GenericWorkspaceException {
       log("Error occurred");
+      _isLoading = false;
     } catch (e) {
       log(e.toString());
+      _isLoading = false;
     }
   }
 
@@ -51,24 +63,36 @@ class _DashboardViewState extends State<DashboardView> {
     final workspaceName = _workspaceName.text.trim();
 
     if (isValid != null && isValid) {
-      log("Creating workspace...");
-      log(_workspaceName.text.trim());
       _workspaceName.clear();
+
       Navigator.of(context).pop();
-      log(AuthService.supabase().currentUser?.id ?? "no id");
+
+      setState(() {
+        _isLoading = true;
+      });
+
       try {
         await WorkspaceService().createWorkspace(
           workspaceName: workspaceName,
           creatorId: AuthService.supabase().currentUser!.id,
         );
         log("Workspace created!");
-        // log(workspaceData.toString());
+
         _getWorkspaceData();
+        setState(() {
+          _isLoading = false;
+        });
       } on GenericWorkspaceException {
+        setState(() {
+          _isLoading = false;
+        });
         if (context.mounted) {
           showErrorDialog(context, "Some error occurred");
         }
       } catch (e) {
+        setState(() {
+          _isLoading = false;
+        });
         if (context.mounted) {
           showErrorDialog(context, e.toString());
         }
@@ -81,56 +105,62 @@ class _DashboardViewState extends State<DashboardView> {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              "Dashboard",
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 24.0),
-            workspaceData != null
-                ? Container(
-                    padding: const EdgeInsets.all(16.0),
-                    child: ListView.builder(
-                      itemBuilder: (context, index) {
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 16.0),
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color:
-                                      const Color.fromARGB(100, 141, 166, 255),
-                                  width: 2),
-                              borderRadius: BorderRadius.circular(8)),
-                          child: SizedBox(
-                            width: 300.0,
-                            child: ListTile(
-                              title: Text(
-                                  workspaceData![index]["workspace"]['name']),
-                              subtitle:
-                                  Text(workspaceData![index]['workspace_id']),
-                            ),
-                          ),
-                        );
-                      },
-                      itemCount: workspaceData!.length,
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
+        child: _isLoading
+            ? const Padding(
+                padding: EdgeInsets.all(24.0),
+                child: CircularProgressIndicator(),
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Dashboard",
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
                     ),
-                  )
-                : const SizedBox(),
-            const SizedBox(height: 48.0),
-            FilledButton(
-              onPressed: () async {
-                await _showAddWorkspaceDialog(context);
-              },
-              child: const Text("New workspace"),
-            ),
-          ],
-        ),
+                  ),
+                  const SizedBox(height: 24.0),
+                  workspaceData != null
+                      ? Container(
+                          padding: const EdgeInsets.all(16.0),
+                          child: ListView.builder(
+                            itemBuilder: (context, index) {
+                              return Container(
+                                margin: const EdgeInsets.only(bottom: 16.0),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: const Color.fromARGB(
+                                          100, 141, 166, 255),
+                                      width: 2),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: SizedBox(
+                                  width: 300.0,
+                                  child: ListTile(
+                                    title: Text(workspaceData![index]
+                                        ["workspace"]['name']),
+                                    subtitle: Text(
+                                        workspaceData![index]['workspace_id']),
+                                  ),
+                                ),
+                              );
+                            },
+                            itemCount: workspaceData!.length,
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                          ),
+                        )
+                      : const SizedBox(),
+                  const SizedBox(height: 48.0),
+                  FilledButton(
+                    onPressed: () async {
+                      await _showAddWorkspaceDialog(context);
+                    },
+                    child: const Text("New workspace"),
+                  ),
+                ],
+              ),
       ),
     );
   }

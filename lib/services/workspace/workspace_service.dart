@@ -16,13 +16,6 @@ class WorkspaceService implements WorkspaceProvider {
         "name": workspaceName,
         "creator_id": creatorId,
       });
-
-      // final workspaceData =
-      //     await supabase.from("workspace").select().eq("creator_id", creatorId);
-
-      // log(workspaceData[0].toString());
-
-      // return workspaceData;
     } on PostgrestException catch (e) {
       log(e.code ?? "Error occurred");
       log(e.message);
@@ -44,9 +37,7 @@ class WorkspaceService implements WorkspaceProvider {
         "user_id",
         userId,
       );
-      for (var element in workspaceData) {
-        log(element.toString());
-      }
+
       return workspaceData;
     } on PostgrestException catch (e) {
       log(e.code ?? "Error occurred");
