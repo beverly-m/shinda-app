@@ -99,4 +99,37 @@ class WorkspaceService implements WorkspaceProvider {
       throw GenericWorkspaceException();
     }
   }
+
+  @override
+  Future<List<Map<String, dynamic>>> getProducts(
+      {required String workspaceId}) async {
+    try {
+      final productsData = await supabase.from("stock").select('''
+        product:product_id (product_id, name, description, price),
+        stock_id,
+        quantity,
+        expiration_date,
+        quantity_sold,
+        quantity_available,
+        quantity_defective,
+        created_at,
+        updated_at
+        ''').eq(
+        "workspace_id",
+        workspaceId,
+      );
+
+      for (var element in productsData) {
+        log(element.toString());
+      }
+
+      return productsData;
+    } on PostgrestException catch (e) {
+      log(e.code ?? "Error occurred");
+      log(e.message);
+      throw GenericWorkspaceException();
+    } catch (e) {
+      throw GenericWorkspaceException();
+    }
+  }
 }

@@ -32,6 +32,8 @@ class _InventoryViewState extends State<InventoryView> {
 
   bool _isLoading = false;
 
+  List<Map<String, dynamic>>? _productsData;
+
   @override
   void initState() {
     super.initState();
@@ -42,6 +44,8 @@ class _InventoryViewState extends State<InventoryView> {
     _quantity = TextEditingController();
     _expirationDate = TextEditingController();
     _reorderLevel = TextEditingController();
+
+    _getProductData();
   }
 
   @override
@@ -77,6 +81,41 @@ class _InventoryViewState extends State<InventoryView> {
                     ),
                   ),
                 ),
+                _productsData != null
+                    ? Container(
+                        padding: const EdgeInsets.all(16.0),
+                        child: ListView.builder(
+                          itemBuilder: (context, index) {
+                            return Container(
+                              margin: const EdgeInsets.only(bottom: 16.0),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: const Color.fromARGB(
+                                        100, 141, 166, 255),
+                                    width: 2),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: SizedBox(
+                                width: 300.0,
+                                child: ListTile(
+                                  title: Text(
+                                      _productsData![index]["product"]['name']),
+                                  subtitle: Text(_productsData![index]
+                                          ['product']['price']
+                                      .toString()),
+                                  onTap: () {
+                                    log(_productsData![index].toString());
+                                  },
+                                ),
+                              ),
+                            );
+                          },
+                          itemCount: _productsData!.length,
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                        ),
+                      )
+                    : const SizedBox(),
                 const SizedBox(height: 48.0),
                 FilledButton(
                   onPressed: () async {
@@ -125,6 +164,8 @@ class _InventoryViewState extends State<InventoryView> {
           reorderQuantityLevel: reorderLevel,
         );
 
+        _getProductData();
+
         setState(() {
           _isLoading = false;
         });
@@ -143,6 +184,30 @@ class _InventoryViewState extends State<InventoryView> {
           showErrorDialog(context, e.toString());
         }
       }
+    }
+  }
+
+  void _getProductData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final currentWorkspace = await getCurrentWorkspace();
+
+      final List<Map<String, dynamic>> products =
+          await WorkspaceService().getProducts(workspaceId: currentWorkspace!);
+
+      setState(() {
+        _productsData = products;
+        _isLoading = false;
+      });
+    } on GenericWorkspaceException {
+      log("Error occurred");
+      _isLoading = false;
+    } catch (e) {
+      log(e.toString());
+      _isLoading = false;
     }
   }
 

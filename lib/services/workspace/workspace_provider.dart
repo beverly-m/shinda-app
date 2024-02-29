@@ -15,4 +15,6 @@ abstract class WorkspaceProvider {
     String? reorderQuantityLevel,
     String? expirationDate,
   });
+
+  Future<List<Map<String, dynamic>>> getProducts({required String workspaceId});
 }
