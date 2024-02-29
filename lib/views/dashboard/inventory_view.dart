@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
 import 'package:shinda_app/utilities/get_workspace.dart';
+import 'package:shinda_app/utilities/product_data.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
 
 class InventoryView extends StatefulWidget {
@@ -33,6 +34,8 @@ class _InventoryViewState extends State<InventoryView> {
   bool _isLoading = false;
 
   List<Map<String, dynamic>>? _productsData;
+
+  late DataTableSource _productsDataSource;
 
   @override
   void initState() {
@@ -82,40 +85,51 @@ class _InventoryViewState extends State<InventoryView> {
                   ),
                 ),
                 _productsData != null
-                    ? Container(
-                        padding: const EdgeInsets.all(16.0),
-                        child: ListView.builder(
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: const EdgeInsets.only(bottom: 16.0),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: const Color.fromARGB(
-                                        100, 141, 166, 255),
-                                    width: 2),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: SizedBox(
-                                width: 300.0,
-                                child: ListTile(
-                                  title: Text(
-                                      _productsData![index]["product"]['name']),
-                                  subtitle: Text(_productsData![index]
-                                          ['product']['price']
-                                      .toString()),
-                                  onTap: () {
-                                    log(_productsData![index].toString());
-                                  },
-                                ),
-                              ),
-                            );
-                          },
-                          itemCount: _productsData!.length,
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
+                    ? SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        child: PaginatedDataTable(
+                          columns: productDataColumns,
+                          source: _productsDataSource,
+                          rowsPerPage: 10,
+                          columnSpacing: 100,
                         ),
                       )
                     : const SizedBox(),
+                // _productsData != null
+                //     ? Container(
+                //         padding: const EdgeInsets.all(16.0),
+                //         child: ListView.builder(
+                //           itemBuilder: (context, index) {
+                //             return Container(
+                //               margin: const EdgeInsets.only(bottom: 16.0),
+                //               decoration: BoxDecoration(
+                //                 border: Border.all(
+                //                     color: const Color.fromARGB(
+                //                         100, 141, 166, 255),
+                //                     width: 2),
+                //                 borderRadius: BorderRadius.circular(8),
+                //               ),
+                //               child: SizedBox(
+                //                 width: 300.0,
+                //                 child: ListTile(
+                //                   title: Text(
+                //                       _productsData![index]["product"]['name']),
+                //                   subtitle: Text(_productsData![index]
+                //                           ['product']['price']
+                //                       .toString()),
+                //                   onTap: () {
+                //                     log(_productsData![index].toString());
+                //                   },
+                //                 ),
+                //               ),
+                //             );
+                //           },
+                //           itemCount: _productsData!.length,
+                //           scrollDirection: Axis.vertical,
+                //           shrinkWrap: true,
+                //         ),
+                //       )
+                //     : const SizedBox(),
                 const SizedBox(height: 48.0),
                 FilledButton(
                   onPressed: () async {
@@ -200,6 +214,15 @@ class _InventoryViewState extends State<InventoryView> {
 
       setState(() {
         _productsData = products;
+      });
+
+      if (_productsData != null) {
+        setState(() {
+          _productsDataSource = ProductData(data: _productsData!);
+        });
+      }
+
+      setState(() {
         _isLoading = false;
       });
     } on GenericWorkspaceException {
