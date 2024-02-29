@@ -47,4 +47,56 @@ class WorkspaceService implements WorkspaceProvider {
       throw GenericWorkspaceException();
     }
   }
+
+  @override
+  Future<void> addProduct({
+    required String workspaceId,
+    required String productName,
+    String? description,
+    required String price,
+    required String quantity,
+    String? reorderQuantityLevel,
+    String? expirationDate,
+  }) async {
+    try {
+      double priceDouble = double.parse(price);
+      int quantityInt = int.parse(quantity);
+      int? reorderQuantityLevelInt;
+      DateTime? expirationDateDateTime;
+
+      if (reorderQuantityLevel != null && reorderQuantityLevel.isNotEmpty) {
+        reorderQuantityLevelInt = int.parse(reorderQuantityLevel);
+      }
+
+      if (expirationDate != null && expirationDate.isNotEmpty) {
+        expirationDateDateTime = DateTime.parse(expirationDate);
+      }
+
+      List<Map<String, dynamic>> product =
+          await supabase.from('product').insert({
+        'workspace_id': workspaceId,
+        'name': productName,
+        'description': description,
+        'price': priceDouble
+      }).select();
+
+      await supabase.from('stock').insert({
+        'product_id': product[0]['product_id'],
+        'workspace_id': workspaceId,
+        'quantity': quantityInt,
+        'expiration_date': expirationDateDateTime != null
+            ? '${expirationDateDateTime.year}-${expirationDateDateTime.month}-${expirationDateDateTime.day}'
+            : null,
+        'reorder_level': reorderQuantityLevelInt ?? '0',
+        'quantity_available': quantityInt,
+      }).select();
+    } on PostgrestException catch (e) {
+      log(e.message);
+      log(e.code!);
+      throw GenericWorkspaceException();
+    } catch (e) {
+      log(e.toString());
+      throw GenericWorkspaceException();
+    }
+  }
 }

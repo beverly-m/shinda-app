@@ -234,7 +234,7 @@ class _DashboardViewState extends State<DashboardView> {
             TextButton(
               onPressed: () {
                 _workspaceName.clear();
-                Navigator.pop(context);
+                Navigator.of(context).pop();
               },
               child: const Text("Cancel"),
             ),

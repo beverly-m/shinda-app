@@ -3,6 +3,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/services.dart';
+import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
+import 'package:shinda_app/services/workspace/workspace_service.dart';
+import 'package:shinda_app/utilities/get_workspace.dart';
+import 'package:shinda_app/utilities/show_error_dialog.dart';
 
 class InventoryView extends StatefulWidget {
   const InventoryView({super.key});
@@ -14,16 +18,19 @@ class InventoryView extends StatefulWidget {
 class _InventoryViewState extends State<InventoryView> {
   final GlobalKey<FormState> _formKey = GlobalKey();
 
-  final CurrencyTextInputFormatter _formatter =
-      CurrencyTextInputFormatter(symbol: "RWF ");
+  final CurrencyTextInputFormatter _formatter = CurrencyTextInputFormatter(
+    symbol: "RWF ",
+    turnOffGrouping: true,
+  );
 
   late final TextEditingController _productName;
   late final TextEditingController _description;
   late final TextEditingController _price;
   late final TextEditingController _quantity;
-  late final TextEditingController _unit;
   late final TextEditingController _expirationDate;
   late final TextEditingController _reorderLevel;
+
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -52,30 +59,43 @@ class _InventoryViewState extends State<InventoryView> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          const Center(
-            child: Text(
-              "Inventory",
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
+      child: _isLoading
+          ? const Center(
+              child: Padding(
+                padding: EdgeInsets.all(24.0),
+                child: CircularProgressIndicator(),
               ),
+            )
+          : Column(
+              children: [
+                const Center(
+                  child: Text(
+                    "Inventory",
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 48.0),
+                FilledButton(
+                  onPressed: () async {
+                    await _showAddProductDialog(context);
+                  },
+                  child: const Text("Add Product"),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 48.0),
-          FilledButton(
-            onPressed: () async {
-              await _showAddProductDialog(context);
-            },
-            child: const Text("Add Product"),
-          ),
-        ],
-      ),
     );
   }
 
-  void _addProduct() {
+  void _addProduct() async {
+    Navigator.of(context).pop();
+
+    setState(() {
+      _isLoading = true;
+    });
+
     final isValid = _formKey.currentState?.validate();
 
     if (isValid != null && isValid) {
@@ -85,8 +105,44 @@ class _InventoryViewState extends State<InventoryView> {
       final quantity = _quantity.text.trim();
       final reorderLevel = _reorderLevel.text.trim();
       final expirationDate = _expirationDate.text.trim();
+      final workspaceId = await getCurrentWorkspace();
 
-      log("IsValid: $isValid...$productName, $description, $price, $quantity, $reorderLevel, $expirationDate");
+      _productName.clear();
+      _description.clear();
+      _price.clear();
+      _quantity.clear();
+      _reorderLevel.clear();
+      _expirationDate.clear();
+
+      try {
+        await WorkspaceService().addProduct(
+          workspaceId: workspaceId!,
+          productName: productName,
+          description: description,
+          price: price,
+          quantity: quantity,
+          expirationDate: expirationDate,
+          reorderQuantityLevel: reorderLevel,
+        );
+
+        setState(() {
+          _isLoading = false;
+        });
+      } on GenericWorkspaceException {
+        setState(() {
+          _isLoading = false;
+        });
+        if (context.mounted) {
+          showErrorDialog(context, "Failed to add product. Try again");
+        }
+      } catch (e) {
+        setState(() {
+          _isLoading = false;
+        });
+        if (context.mounted) {
+          showErrorDialog(context, e.toString());
+        }
+      }
     }
   }
 
@@ -193,7 +249,7 @@ class _InventoryViewState extends State<InventoryView> {
                 _quantity.clear();
                 _reorderLevel.clear();
                 _expirationDate.clear();
-                Navigator.pop(context);
+                Navigator.of(context).pop();
               },
               child: const Text("Cancel"),
             ),
