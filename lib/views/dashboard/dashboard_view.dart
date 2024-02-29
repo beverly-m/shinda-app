@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
+import 'package:shinda_app/utilities/get_workspace.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
@@ -15,9 +17,14 @@ class DashboardView extends StatefulWidget {
 
 class _DashboardViewState extends State<DashboardView> {
   final GlobalKey<FormState> _formKey = GlobalKey();
+
   late final TextEditingController _workspaceName;
-  List<Map<String, dynamic>>? workspaceData;
+
+  List<Map<String, dynamic>>? _workspaceData;
+
   bool _isLoading = false;
+
+  String? _currentWorkspace;
 
   @override
   void initState() {
@@ -45,10 +52,24 @@ class _DashboardViewState extends State<DashboardView> {
         userId: AuthService.supabase().currentUser!.id,
       );
 
+      final String? currentWorkspace = await getCurrentWorkspace();
+
       setState(() {
-        workspaceData = workspaces;
-        _isLoading = false;
+        _workspaceData = workspaces;
       });
+
+      if (currentWorkspace != null) {
+        setState(() {
+          _currentWorkspace = currentWorkspace;
+          _isLoading = false;
+        });
+      } else {
+        _selectWorkspace(workspace: _workspaceData![0]['workspace_id']);
+        setState(() {
+          _currentWorkspace = _workspaceData![0]['workspace_id'];
+          _isLoading = false;
+        });
+      }
     } on GenericWorkspaceException {
       log("Error occurred");
       _isLoading = false;
@@ -100,6 +121,16 @@ class _DashboardViewState extends State<DashboardView> {
     }
   }
 
+  void _selectWorkspace({required String workspace}) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('workspace', workspace);
+
+    setState(() {
+      _currentWorkspace = workspace;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -121,7 +152,11 @@ class _DashboardViewState extends State<DashboardView> {
                     ),
                   ),
                   const SizedBox(height: 24.0),
-                  workspaceData != null
+                  _currentWorkspace != null
+                      ? Chip(
+                          label: Text("Current workspace: $_currentWorkspace"))
+                      : const SizedBox(),
+                  _workspaceData != null
                       ? Container(
                           padding: const EdgeInsets.all(16.0),
                           child: ListView.builder(
@@ -138,15 +173,20 @@ class _DashboardViewState extends State<DashboardView> {
                                 child: SizedBox(
                                   width: 300.0,
                                   child: ListTile(
-                                    title: Text(workspaceData![index]
+                                    title: Text(_workspaceData![index]
                                         ["workspace"]['name']),
                                     subtitle: Text(
-                                        workspaceData![index]['workspace_id']),
+                                        _workspaceData![index]['workspace_id']),
+                                    onTap: () {
+                                      _selectWorkspace(
+                                          workspace: _workspaceData![index]
+                                              ['workspace_id']);
+                                    },
                                   ),
                                 ),
                               );
                             },
-                            itemCount: workspaceData!.length,
+                            itemCount: _workspaceData!.length,
                             scrollDirection: Axis.vertical,
                             shrinkWrap: true,
                           ),

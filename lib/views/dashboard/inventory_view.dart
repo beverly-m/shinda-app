@@ -77,14 +77,17 @@ class _InventoryViewState extends State<InventoryView> {
 
   void _addProduct() {
     final isValid = _formKey.currentState?.validate();
-    final productName = _productName.text.trim();
-    final description = _description.text.trim();
-    final price = _price.text.trim().substring(4);
-    final quantity = _quantity.text.trim();
-    final reorderLevel = _reorderLevel.text.trim();
-    final expirationDate = _expirationDate.text.trim();
 
-    log("IsValid: $isValid...$productName, $description, $price, $quantity, $reorderLevel, $expirationDate");
+    if (isValid != null && isValid) {
+      final productName = _productName.text.trim();
+      final description = _description.text.trim();
+      final price = _price.text.trim().substring(4);
+      final quantity = _quantity.text.trim();
+      final reorderLevel = _reorderLevel.text.trim();
+      final expirationDate = _expirationDate.text.trim();
+
+      log("IsValid: $isValid...$productName, $description, $price, $quantity, $reorderLevel, $expirationDate");
+    }
   }
 
   Future<void> _showAddProductDialog(BuildContext context) {
