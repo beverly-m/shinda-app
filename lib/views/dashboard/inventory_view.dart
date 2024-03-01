@@ -143,7 +143,7 @@ class _InventoryViewState extends State<InventoryView> {
   }
 
   void _addProduct() async {
-    Navigator.of(context).pop();
+    
 
     setState(() {
       _isLoading = true;
@@ -152,6 +152,8 @@ class _InventoryViewState extends State<InventoryView> {
     final isValid = _formKey.currentState?.validate();
 
     if (isValid != null && isValid) {
+      Navigator.of(context).pop();
+      
       final productName = _productName.text.trim();
       final description = _description.text.trim();
       final price = _price.text.trim().substring(4);

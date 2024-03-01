@@ -132,4 +132,16 @@ class WorkspaceService implements WorkspaceProvider {
       throw GenericWorkspaceException();
     }
   }
+
+  @override
+  Future<void> addDebtor({
+    required String workspaceId,
+    required String clientName,
+    required String phoneNumber,
+    String? address,
+    required List<Map<String, dynamic>> products,
+  }) {
+    // TODO: implement addDebtor
+    throw UnimplementedError();
+  }
 }
