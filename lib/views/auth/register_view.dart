@@ -112,164 +112,185 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Register"),
-      ),
+      appBar: AppBar(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(
           vertical: 24.0,
           horizontal: 16.0,
         ),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _email,
-                textInputAction: TextInputAction.next,
-                enableSuggestions: false,
-                autocorrect: false,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide(
-                      color: Theme.of(context).primaryColorDark,
-                      width: 1,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide(
-                      color: Theme.of(context).primaryColor,
-                      width: 1,
-                    ),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 16.0,
-                    horizontal: 12.0,
-                  ),
-                  hintText: 'Enter your email',
-                  labelText: 'Email',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Email required';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 32.0),
-              TextFormField(
-                controller: _fullName,
-                keyboardType: TextInputType.text,
-                textInputAction: TextInputAction.next,
-                enableSuggestions: false,
-                autocorrect: false,
-                decoration: InputDecoration(
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide(
-                      color: Theme.of(context).primaryColorDark,
-                      width: 1,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide(
-                      color: Theme.of(context).primaryColor,
-                      width: 1,
-                    ),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 16.0,
-                    horizontal: 12.0,
-                  ),
-                  hintText: 'Enter your full name',
-                  labelText: 'Full name',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your full name.';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 32.0),
-              TextFormField(
-                controller: _password,
-                keyboardType: TextInputType.visiblePassword,
-                textInputAction: TextInputAction.next,
-                obscureText: true,
-                enableSuggestions: false,
-                autocorrect: false,
-                decoration: InputDecoration(
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide(
-                      color: Theme.of(context).primaryColorDark,
-                      width: 1,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide(
-                      color: Theme.of(context).primaryColor,
-                      width: 1,
-                    ),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 16.0,
-                    horizontal: 12.0,
-                  ),
-                  hintText: 'Enter your password',
-                  labelText: 'Password',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Password required.';
-                  } else if (value.length < 8) {
-                    return 'Password length must be more than 8 characters.';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 48.0),
-              FilledButton(
-                style: const ButtonStyle(
-                  padding: MaterialStatePropertyAll(
-                    EdgeInsets.all(16.0),
-                  ),
-                ),
-                onPressed: _isLoading ? null : _signUp,
-                child: _isLoading
-                    ? const Center(
-                        child: CircularProgressIndicator.adaptive(
-                          strokeWidth: 2.0,
-                        ),
-                      )
-                    : const Text('Register'),
-              ),
-              const SizedBox(height: 16.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+        child: Center(
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.6,
+            child: Form(
+              key: _formKey,
+              child: Column(
                 children: [
-                  const Text("Already on Shinda?"),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                        loginRoute,
-                        (route) => false,
-                      );
+                  const Text(
+                    "Register",
+                    style: TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 48.0),
+                  TextFormField(
+                    controller: _email,
+                    textInputAction: TextInputAction.next,
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).primaryColorDark,
+                          width: 1,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).primaryColor,
+                          width: 1,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 16.0,
+                        horizontal: 12.0,
+                      ),
+                      hintText: 'Enter your email',
+                      labelText: 'Email',
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Email required';
+                      }
+                      return null;
                     },
-                    child: const Text("Login"),
+                  ),
+                  const SizedBox(height: 32.0),
+                  TextFormField(
+                    controller: _fullName,
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.next,
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    decoration: InputDecoration(
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).primaryColorDark,
+                          width: 1,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).primaryColor,
+                          width: 1,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 16.0,
+                        horizontal: 12.0,
+                      ),
+                      hintText: 'Enter your full name',
+                      labelText: 'Full name',
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your full name.';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 32.0),
+                  TextFormField(
+                    controller: _password,
+                    keyboardType: TextInputType.visiblePassword,
+                    textInputAction: TextInputAction.next,
+                    obscureText: true,
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    decoration: InputDecoration(
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).primaryColorDark,
+                          width: 1,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).primaryColor,
+                          width: 1,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 16.0,
+                        horizontal: 12.0,
+                      ),
+                      hintText: 'Enter your password',
+                      labelText: 'Password',
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Password required.';
+                      } else if (value.length < 8) {
+                        return 'Password length must be more than 8 characters.';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 48.0),
+                  FilledButton(
+                    style: const ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(
+                            Color.fromRGBO(0, 121, 107, 1))),
+                    onPressed: _isLoading ? null : _signUp,
+                    child: _isLoading
+                        ? const Center(
+                            child: CircularProgressIndicator.adaptive(
+                              strokeWidth: 2.0,
+                            ),
+                          )
+                        : const Text(
+                            'Register',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                  ),
+                  const SizedBox(height: 16.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Already on Shinda?",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            loginRoute,
+                            (route) => false,
+                          );
+                        },
+                        child: const Text(
+                          "Login",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Color.fromRGBO(0, 121, 107, 1),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
       ),

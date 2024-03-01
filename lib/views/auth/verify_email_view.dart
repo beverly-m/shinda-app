@@ -15,18 +15,34 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Verify Account"),
-      ),
+      appBar: AppBar(),
       body: Center(
         child: Column(
           children: [
             const Text(
-                "We've sent you a verification link to your registered email address or phone number. Please verify your account to proceed using the application features."),
-            const SizedBox(
-              height: 48,
+              "Verify Your Account",
+              style: TextStyle(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            const Text("Already verified?"),
+            const SizedBox(height: 24.0),
+            const Icon(
+              Icons.emoji_objects_outlined,
+              size: 200,
+              color: Color.fromRGBO(219, 240, 239, 1),
+            ),
+            const SizedBox(height: 48.0),
+            const Text(
+              "We've sent you a verification link to your registered email address or phone number. Please verify your account to proceed using the application features.",
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 48.0),
+            const Text(
+              "Already verified?",
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 48.0),
             TextButton(
               onPressed: () async {
                 try {
@@ -54,7 +70,11 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                   }
                 }
               },
-              child: const Text("Proceed to Login"),
+              child: const Text("Proceed to Login",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color.fromRGBO(0, 121, 107, 1),
+                  )),
             ),
           ],
         ),

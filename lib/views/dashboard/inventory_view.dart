@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
 import 'package:shinda_app/utilities/get_workspace.dart';
@@ -66,85 +67,135 @@ class _InventoryViewState extends State<InventoryView> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: _isLoading
-          ? const Center(
-              child: Padding(
-                padding: EdgeInsets.all(24.0),
-                child: CircularProgressIndicator(),
-              ),
-            )
-          : Column(
-              children: [
-                const Center(
-                  child: Text(
-                    "Inventory",
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
+        child: _isLoading
+            ? const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(24.0),
+                  child: CircularProgressIndicator(
+                    color: Color.fromRGBO(0, 121, 107, 1),
                   ),
                 ),
-                _productsData != null
-                    ? SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        child: PaginatedDataTable(
-                          columns: productDataColumns,
-                          source: _productsDataSource,
-                          rowsPerPage: 10,
-                          columnSpacing: 100,
+              )
+            : Padding(
+                padding: const EdgeInsets.all(48.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          "Inventory",
+                          style: GoogleFonts.eczar(
+                              textStyle: const TextStyle(
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromRGBO(0, 121, 107, 1),
+                          )),
                         ),
-                      )
-                    : const SizedBox(),
-                // _productsData != null
-                //     ? Container(
-                //         padding: const EdgeInsets.all(16.0),
-                //         child: ListView.builder(
-                //           itemBuilder: (context, index) {
-                //             return Container(
-                //               margin: const EdgeInsets.only(bottom: 16.0),
-                //               decoration: BoxDecoration(
-                //                 border: Border.all(
-                //                     color: const Color.fromARGB(
-                //                         100, 141, 166, 255),
-                //                     width: 2),
-                //                 borderRadius: BorderRadius.circular(8),
-                //               ),
-                //               child: SizedBox(
-                //                 width: 300.0,
-                //                 child: ListTile(
-                //                   title: Text(
-                //                       _productsData![index]["product"]['name']),
-                //                   subtitle: Text(_productsData![index]
-                //                           ['product']['price']
-                //                       .toString()),
-                //                   onTap: () {
-                //                     log(_productsData![index].toString());
-                //                   },
-                //                 ),
-                //               ),
-                //             );
-                //           },
-                //           itemCount: _productsData!.length,
-                //           scrollDirection: Axis.vertical,
-                //           shrinkWrap: true,
-                //         ),
-                //       )
-                //     : const SizedBox(),
-                const SizedBox(height: 48.0),
-                FilledButton(
-                  onPressed: () async {
-                    await _showAddProductDialog(context);
-                  },
-                  child: const Text("Add Product"),
+                        const Expanded(child: SizedBox()),
+                        _productsData != null && _productsData!.isNotEmpty
+                            ? FilledButton(
+                                style: const ButtonStyle(
+                                  backgroundColor: MaterialStatePropertyAll(
+                                    Color.fromRGBO(0, 121, 107, 1),
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  await _showAddProductDialog(context);
+                                },
+                                child: const Text(
+                                  "Add Product",
+                                  style: TextStyle(fontSize: 16.0),
+                                ),
+                              )
+                            : const SizedBox(),
+                      ],
+                    ),
+                    const SizedBox(height: 48.0),
+                    _productsData != null && _productsData!.isNotEmpty
+                        ? SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            child: PaginatedDataTable(
+                              columns: productDataColumns,
+                              source: _productsDataSource,
+                              rowsPerPage: 10,
+                              columnSpacing: 100,
+                            ),
+                          )
+                        : Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(48.0),
+                              child: Column(
+                                children: [
+                                  const Icon(
+                                    Icons.inventory_2_outlined,
+                                    size: 200,
+                                    color: Color.fromRGBO(219, 240, 239, 1),
+                                  ),
+                                  const SizedBox(height: 48.0),
+                                  const Text(
+                                    "Add a new product to get started",
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  const SizedBox(height: 48.0),
+                                  FilledButton(
+                                    style: const ButtonStyle(
+                                      backgroundColor: MaterialStatePropertyAll(
+                                        Color.fromRGBO(0, 121, 107, 1),
+                                      ),
+                                    ),
+                                    onPressed: () async {
+                                      await _showAddProductDialog(context);
+                                    },
+                                    child: const Text(
+                                      "Add Product",
+                                      style: TextStyle(fontSize: 16.0),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                    // _productsData != null
+                    //     ? Container(
+                    //         padding: const EdgeInsets.all(16.0),
+                    //         child: ListView.builder(
+                    //           itemBuilder: (context, index) {
+                    //             return Container(
+                    //               margin: const EdgeInsets.only(bottom: 16.0),
+                    //               decoration: BoxDecoration(
+                    //                 border: Border.all(
+                    //                     color: const Color.fromARGB(
+                    //                         100, 141, 166, 255),
+                    //                     width: 2),
+                    //                 borderRadius: BorderRadius.circular(8),
+                    //               ),
+                    //               child: SizedBox(
+                    //                 width: 300.0,
+                    //                 child: ListTile(
+                    //                   title: Text(
+                    //                       _productsData![index]["product"]['name']),
+                    //                   subtitle: Text(_productsData![index]
+                    //                           ['product']['price']
+                    //                       .toString()),
+                    //                   onTap: () {
+                    //                     log(_productsData![index].toString());
+                    //                   },
+                    //                 ),
+                    //               ),
+                    //             );
+                    //           },
+                    //           itemCount: _productsData!.length,
+                    //           scrollDirection: Axis.vertical,
+                    //           shrinkWrap: true,
+                    //         ),
+                    //       )
+                    //     : const SizedBox(),
+                  ],
                 ),
-              ],
-            ),
-    );
+              ));
   }
 
   void _addProduct() async {
-    
-
     setState(() {
       _isLoading = true;
     });
@@ -153,14 +204,14 @@ class _InventoryViewState extends State<InventoryView> {
 
     if (isValid != null && isValid) {
       Navigator.of(context).pop();
-      
+
       final productName = _productName.text.trim();
       final description = _description.text.trim();
       final price = _price.text.trim().substring(4);
       final quantity = _quantity.text.trim();
       final reorderLevel = _reorderLevel.text.trim();
       final expirationDate = _expirationDate.text.trim();
-      final workspaceId = await getCurrentWorkspace();
+      final workspaceId = await getCurrentWorkspaceId();
 
       _productName.clear();
       _description.clear();
@@ -209,7 +260,7 @@ class _InventoryViewState extends State<InventoryView> {
     });
 
     try {
-      final currentWorkspace = await getCurrentWorkspace();
+      final currentWorkspace = await getCurrentWorkspaceId();
 
       final List<Map<String, dynamic>> products =
           await WorkspaceService().getProducts(workspaceId: currentWorkspace!);
@@ -241,93 +292,123 @@ class _InventoryViewState extends State<InventoryView> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: const Color.fromRGBO(241, 249, 249, 1),
+          shape: OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(8.0),
+          ),
           scrollable: true,
           title: const Text("New product"),
-          content: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: "Name",
-                    hintText: "Enter the product name",
+          contentPadding: const EdgeInsets.all(48.0),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.6,
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
+                    decoration: const InputDecoration(
+                      hoverColor: Color.fromRGBO(0, 121, 107, 1),
+                      focusColor: Color.fromRGBO(0, 121, 107, 1),
+                      labelText: "Name",
+                      hintText: "Enter the product name",
+                    ),
+                    controller: _productName,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Product name required';
+                      } else if (value.length < 3) {
+                        return "At least 3 characters";
+                      }
+                      return null;
+                    },
                   ),
-                  controller: _productName,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Product name required';
-                    } else if (value.length < 3) {
-                      return "At least 3 characters";
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16.0),
-                TextFormField(
-                  decoration: const InputDecoration(
-                      labelText: "Description (optional)",
-                      hintText: "Enter description"),
-                  controller: _description,
-                  maxLines: 3,
-                ),
-                const SizedBox(height: 16.0),
-                TextFormField(
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[_formatter],
-                  decoration: const InputDecoration(labelText: "Selling Price"),
-                  controller: _price,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Price required';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16.0),
-                TextFormField(
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  decoration: const InputDecoration(labelText: "Quantity"),
-                  controller: _quantity,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Quantity required';
-                    } else if (value == "0") {
-                      return "Quantity must be more than 0";
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(width: 16.0),
-                TextFormField(
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  decoration: const InputDecoration(
-                      labelText: "Reorder quantity level"),
-                  controller: _reorderLevel,
-                ),
-                const SizedBox(height: 16.0),
-                TextFormField(
-                  decoration: const InputDecoration(
-                      labelText: "Expiration date (optional)"),
-                  controller: _expirationDate,
-                  readOnly: true,
-                  onTap: () async {
-                    FocusScope.of(context).requestFocus(FocusNode());
+                  const SizedBox(height: 16.0),
+                  TextFormField(
+                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
+                    decoration: const InputDecoration(
+                        hoverColor: Color.fromRGBO(0, 121, 107, 1),
+                        focusColor: Color.fromRGBO(0, 121, 107, 1),
+                        labelText: "Description (optional)",
+                        hintText: "Enter description"),
+                    controller: _description,
+                    maxLines: 3,
+                  ),
+                  const SizedBox(height: 16.0),
+                  TextFormField(
+                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[_formatter],
+                    decoration: const InputDecoration(
+                        hoverColor: Color.fromRGBO(0, 121, 107, 1),
+                        focusColor: Color.fromRGBO(0, 121, 107, 1),
+                        labelText: "Selling Price"),
+                    controller: _price,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Price required';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16.0),
+                  TextFormField(
+                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    decoration: const InputDecoration(
+                        hoverColor: Color.fromRGBO(0, 121, 107, 1),
+                        focusColor: Color.fromRGBO(0, 121, 107, 1),
+                        labelText: "Quantity"),
+                    controller: _quantity,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Quantity required';
+                      } else if (value == "0") {
+                        return "Quantity must be more than 0";
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(width: 16.0),
+                  TextFormField(
+                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    decoration: const InputDecoration(
+                        hoverColor: Color.fromRGBO(0, 121, 107, 1),
+                        focusColor: Color.fromRGBO(0, 121, 107, 1),
+                        labelText: "Reorder quantity level"),
+                    controller: _reorderLevel,
+                  ),
+                  const SizedBox(height: 16.0),
+                  TextFormField(
+                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
+                    decoration: const InputDecoration(
+                        hoverColor: Color.fromRGBO(0, 121, 107, 1),
+                        focusColor: Color.fromRGBO(0, 121, 107, 1),
+                        labelText: "Expiration date (optional)"),
+                    controller: _expirationDate,
+                    readOnly: true,
+                    onTap: () async {
+                      FocusScope.of(context).requestFocus(FocusNode());
 
-                    DateTime? date = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime.now(),
-                      lastDate: DateTime(2040),
-                    );
+                      DateTime? date = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime(2040),
+                      );
 
-                    if (date != null) {
-                      _expirationDate.text = date.toString();
-                    }
-                  },
-                ),
-              ],
+                      if (date != null) {
+                        _expirationDate.text = date.toString();
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
           actions: [
@@ -341,11 +422,23 @@ class _InventoryViewState extends State<InventoryView> {
                 _expirationDate.clear();
                 Navigator.of(context).pop();
               },
-              child: const Text("Cancel"),
+              child: const Text(
+                "Cancel",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Color.fromRGBO(0, 121, 107, 1),
+                ),
+              ),
             ),
-            TextButton(
+            FilledButton(
               onPressed: _addProduct,
-              child: const Text("Add product"),
+              child: const Text(
+                "Add product",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Color.fromRGBO(0, 121, 107, 1),
+                ),
+              ),
             ),
           ],
         );

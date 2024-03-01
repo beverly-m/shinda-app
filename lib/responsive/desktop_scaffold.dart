@@ -20,15 +20,25 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
   int _selectedIndex = 0;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-      ),
+      // appBar: AppBar(
+      //   elevation: 0.0,
+      //   automaticallyImplyLeading: false,
+      //   backgroundColor: Colors.white,
+      // ),
       body: SafeArea(
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             NavigationRail(
+              backgroundColor: const Color.fromRGBO(241, 249, 249, 1),
+              indicatorColor: const Color.fromRGBO(29, 233, 182, 1),
               selectedIndex: _selectedIndex,
               groupAlignment: 0.0,
               onDestinationSelected: (int index) async {

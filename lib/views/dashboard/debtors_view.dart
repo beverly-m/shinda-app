@@ -1,9 +1,9 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shinda_app/components/product.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
-import 'package:shinda_app/utilities/debtor_data.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:shinda_app/utilities/get_workspace.dart';
 
@@ -30,7 +30,7 @@ class _DebtorsViewState extends State<DebtorsView> {
 
   List<Map<String, dynamic>>? _productsData;
 
-  List<CartItem>? _orderData;
+  final List<CartItem> _orderData = [];
 
   late DataTableSource _debtorsDataSource;
 
@@ -61,39 +61,61 @@ class _DebtorsViewState extends State<DebtorsView> {
           ? const Center(
               child: Padding(
                 padding: EdgeInsets.all(24.0),
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(
+                  color: Color.fromRGBO(0, 121, 107, 1),
+                ),
               ),
             )
-          : Column(
-              children: [
-                const Center(
-                  child: Text(
-                    "Debtors",
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
+          : Center(
+              child: Padding(
+                padding: const EdgeInsets.all(128.0),
+                child: Column(
+                  children: [
+                    Center(
+                      child: Text(
+                        "Debtors",
+                        style: GoogleFonts.eczar(
+                            textStyle: const TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromRGBO(0, 121, 107, 1),
+                        )),
+                      ),
                     ),
-                  ),
+                    // _debtorsData != null
+                    //     ? SizedBox(
+                    //         width: MediaQuery.of(context).size.width * 0.8,
+                    //         child: PaginatedDataTable(
+                    //           columns: debtorDataColumns,
+                    //           source: _debtorsDataSource,
+                    //           rowsPerPage: 10,
+                    //           columnSpacing: 100,
+                    //         ),
+                    //       )
+                    //     : const SizedBox(),
+                    const Icon(
+                      Icons.wallet_outlined,
+                      size: 200,
+                      color: Color.fromRGBO(219, 240, 239, 1),
+                    ),
+                    const SizedBox(height: 48.0),
+                    FilledButton(
+                      style: const ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(
+                          Color.fromRGBO(0, 121, 107, 1),
+                        ),
+                      ),
+                      onPressed: () async {
+                        await _showAddDebtorDialog(context);
+                      },
+                      child: const Text(
+                        "Add Debtor",
+                        style: TextStyle(fontSize: 16.0),
+                      ),
+                    ),
+                  ],
                 ),
-                // _debtorsData != null
-                //     ? SizedBox(
-                //         width: MediaQuery.of(context).size.width * 0.8,
-                //         child: PaginatedDataTable(
-                //           columns: debtorDataColumns,
-                //           source: _debtorsDataSource,
-                //           rowsPerPage: 10,
-                //           columnSpacing: 100,
-                //         ),
-                //       )
-                //     : const SizedBox(),
-                const SizedBox(height: 48.0),
-                FilledButton(
-                  onPressed: () async {
-                    await _showAddDebtorDialog(context);
-                  },
-                  child: const Text("Add Debtor"),
-                ),
-              ],
+              ),
             ),
     );
   }
@@ -103,12 +125,14 @@ class _DebtorsViewState extends State<DebtorsView> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
+            backgroundColor: Colors.white,
+            surfaceTintColor: const Color.fromRGBO(241, 249, 249, 1),
             scrollable: true,
             title: const Text("New debtor"),
             contentPadding: const EdgeInsets.all(48.0),
             content: SizedBox(
               width: MediaQuery.of(context).size.width * 0.6,
-              height: MediaQuery.of(context).size.height * 0.6,
+              // height: MediaQuery.of(context).size.height * 0.6,
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -118,7 +142,10 @@ class _DebtorsViewState extends State<DebtorsView> {
                       children: [
                         Expanded(
                           child: TextFormField(
+                            cursorColor: const Color.fromRGBO(0, 121, 107, 1),
                             decoration: const InputDecoration(
+                              hoverColor: Color.fromRGBO(0, 121, 107, 1),
+                              focusColor: Color.fromRGBO(0, 121, 107, 1),
                               labelText: "Client name",
                               hintText: "Enter the name of the client",
                             ),
@@ -138,6 +165,7 @@ class _DebtorsViewState extends State<DebtorsView> {
                         ),
                         Expanded(
                           child: InternationalPhoneNumberInput(
+                            cursorColor: const Color.fromRGBO(0, 121, 107, 1),
                             initialValue: number,
                             onInputChanged: (PhoneNumber number) {
                               setState(() {
@@ -164,79 +192,70 @@ class _DebtorsViewState extends State<DebtorsView> {
                       height: 16.0,
                     ),
                     TextFormField(
+                      cursorColor: const Color.fromRGBO(0, 121, 107, 1),
                       decoration: const InputDecoration(
+                        hoverColor: Color.fromRGBO(0, 121, 107, 1),
+                        focusColor: Color.fromRGBO(0, 121, 107, 1),
                         labelText: "Address",
                         hintText: "Enter your address here",
                       ),
                       controller: _address,
                     ),
                     const SizedBox(height: 24.0),
-                    const Divider(),
-                    const SizedBox(height: 8.0),
                     const Text(
-                      "Ordered Items",
+                      "Select ordered items",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    _productsData != null
+                    const SizedBox(height: 8.0),
+                    _productsData != null && _productsData!.isNotEmpty
                         ? TextField(
+                            cursorColor: const Color.fromRGBO(0, 121, 107, 1),
                             controller: _searchController,
                             decoration: InputDecoration(
+                              hoverColor: const Color.fromRGBO(0, 121, 107, 1),
+                              focusColor: const Color.fromRGBO(0, 121, 107, 1),
+                              contentPadding: const EdgeInsets.all(0),
                               prefixIcon: const Icon(Icons.search),
                               hintText: 'Product name...',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
                                 borderSide:
-                                    const BorderSide(color: Colors.black38),
+                                    const BorderSide(color: Colors.black12),
                               ),
                             ),
                           )
                         : const Text("Add products to pick"),
-                    _productsData != null
-                        ? ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            itemCount: _productsData!.length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return Row(
-                                children: [
-                                  Expanded(
-                                    child: ListTile(
-                                      title: Text(_productsData![index]
-                                          ['product']['name']),
+                    _productsData != null && _productsData!.isNotEmpty
+                        ? const SizedBox(height: 16.0)
+                        : const SizedBox(),
+                    _productsData != null && _productsData!.isNotEmpty
+                        ? Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black12),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            height: 80,
+                            child: ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                itemCount: _productsData!.length,
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    title: Text(_productsData![index]['product']
+                                        ['name']),
+                                    trailing: IconButton(
+                                      icon: const Icon(Icons.add),
+                                      onPressed: () {
+                                        _incrementProduct(
+                                            product: _productsData![index]);
+                                      },
                                     ),
-                                  ),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: IconButton(
-                                          onPressed: () {},
-                                          icon: const Icon(Icons.add),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 16),
-                                      const Expanded(
-                                        child: Text(
-                                          '1',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: IconButton(
-                                          onPressed: () {},
-                                          icon: const Icon(Icons.remove),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              );
-                            })
+                                  );
+                                }),
+                          )
                         : const SizedBox(),
                   ],
                 ),
@@ -250,11 +269,27 @@ class _DebtorsViewState extends State<DebtorsView> {
                   _phoneNumber.clear();
                   Navigator.of(context).pop();
                 },
-                child: const Text("Cancel"),
+                child: const Text(
+                  "Cancel",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color.fromRGBO(0, 121, 107, 1),
+                  ),
+                ),
               ),
-              TextButton(
+              FilledButton(
                 onPressed: _addDebtor,
-                child: const Text("Add Debtor"),
+                style: const ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(
+                    Color.fromRGBO(0, 121, 107, 1),
+                  ),
+                ),
+                child: const Text(
+                  "Add Debtor",
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
               ),
             ],
           );
@@ -267,7 +302,7 @@ class _DebtorsViewState extends State<DebtorsView> {
     });
 
     try {
-      final currentWorkspace = await getCurrentWorkspace();
+      final currentWorkspace = await getCurrentWorkspaceId();
 
       final List<Map<String, dynamic>> products =
           await WorkspaceService().getProducts(workspaceId: currentWorkspace!);
@@ -275,6 +310,10 @@ class _DebtorsViewState extends State<DebtorsView> {
       setState(() {
         _productsData = products;
       });
+
+      for (var element in _productsData!) {
+        log(element.toString());
+      }
 
       setState(() {
         _isLoading = false;
@@ -318,5 +357,33 @@ class _DebtorsViewState extends State<DebtorsView> {
     setState(() {
       _isLoading = false;
     });
+  }
+
+  void _incrementProduct({required Map<String, dynamic> product}) {
+    log("incrementtttt");
+    log(product.keys.toString());
+    log(product['product'].toString());
+    bool isFound = false;
+    for (var element in _orderData) {
+      if (element.productId == product['product']['product_id']) {
+        isFound = true;
+        element.quantity = element.quantity + 1;
+      }
+    }
+
+    log(isFound.toString());
+
+    if (!isFound) {
+      _orderData.add(
+        CartItem(
+          productId: product['product']['product_id'],
+          price: product['product']['price'],
+          quantity: 1,
+          productName: product['product']['name'],
+        ),
+      );
+    }
+
+    log(_orderData.toString());
   }
 }

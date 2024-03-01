@@ -1,9 +1,17 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<String?> getCurrentWorkspace() async {
+Future<String?> getCurrentWorkspaceId() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  final String? currentWorkspace = prefs.getString('workspace');
+  final String? currentWorkspaceId = prefs.getString('workspaceId');
 
-  return currentWorkspace;
+  return currentWorkspaceId;
+}
+
+Future<String?> getCurrentWorkspaceName() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  final String? currentWorkspaceName = prefs.getString('workspaceName');
+
+  return currentWorkspaceName;
 }

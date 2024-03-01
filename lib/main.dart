@@ -15,6 +15,7 @@ import 'package:shinda_app/views/dashboard/reports_view.dart';
 import 'package:shinda_app/views/dashboard/sales_view.dart';
 import 'package:shinda_app/views/dashboard/settings_view.dart';
 import 'package:shinda_app/views/dashboard/users_view.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,10 +25,11 @@ void main() {
       create: (context) => NavigationProvider(),
       child: MaterialApp(
         title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
+        // theme: ThemeData(
+        //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        //   useMaterial3: true,
+        // ),
+        theme: _buildTheme(Brightness.light),
         home: const InitApp(),
         routes: {
           loginRoute: (context) => const LoginView(),
@@ -46,6 +48,17 @@ void main() {
         debugShowCheckedModeBanner: false,
       ),
     ),
+  );
+}
+
+ThemeData _buildTheme(brightness) {
+  var baseTheme = ThemeData(
+    brightness: brightness,
+  );
+
+  return baseTheme.copyWith(
+    textTheme: GoogleFonts.robotoCondensedTextTheme(baseTheme.textTheme),
+    colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
   );
 }
 
