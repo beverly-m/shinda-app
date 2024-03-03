@@ -432,11 +432,13 @@ class _InventoryViewState extends State<InventoryView> {
             ),
             FilledButton(
               onPressed: _addProduct,
+              style: const ButtonStyle(
+                  backgroundColor:
+                      MaterialStatePropertyAll(Color.fromRGBO(0, 121, 107, 1))),
               child: const Text(
                 "Add product",
                 style: TextStyle(
                   fontSize: 16,
-                  color: Color.fromRGBO(0, 121, 107, 1),
                 ),
               ),
             ),

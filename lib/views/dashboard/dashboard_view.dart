@@ -173,7 +173,9 @@ class _DashboardViewState extends State<DashboardView> {
                     ),
                   ),
                   const SizedBox(height: 24.0),
-                  _currentWorkspaceName != null
+                  _currentWorkspaceName != null &&
+                          _workspaceData != null &&
+                          _workspaceData!.isNotEmpty
                       ? Row(
                           children: [
                             InkWell(
