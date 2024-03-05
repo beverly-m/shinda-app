@@ -6,8 +6,10 @@ import 'package:supabase_flutter/supabase_flutter.dart' as supabase show User;
 class AuthUser {
   final bool isEmailVerified;
   final String id;
+  final String? email;
+  final String? fullName;
 
-  const AuthUser({required this.id, required this.isEmailVerified,});
+  const AuthUser({required this.email, required this.fullName, required this.id, required this.isEmailVerified,});
 
   // factory AuthUser.fromFirebase(firebase_auth.User user) => AuthUser(
   //       isEmailVerified: user.emailVerified,
@@ -16,5 +18,7 @@ class AuthUser {
   factory AuthUser.fromSupabase(supabase.User user) => AuthUser(
         isEmailVerified: user.emailConfirmedAt != null,
         id: user.id,
+        email: user.email,
+        fullName: user.userMetadata!["full_name"],
       );
 }

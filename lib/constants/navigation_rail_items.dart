@@ -1,49 +1,77 @@
 import 'package:flutter/material.dart';
+import 'package:shinda_app/constants/text_syles.dart';
 
 final List<NavigationRailDestination> navigationRailItems = [
   const NavigationRailDestination(
-    label: Text("DASHBOARD"),
+    label: Text(
+      "Dashboard",
+      style: body2,
+    ),
     icon: Icon(Icons.home_outlined),
     selectedIcon: Icon(Icons.home),
+    padding: EdgeInsets.symmetric(horizontal: 24.0),
   ),
   const NavigationRailDestination(
-    label: Text("TRANSACTIONS"),
-    icon: Icon(Icons.sell_outlined),
-    selectedIcon: Icon(Icons.sell),
+    label: Text(
+      "Transactions",
+      style: body2,
+    ),
+    icon: Icon(Icons.receipt_long_outlined),
+    selectedIcon: Icon(Icons.receipt_long),
+    padding: EdgeInsets.symmetric(horizontal: 24.0),
   ),
   const NavigationRailDestination(
-    label: Text("INVENTORY"),
+    label: Text(
+      "Inventory",
+      style: body2,
+    ),
     icon: Icon(Icons.inventory_2_outlined),
     selectedIcon: Icon(Icons.inventory),
+    padding: EdgeInsets.symmetric(horizontal: 24.0),
   ),
-  // const NavigationRailDestination(
-  //   label: Text("PRODUCTS"),
-  //   icon: Icon(Icons.shopping_cart_outlined),
-  //   selectedIcon: Icon(Icons.shopping_cart),
-  // ),
   const NavigationRailDestination(
-    label: Text("DEBTORS"),
+    label: Text(
+      "Debtors",
+      style: body2,
+    ),
     icon: Icon(Icons.monetization_on_outlined),
     selectedIcon: Icon(Icons.monetization_on),
+    padding: EdgeInsets.symmetric(horizontal: 24.0),
   ),
   const NavigationRailDestination(
-    label: Text("REPORTS"),
+    label: Text(
+      "Reports",
+      style: body2,
+    ),
     icon: Icon(Icons.auto_graph_outlined),
     selectedIcon: Icon(Icons.auto_graph),
+    padding: EdgeInsets.symmetric(horizontal: 24.0),
   ),
   const NavigationRailDestination(
-    label: Text("MANAGE WORKSPACE"),
+    label: Text(
+      "Management",
+      style: body2,
+    ),
     icon: Icon(Icons.person_4_outlined),
     selectedIcon: Icon(Icons.person_4),
+    padding: EdgeInsets.symmetric(horizontal: 24.0),
   ),
   const NavigationRailDestination(
-    label: Text("SETTINGS"),
+    label: Text(
+      "Settings",
+      style: body2,
+    ),
     icon: Icon(Icons.settings_outlined),
     selectedIcon: Icon(Icons.settings),
+    padding: EdgeInsets.symmetric(horizontal: 24.0),
   ),
   const NavigationRailDestination(
-    label: Text("LOGOUT"),
+    label: Text(
+      "Logout",
+      style: body2,
+    ),
     icon: Icon(Icons.logout_outlined),
     selectedIcon: Icon(Icons.logout),
+    padding: EdgeInsets.symmetric(horizontal: 24.0),
   ),
 ];
