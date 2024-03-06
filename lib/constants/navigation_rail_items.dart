@@ -2,6 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 
 final List<NavigationRailDestination> navigationRailItems = [
+  NavigationRailDestination(
+    label: const Text(
+      "",
+      style: body2,
+    ),
+    icon: Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16.0),
+        color: primary,
+      ),
+      child: const Icon(
+        Icons.add_card_outlined,
+        color: Colors.white,
+      ),
+    ),
+    selectedIcon: Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16.0),
+        color: primary,
+      ),
+      child: const Icon(
+        Icons.add_card,
+        color: Colors.white,
+      ),
+    ),
+    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+  ),
   const NavigationRailDestination(
     label: Text(
       "Dashboard",
