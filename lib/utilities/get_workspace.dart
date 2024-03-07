@@ -15,3 +15,11 @@ Future<String?> getCurrentWorkspaceName() async {
 
   return currentWorkspaceName;
 }
+
+Future<String?> getWorkspaceMember() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  final String? workspaceMember = prefs.getString('workspaceMember');
+
+  return workspaceMember;
+}

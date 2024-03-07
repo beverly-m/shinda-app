@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shinda_app/constants/drawer_views.dart';
 import 'package:shinda_app/constants/navigation_rail_items.dart';
 import 'package:shinda_app/constants/routes.dart';
@@ -8,8 +9,11 @@ import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/auth/auth_exceptions.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
 import 'package:shinda_app/services/auth/auth_user.dart';
+import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
 import 'package:shinda_app/views/dashboard/home_view.dart';
+import 'package:shinda_app/services/workspace/workspace_service.dart';
+import 'package:shinda_app/utilities/get_workspace.dart';
 
 class DesktopScaffold extends StatefulWidget {
   const DesktopScaffold({super.key});
@@ -19,15 +23,22 @@ class DesktopScaffold extends StatefulWidget {
 }
 
 class _DesktopScaffoldState extends State<DesktopScaffold> {
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  late final TextEditingController _workspaceName;
   int _selectedIndex = 0;
   bool _isLoading = false;
   AuthUser? _currentUser;
+  List<Map<String, dynamic>>? _workspaceData;
+  String? _currentWorkspace;
+  String? _currentWorkspaceName;
 
   @override
   void initState() {
     super.initState();
 
+    _workspaceName = TextEditingController();
     _getUser();
+    _getWorkspaceData();
   }
 
   void _getUser() {
@@ -43,187 +54,337 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
     });
   }
 
+  void _getWorkspaceData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final List<Map<String, dynamic>> workspaces =
+          await WorkspaceService().getWorkspaceData(
+        userId: AuthService.supabase().currentUser!.id,
+      );
+
+      final String? currentWorkspace = await getCurrentWorkspaceId();
+      final String? currentWorkspaceName = await getCurrentWorkspaceName();
+      final String? workspaceMember = await getWorkspaceMember();
+
+      setState(() {
+        _workspaceData = workspaces;
+      });
+
+      if (currentWorkspace != null &&
+          currentWorkspaceName != null &&
+          workspaceMember != null) {
+        if (workspaceMember == _currentUser!.id) {
+          setState(() {
+            _currentWorkspace = currentWorkspace;
+            _currentWorkspaceName = currentWorkspaceName;
+            _isLoading = false;
+          });
+        }
+      } else {
+        _selectWorkspace(
+          workspace: _workspaceData![0]['workspace_id'],
+          workspaceName: _workspaceData![0]['workspace']['name'],
+          workspaceMember: _currentUser!.id,
+        );
+        setState(() {
+          _currentWorkspace = _workspaceData![0]['workspace_id'];
+          _currentWorkspaceName = _workspaceData![0]['name'];
+          _isLoading = false;
+        });
+      }
+    } on GenericWorkspaceException {
+      log("Error occurred");
+      _isLoading = false;
+    } catch (e) {
+      log(e.toString());
+      _isLoading = false;
+    }
+  }
+
+  void _selectWorkspace({
+    required String workspace,
+    required String workspaceName,
+    required String workspaceMember,
+  }) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('workspaceId', workspace);
+    await prefs.setString('workspaceName', workspaceName);
+    await prefs.setString('workspaceMember', workspaceMember);
+
+    setState(() {
+      _currentWorkspace = workspace;
+      _currentWorkspaceName = workspaceName;
+    });
+  }
+
+  void _createWorkspace() async {
+    final isValid = _formKey.currentState?.validate();
+    final workspaceName = _workspaceName.text.trim();
+
+    if (isValid != null && isValid) {
+      _workspaceName.clear();
+
+      Navigator.of(context).pop();
+
+      setState(() {
+        _isLoading = true;
+      });
+
+      try {
+        await WorkspaceService().createWorkspace(
+          workspaceName: workspaceName,
+          creatorId: AuthService.supabase().currentUser!.id,
+        );
+        log("Workspace created!");
+
+        _getWorkspaceData();
+        setState(() {
+          _isLoading = false;
+        });
+      } on GenericWorkspaceException {
+        setState(() {
+          _isLoading = false;
+        });
+        if (context.mounted) {
+          showErrorDialog(context, "Some error occurred");
+        }
+      } catch (e) {
+        setState(() {
+          _isLoading = false;
+        });
+        if (context.mounted) {
+          showErrorDialog(context, e.toString());
+        }
+      }
+    }
+  }
+
+  _showWorkspaceMenu() async {
+    await showMenu(
+      context: context,
+      position: const RelativeRect.fromLTRB(200, 65, 225, 225),
+      items: List.generate(
+        _workspaceData!.length,
+        (index) => PopupMenuItem(
+          value: index,
+          child: Text(
+            _workspaceData![index]['workspace']['name'],
+            style: body2,
+          ),
+        ),
+      ),
+      elevation: 8.0,
+    ).then((value) {
+      if (value != null) {
+        log(value.toString());
+        _selectWorkspace(
+          workspace: _workspaceData![value]['workspace_id'],
+          workspaceName: _workspaceData![value]['workspace']['name'],
+          workspaceMember: _currentUser!.id,
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height,
-            decoration: const BoxDecoration(
-              border: Border(
-                right: BorderSide(
-                  color: surface3,
-                ),
+    return _isLoading
+        ? const Center(
+            child: Padding(
+              padding: EdgeInsets.all(48.0),
+              child: CircularProgressIndicator(
+                color: primary,
               ),
             ),
-            child: SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                    minHeight: MediaQuery.of(context).size.height),
-                child: IntrinsicHeight(
-                  child: NavigationRail(
-                    indicatorColor: surface3,
-                    selectedIndex: _selectedIndex,
-                    groupAlignment: 0.0,
-                    onDestinationSelected: (int index) async {
-                      if (index != (navigationRailItems.length - 1)) {
-                        setState(() {
-                          _selectedIndex = index;
-                        });
-                      } else {
-                        log("Logout");
-                        final isLogout = await showLogOutDialog(context);
-                        if (isLogout) {
-                          try {
-                            await AuthService.supabase().logOut();
-                            if (context.mounted) {
-                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                loginRoute,
-                                (_) => false,
-                              );
-                            }
-                          } on UserNotLoggedInAuthException {
-                            if (context.mounted) {
-                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                loginRoute,
-                                (_) => false,
-                              );
-                            }
-                          } on GenericAuthException {
-                            if (context.mounted) {
-                              await showErrorDialog(
-                                context,
-                                "An error occurred. Try again.",
-                              );
-                            }
-                          } catch (_) {
-                            if (context.mounted) {
-                              await showErrorDialog(
-                                context,
-                                "An error occurred. Try again.",
-                              );
-                            }
-                          }
-                        }
-                      }
-                    },
-                    labelType: NavigationRailLabelType.all,
-                    destinations: navigationRailItems,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-              child: Column(
-            children: [
-              Container(
-                decoration: const BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: surface3,
+          )
+        : Scaffold(
+            body: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height,
+                  decoration: const BoxDecoration(
+                    border: Border(
+                      right: BorderSide(
+                        color: surface3,
+                      ),
                     ),
                   ),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 32.0,
-                  vertical: 12.0,
-                ),
-                child: Row(
-                  children: [
-                    InkWell(
-                      onTap: () {},
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 4.0,
-                          horizontal: 8.0,
-                        ).copyWith(left: 12.0),
-                        decoration: BoxDecoration(
-                          color: surface1,
-                          border: const Border.fromBorderSide(
-                            BorderSide(color: surface3),
-                          ),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: const Row(
-                          children: [
-                            Text(
-                              "Example's workspace",
-                              style: body2,
-                            ),
-                            SizedBox(width: 8.0),
-                            Column(
-                              children: [
-                                Icon(
-                                  Icons.keyboard_arrow_up_outlined,
-                                  size: 16.0,
-                                ),
-                                Icon(
-                                  Icons.keyboard_arrow_down_outlined,
-                                  size: 16.0,
-                                ),
-                              ],
-                            )
-                          ],
+                  child: SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                          minHeight: MediaQuery.of(context).size.height),
+                      child: IntrinsicHeight(
+                        child: NavigationRail(
+                          indicatorColor: surface3,
+                          selectedIndex: _selectedIndex,
+                          groupAlignment: 0.0,
+                          onDestinationSelected: (int index) async {
+                            if (index != (navigationRailItems.length - 1)) {
+                              setState(() {
+                                _selectedIndex = index;
+                              });
+                            } else {
+                              log("Logout");
+                              final isLogout = await showLogOutDialog(context);
+                              if (isLogout) {
+                                try {
+                                  await AuthService.supabase().logOut();
+                                  if (context.mounted) {
+                                    Navigator.of(context)
+                                        .pushNamedAndRemoveUntil(
+                                      loginRoute,
+                                      (_) => false,
+                                    );
+                                  }
+                                } on UserNotLoggedInAuthException {
+                                  if (context.mounted) {
+                                    Navigator.of(context)
+                                        .pushNamedAndRemoveUntil(
+                                      loginRoute,
+                                      (_) => false,
+                                    );
+                                  }
+                                } on GenericAuthException {
+                                  if (context.mounted) {
+                                    await showErrorDialog(
+                                      context,
+                                      "An error occurred. Try again.",
+                                    );
+                                  }
+                                } catch (_) {
+                                  if (context.mounted) {
+                                    await showErrorDialog(
+                                      context,
+                                      "An error occurred. Try again.",
+                                    );
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          labelType: NavigationRailLabelType.all,
+                          destinations: navigationRailItems,
                         ),
                       ),
                     ),
-                    const Expanded(child: SizedBox()),
+                  ),
+                ),
+                Expanded(
+                    child: Column(
+                  children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 4.0,
-                        horizontal: 8.0,
-                      ).copyWith(left: 12.0),
-                      decoration: BoxDecoration(
-                        border: const Border.fromBorderSide(
-                          BorderSide(color: surface3),
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: surface3,
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32.0,
+                        vertical: 12.0,
                       ),
                       child: Row(
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                _isLoading
-                                    ? "Jane Doe"
-                                    : _currentUser!.fullName!,
-                                style: subtitle2,
+                          _currentWorkspaceName != null &&
+                                  _workspaceData != null &&
+                                  _workspaceData!.isNotEmpty
+                              ? InkWell(
+                                  onTap: () {
+                                    _showWorkspaceMenu();
+                                  },
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 4.0,
+                                      horizontal: 8.0,
+                                    ).copyWith(left: 12.0),
+                                    decoration: BoxDecoration(
+                                      color: surface1,
+                                      border: const Border.fromBorderSide(
+                                        BorderSide(color: surface3),
+                                      ),
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "$_currentWorkspaceName's workspace",
+                                          style: body2,
+                                        ),
+                                        const SizedBox(width: 8.0),
+                                        const Column(
+                                          children: [
+                                            Icon(
+                                              Icons.keyboard_arrow_up_outlined,
+                                              size: 16.0,
+                                            ),
+                                            Icon(
+                                              Icons
+                                                  .keyboard_arrow_down_outlined,
+                                              size: 16.0,
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox(),
+                          const Expanded(child: SizedBox()),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 4.0,
+                              horizontal: 8.0,
+                            ).copyWith(left: 12.0),
+                            decoration: BoxDecoration(
+                              border: const Border.fromBorderSide(
+                                BorderSide(color: surface3),
                               ),
-                              Text(
-                                _isLoading
-                                    ? "example@gmail.com"
-                                    : _currentUser!.email!,
-                                style: body2,
-                              ),
-                            ],
-                          ),
-                          const SizedBox(width: 8.0),
-                          const Icon(
-                            Icons.account_circle,
-                            size: 32,
-                            color: Colors.black54,
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: Row(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      _isLoading ? "" : _currentUser!.fullName!,
+                                      style: subtitle2,
+                                    ),
+                                    Text(
+                                      _isLoading ? "" : _currentUser!.email!,
+                                      style: body2,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(width: 8.0),
+                                const Icon(
+                                  Icons.account_circle,
+                                  size: 32,
+                                  color: Colors.black54,
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
                     ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: SizedBox(child: drawerViews[_selectedIndex]),
+                      ),
+                    ),
                   ],
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: SizedBox(child: drawerViews[_selectedIndex]),
-                ),
-              ),
-            ],
-          )),
-        ],
-      ),
-    );
+                )),
+              ],
+            ),
+          );
   }
 }
