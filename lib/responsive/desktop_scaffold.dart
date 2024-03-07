@@ -326,7 +326,10 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
                     ),
                     Expanded(
                       child: SingleChildScrollView(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 32.0,
+                          vertical: 24.0,
+                        ),
                         child: SizedBox(child: drawerViews[_selectedIndex]),
                       ),
                     ),
