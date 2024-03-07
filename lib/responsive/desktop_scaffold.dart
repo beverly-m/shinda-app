@@ -23,20 +23,15 @@ class DesktopScaffold extends StatefulWidget {
 }
 
 class _DesktopScaffoldState extends State<DesktopScaffold> {
-  final GlobalKey<FormState> _formKey = GlobalKey();
-  late final TextEditingController _workspaceName;
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
   bool _isLoading = false;
   AuthUser? _currentUser;
   List<Map<String, dynamic>>? _workspaceData;
-  String? _currentWorkspace;
   String? _currentWorkspaceName;
 
   @override
   void initState() {
     super.initState();
-
-    _workspaceName = TextEditingController();
     _getUser();
     _getWorkspaceData();
   }
@@ -78,7 +73,6 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
           workspaceMember != null) {
         if (workspaceMember == _currentUser!.id) {
           setState(() {
-            _currentWorkspace = currentWorkspace;
             _currentWorkspaceName = currentWorkspaceName;
             _isLoading = false;
           });
@@ -90,7 +84,6 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
           workspaceMember: _currentUser!.id,
         );
         setState(() {
-          _currentWorkspace = _workspaceData![0]['workspace_id'];
           _currentWorkspaceName = _workspaceData![0]['name'];
           _isLoading = false;
         });
@@ -116,51 +109,8 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
     await prefs.setString('workspaceMember', workspaceMember);
 
     setState(() {
-      _currentWorkspace = workspace;
       _currentWorkspaceName = workspaceName;
     });
-  }
-
-  void _createWorkspace() async {
-    final isValid = _formKey.currentState?.validate();
-    final workspaceName = _workspaceName.text.trim();
-
-    if (isValid != null && isValid) {
-      _workspaceName.clear();
-
-      Navigator.of(context).pop();
-
-      setState(() {
-        _isLoading = true;
-      });
-
-      try {
-        await WorkspaceService().createWorkspace(
-          workspaceName: workspaceName,
-          creatorId: AuthService.supabase().currentUser!.id,
-        );
-        log("Workspace created!");
-
-        _getWorkspaceData();
-        setState(() {
-          _isLoading = false;
-        });
-      } on GenericWorkspaceException {
-        setState(() {
-          _isLoading = false;
-        });
-        if (context.mounted) {
-          showErrorDialog(context, "Some error occurred");
-        }
-      } catch (e) {
-        setState(() {
-          _isLoading = false;
-        });
-        if (context.mounted) {
-          showErrorDialog(context, e.toString());
-        }
-      }
-    }
   }
 
   _showWorkspaceMenu() async {
@@ -229,7 +179,6 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
                                 _selectedIndex = index;
                               });
                             } else {
-                              log("Logout");
                               final isLogout = await showLogOutDialog(context);
                               if (isLogout) {
                                 try {
