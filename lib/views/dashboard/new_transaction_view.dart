@@ -340,10 +340,11 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                   style: dashboardHeadline,
                 ),
                 const SizedBox(height: 16.0),
-                Row(
-                  children: [
-                    _productsData != null && _productsData!.isNotEmpty
-                        ? Expanded(
+                _productsData != null && _productsData!.isNotEmpty
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
                             child: SingleChildScrollView(
                               child: SizedBox(
                                 height: MediaQuery.of(context).size.height,
@@ -476,48 +477,78 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                 ),
                               ),
                             ),
-                          )
-                        : Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(48.0),
+                          ),
+                          const SizedBox(width: 48.0),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.25,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: surface1),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(24.0),
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Icon(
-                                    Icons.inventory_2_outlined,
-                                    size: 200,
-                                    color: Color.fromRGBO(219, 240, 239, 1),
+                                  Text(
+                                    "Cart",
+                                    style: dashboardHeadings,
                                   ),
-                                  const SizedBox(height: 48.0),
-                                  const Text(
-                                    "Add a new product to get started",
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                  const SizedBox(height: 48.0),
-                                  FilledButton(
-                                    style: const ButtonStyle(
-                                      backgroundColor: MaterialStatePropertyAll(
-                                        Color.fromRGBO(0, 121, 107, 1),
-                                      ),
+                                  SizedBox(height: 24.0),
+                                  Center(
+                                    child: Icon(
+                                      Icons.shopping_cart_checkout_outlined,
+                                      size: 200,
+                                      color: Color.fromRGBO(219, 240, 239, 1),
                                     ),
-                                    onPressed: () async {
-                                      await _showAddProductDialog(context);
-                                    },
-                                    child: const Text(
-                                      "Add Product",
-                                      style: TextStyle(fontSize: 16.0),
+                                  ),
+                                  SizedBox(height: 24.0),
+                                  Center(
+                                    child: Text(
+                                      "Cart items shown here",
+                                      style: TextStyle(fontSize: 16),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
                           ),
-                    const SizedBox(width: 48.0),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.25,
-                      child: const Center(child: Text("Cart")),
-                    )
-                  ],
-                ),
+                        ],
+                      )
+                    : Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(48.0),
+                          child: Column(
+                            children: [
+                              const Icon(
+                                Icons.inventory_2_outlined,
+                                size: 200,
+                                color: Color.fromRGBO(219, 240, 239, 1),
+                              ),
+                              const SizedBox(height: 48.0),
+                              const Text(
+                                "Add a new product to get started",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              const SizedBox(height: 48.0),
+                              FilledButton(
+                                style: const ButtonStyle(
+                                  backgroundColor: MaterialStatePropertyAll(
+                                    Color.fromRGBO(0, 121, 107, 1),
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  await _showAddProductDialog(context);
+                                },
+                                child: const Text(
+                                  "Add Product",
+                                  style: TextStyle(fontSize: 16.0),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
               ],
             ),
           );
