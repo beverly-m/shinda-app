@@ -32,6 +32,14 @@ class _NewTransactionViewState extends State<NewTransactionView> {
       CurrencyTextInputFormatter(symbol: "RWF ", turnOffGrouping: true);
   late DataTableSource _productsDataSource;
 
+  final List<Map> myProducts = List.generate(
+    10,
+    (index) => {
+      "id": index,
+      "product": "Product $index",
+    },
+  ).toList();
+
   @override
   void initState() {
     super.initState();
@@ -336,74 +344,137 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                   children: [
                     _productsData != null && _productsData!.isNotEmpty
                         ? Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
+                            child: SingleChildScrollView(
+                              child: SizedBox(
+                                height: MediaQuery.of(context).size.height,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text(
-                                      "Products",
-                                      style: dashboardSubtitle,
-                                    ),
-                                    Expanded(
-                                      child: SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                      ),
-                                    ),
-                                    OutlinedAppButton(
-                                      onPressed: () async {
-                                        await _showAddProductDialog(context);
-                                      },
-                                      labelText: "New Product",
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 16.0),
-                                Card(
-                                  elevation: 0.0,
-                                  surfaceTintColor: Colors.white,
-                                  shape: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    borderSide:
-                                        const BorderSide(color: surface3),
-                                  ),
-                                  child: Container(
-                                    width: 200.0,
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                    Row(
                                       children: [
-                                        Container(
-                                          width: double.infinity,
-                                          height: 122.0,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
-                                            color: surface3,
+                                        const Text(
+                                          "Products",
+                                          style: dashboardSubtitle,
+                                        ),
+                                        Expanded(
+                                          child: SizedBox(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
                                           ),
                                         ),
-                                        const Text(
-                                          "Product",
-                                          style: body1,
-                                        ),
-                                        const SizedBox(height: 4.0),
-                                        const Text(
-                                          "RWF 10,000.00",
-                                          style: priceText,
+                                        OutlinedAppButton(
+                                          onPressed: () async {
+                                            await _showAddProductDialog(
+                                                context);
+                                          },
+                                          labelText: "New Product",
                                         ),
                                       ],
                                     ),
-                                  ),
+                                    const SizedBox(height: 16.0),
+                                    Expanded(
+                                      child: GridView.builder(
+                                        gridDelegate:
+                                            const SliverGridDelegateWithMaxCrossAxisExtent(
+                                          maxCrossAxisExtent: 216.0,
+                                          crossAxisSpacing: 16.0,
+                                          mainAxisSpacing: 16.0,
+                                          childAspectRatio: 0.675,
+                                        ),
+                                        itemCount: _productsData!.length,
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, index) {
+                                          return Card(
+                                            elevation: 0.0,
+                                            surfaceTintColor: Colors.white,
+                                            shape: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                              borderSide: const BorderSide(
+                                                  color: surface3),
+                                            ),
+                                            child: Container(
+                                              width: 200.0,
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: double.infinity,
+                                                    height: 122.0,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8.0),
+                                                      color: surface1,
+                                                    ),
+                                                    child: const Icon(
+                                                      Icons
+                                                          .shopping_bag_outlined,
+                                                      color: Colors.black12,
+                                                      size: 32.0,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 16.0),
+                                                  Text(
+                                                    _productsData![index]
+                                                        ["product"]['name'],
+                                                    style: body1,
+                                                  ),
+                                                  const SizedBox(height: 4.0),
+                                                  Text(
+                                                    "RWF ${_productsData![index]["product"]['price'].toStringAsFixed(2)}",
+                                                    style: priceText,
+                                                  ),
+                                                  const SizedBox(height: 8.0),
+                                                  Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .baseline,
+                                                    textBaseline:
+                                                        TextBaseline.alphabetic,
+                                                    children: [
+                                                      Text(
+                                                        "${_productsData![index]['quantity_available'].toString()} in stock",
+                                                        style: labelText,
+                                                      ),
+                                                      const Expanded(
+                                                          child: SizedBox()),
+                                                      IconButton(
+                                                        style: IconButton
+                                                            .styleFrom(
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          8.0)),
+                                                          side:
+                                                              const BorderSide(
+                                                                  color:
+                                                                      primary),
+                                                        ),
+                                                        onPressed: () {},
+                                                        icon: const Icon(
+                                                          Icons.add,
+                                                          size: 24.0,
+                                                          color: primary,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                PaginatedDataTable(
-                                  columns: productDataColumns,
-                                  source: _productsDataSource,
-                                  rowsPerPage: 10,
-                                  columnSpacing: 100,
-                                ),
-                              ],
+                              ),
                             ),
                           )
                         : Center(

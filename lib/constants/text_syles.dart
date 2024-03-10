@@ -40,6 +40,11 @@ const TextStyle priceText = TextStyle(
   color: Colors.black87,
 );
 
+const TextStyle labelText = TextStyle(
+  fontSize: 16,
+  color: primary,
+);
+
 const Color surface1 = Color.fromRGBO(241, 249, 249, 1);
 const Color surface3 = Color.fromRGBO(219, 240, 239, 1);
 const Color primary = Color.fromRGBO(0, 71, 63, 1);
