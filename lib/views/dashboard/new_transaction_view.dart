@@ -3,12 +3,14 @@ import 'dart:developer';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:shinda_app/components/buttons.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
 import 'package:shinda_app/utilities/get_workspace.dart';
 import 'package:shinda_app/utilities/product_data.dart';
+import 'package:shinda_app/utilities/providers/cart_provider.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
 
 class NewTransactionView extends StatefulWidget {
@@ -485,25 +487,40 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                               border: Border.all(color: surface1),
                               borderRadius: BorderRadius.circular(8.0),
                             ),
-                            child: const Padding(
-                              padding: EdgeInsets.all(24.0),
+                            child: Padding(
+                              padding: const EdgeInsets.all(24.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    "Cart",
-                                    style: dashboardHeadings,
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        "Cart",
+                                        style: dashboardHeadings,
+                                      ),
+                                      // Badge(
+                                      //   backgroundColor: primary,
+                                      //   textColor: Colors.white,
+                                      //   label: Consumer<CartProvider>(
+                                      //     builder: (context, value, child) {
+                                      //       return Text(
+                                      //         value.getCounter().toString()
+                                      //       );
+                                      //     },
+                                      //   ),
+                                      // ),
+                                    ],
                                   ),
-                                  SizedBox(height: 24.0),
-                                  Center(
+                                  const SizedBox(height: 24.0),
+                                  const Center(
                                     child: Icon(
                                       Icons.shopping_cart_checkout_outlined,
                                       size: 200,
                                       color: Color.fromRGBO(219, 240, 239, 1),
                                     ),
                                   ),
-                                  SizedBox(height: 24.0),
-                                  Center(
+                                  const SizedBox(height: 24.0),
+                                  const Center(
                                     child: Text(
                                       "Cart items shown here",
                                       style: TextStyle(fontSize: 16),

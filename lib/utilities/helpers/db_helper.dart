@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:shinda_app/database.dart';
+import 'package:shinda_app/database/database.dart';
 import 'package:shinda_app/utilities/models/cart_model.dart';
 
 class DBHelper {

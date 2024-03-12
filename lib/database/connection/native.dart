@@ -7,29 +7,8 @@ import 'package:path/path.dart' as p;
 import 'package:sqlite3/sqlite3.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
-part 'database.g.dart';
-
-class TransactionItems extends Table {
-  IntColumn get productId => integer()();
-  TextColumn get productName => text()();
-  RealColumn get initialPrice => real()();
-  RealColumn get productPrice => real()();
-  IntColumn get quantity => integer()();
-  TextColumn get unitTag => text().nullable()();
-  TextColumn get image => text().nullable()();
-}
-
-@DriftDatabase(tables: [TransactionItems])
-class MyDatabase extends _$MyDatabase {
-  MyDatabase() : super(_openConnection());
-  
-  @override
-  int get schemaVersion => 1;
-}
-
-LazyDatabase _openConnection() {
-  // the LazyDatabase util lets us find the right location for the file async.
-  return LazyDatabase(() async {
+DatabaseConnection openConnection() {
+  return DatabaseConnection.delayed(Future(() async {
     // put the database file, called db.sqlite here, into the documents folder
     // for your app.
     final dbHolder = await getApplicationDocumentsDirectory();
@@ -46,6 +25,6 @@ LazyDatabase _openConnection() {
 
     sqlite3.tempDirectory = cachebase;
 
-    return NativeDatabase.createInBackground(file);
-  });
+    return NativeDatabase.createBackgroundConnection(file);
+  }));
 }
