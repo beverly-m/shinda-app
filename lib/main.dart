@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shinda_app/constants/routes.dart';
-import 'package:shinda_app/database.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
-import 'package:shinda_app/utilities/navigation_provider.dart';
+import 'package:shinda_app/utilities/providers/navigation_provider.dart';
 import 'package:shinda_app/views/dashboard/dashboard_view.dart';
 import 'package:shinda_app/views/dashboard/debtors_view.dart';
 import 'package:shinda_app/views/dashboard/home_view.dart';
