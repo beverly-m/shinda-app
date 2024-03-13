@@ -9,6 +9,8 @@ import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
 import 'package:shinda_app/utilities/get_workspace.dart';
+import 'package:shinda_app/utilities/helpers/db_helper.dart';
+import 'package:shinda_app/utilities/models/cart_model.dart';
 import 'package:shinda_app/utilities/product_data.dart';
 import 'package:shinda_app/utilities/providers/cart_provider.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
@@ -33,6 +35,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
   final CurrencyTextInputFormatter _formatter =
       CurrencyTextInputFormatter(symbol: "RWF ", turnOffGrouping: true);
   late DataTableSource _productsDataSource;
+  DBHelper? dbHelper = DBHelper();
 
   final List<Map> myProducts = List.generate(
     10,
@@ -52,6 +55,8 @@ class _NewTransactionViewState extends State<NewTransactionView> {
     _quantity = TextEditingController();
     _expirationDate = TextEditingController();
     _reorderLevel = TextEditingController();
+
+    context.read<CartProvider>().getData();
 
     _getProductData();
   }
@@ -323,6 +328,8 @@ class _NewTransactionViewState extends State<NewTransactionView> {
 
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<CartProvider>(context);
+
     return _isLoading
         ? const Center(
             child: Padding(
@@ -349,7 +356,8 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                           Expanded(
                             child: SingleChildScrollView(
                               child: SizedBox(
-                                height: MediaQuery.of(context).size.height,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.8,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -383,7 +391,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                           maxCrossAxisExtent: 216.0,
                                           crossAxisSpacing: 16.0,
                                           mainAxisSpacing: 16.0,
-                                          childAspectRatio: 0.675,
+                                          childAspectRatio: 0.65,
                                         ),
                                         itemCount: _productsData!.length,
                                         shrinkWrap: true,
@@ -481,52 +489,230 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                             ),
                           ),
                           const SizedBox(width: 48.0),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.25,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: surface1),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(24.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Text(
-                                        "Cart",
-                                        style: dashboardHeadings,
+                          Expanded(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.2,
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: surface1),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(24.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const Text(
+                                          "Cart",
+                                          style: dashboardHeadings,
+                                        ),
+                                        const SizedBox(width: 8.0),
+                                        Badge(
+                                          backgroundColor: primary,
+                                          textColor: Colors.white,
+                                          label: Consumer<CartProvider>(
+                                            builder: (context, value, child) {
+                                              return Text(value
+                                                  .getCounter()
+                                                  .toString());
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 24.0),
+                                    Expanded(
+                                      child: Column(
+                                        children: [
+                                          Expanded(
+                                            child: Consumer<CartProvider>(
+                                              builder:
+                                                  (context, provider, widget) {
+                                                return provider.cart.isEmpty
+                                                    ? const Column(
+                                                        children: [
+                                                          Center(
+                                                            child: Icon(
+                                                              Icons
+                                                                  .shopping_cart_checkout_outlined,
+                                                              size: 200,
+                                                              color: Color
+                                                                  .fromRGBO(
+                                                                      219,
+                                                                      240,
+                                                                      239,
+                                                                      1),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                              height: 24.0),
+                                                          Center(
+                                                            child: Text(
+                                                              "Cart items shown here",
+                                                              style: TextStyle(
+                                                                  fontSize: 16),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    : ListView.builder(
+                                                        shrinkWrap: true,
+                                                        itemCount: provider
+                                                            .cart.length,
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          return Card(
+                                                            color: surface1,
+                                                            shape:
+                                                                RoundedRectangleBorder(
+                                                              side: const BorderSide(
+                                                                  color:
+                                                                      surface3),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          8.0),
+                                                            ),
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child: Row(
+                                                                children: [
+                                                                  Container(
+                                                                    width: 48.0,
+                                                                    height:
+                                                                        48.0,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              8.0),
+                                                                      color:
+                                                                          surface1,
+                                                                    ),
+                                                                    child:
+                                                                        const Icon(
+                                                                      Icons
+                                                                          .shopping_bag_outlined,
+                                                                      color: Colors
+                                                                          .black12,
+                                                                      size:
+                                                                          24.0,
+                                                                    ),
+                                                                  ),
+                                                                  Column(
+                                                                    children: [
+                                                                      Text(
+                                                                        provider
+                                                                            .cart[index]
+                                                                            .productName,
+                                                                        style:
+                                                                            body1,
+                                                                      ),
+                                                                      const Expanded(
+                                                                          child:
+                                                                              SizedBox()),
+                                                                      Text(
+                                                                        "RWF ${provider.cart[index].productPrice}",
+                                                                        style: body2.copyWith(
+                                                                            color:
+                                                                                neutral4),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  const Expanded(
+                                                                      child:
+                                                                          SizedBox()),
+                                                                  ValueListenableBuilder<
+                                                                      int>(
+                                                                    valueListenable: provider
+                                                                        .cart[
+                                                                            index]
+                                                                        .quantity,
+                                                                    builder: (context,
+                                                                        value,
+                                                                        child) {
+                                                                      return PlusMinusButtons(
+                                                                        addQuantity:
+                                                                            () {
+                                                                          cart.addQuantity(provider
+                                                                              .cart[index]
+                                                                              .productId);
+                                                                          dbHelper!
+                                                                              .updateQuantity(Cart(
+                                                                            id: index,
+                                                                            productId:
+                                                                                provider.cart[index].productId,
+                                                                            productName:
+                                                                                provider.cart[index].productName,
+                                                                            initialPrice:
+                                                                                provider.cart[index].initialPrice,
+                                                                            productPrice:
+                                                                                provider.cart[index].productPrice,
+                                                                            quantity:
+                                                                                ValueNotifier(provider.cart[index].quantity.value),
+                                                                          ))
+                                                                              .then((value) {
+                                                                            setState(() {
+                                                                              cart.addTotalPrice(double.parse(provider.cart[index].productPrice.toString()));
+                                                                            });
+                                                                          });
+                                                                        },
+                                                                        deleteQuantity:
+                                                                            () {
+                                                                          cart.deleteQuantity(provider
+                                                                              .cart[index]
+                                                                              .productId);
+                                                                        },
+                                                                        text: value
+                                                                            .toString(),
+                                                                      );
+                                                                    },
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                      );
+                                              },
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      // Badge(
-                                      //   backgroundColor: primary,
-                                      //   textColor: Colors.white,
-                                      //   label: Consumer<CartProvider>(
-                                      //     builder: (context, value, child) {
-                                      //       return Text(
-                                      //         value.getCounter().toString()
-                                      //       );
-                                      //     },
-                                      //   ),
-                                      // ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 24.0),
-                                  const Center(
-                                    child: Icon(
-                                      Icons.shopping_cart_checkout_outlined,
-                                      size: 200,
-                                      color: Color.fromRGBO(219, 240, 239, 1),
                                     ),
-                                  ),
-                                  const SizedBox(height: 24.0),
-                                  const Center(
-                                    child: Text(
-                                      "Cart items shown here",
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                ],
+                                    Consumer<CartProvider>(
+                                      builder: (BuildContext context, value,
+                                          Widget? child) {
+                                        final ValueNotifier<double?>
+                                            totalPrice = ValueNotifier(null);
+                                        for (var element in value.cart) {
+                                          totalPrice.value =
+                                              (element.productPrice *
+                                                      element.quantity.value) +
+                                                  (totalPrice.value ?? 0);
+                                        }
+                                        return Column(
+                                          children: [
+                                            ValueListenableBuilder<double?>(
+                                                valueListenable: totalPrice,
+                                                builder: (context, val, child) {
+                                                  return ReusableWidget(
+                                                      title: 'Sub-Total',
+                                                      value: r'RWF ' +
+                                                          (val?.toStringAsFixed(
+                                                                  2) ??
+                                                              '0'));
+                                                }),
+                                          ],
+                                        );
+                                      },
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -569,5 +755,76 @@ class _NewTransactionViewState extends State<NewTransactionView> {
               ],
             ),
           );
+  }
+}
+
+class PlusMinusButtons extends StatelessWidget {
+  final VoidCallback deleteQuantity;
+  final VoidCallback addQuantity;
+  final String text;
+  const PlusMinusButtons(
+      {Key? key,
+      required this.addQuantity,
+      required this.deleteQuantity,
+      required this.text})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: neutral3),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          IconButton.filled(
+            onPressed: addQuantity,
+            icon: const Icon(Icons.add),
+          ),
+          const SizedBox(width: 16.0),
+          Container(
+            width: 32.0,
+            height: 32.0,
+            decoration: BoxDecoration(
+              border: Border.all(color: neutral4),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Text(text),
+          ),
+          const SizedBox(width: 16.0),
+          IconButton.filled(
+            onPressed: deleteQuantity,
+            icon: const Icon(Icons.remove),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ReusableWidget extends StatelessWidget {
+  final String title, value;
+  const ReusableWidget({Key? key, required this.title, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: Theme.of(context).textTheme.subtitle1,
+          ),
+          Text(
+            value.toString(),
+            style: Theme.of(context).textTheme.subtitle2,
+          ),
+        ],
+      ),
+    );
   }
 }

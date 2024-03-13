@@ -54,3 +54,5 @@ const TextStyle labelText = TextStyle(
 const Color surface1 = Color.fromRGBO(241, 249, 249, 1);
 const Color surface3 = Color.fromRGBO(219, 240, 239, 1);
 const Color primary = Color.fromRGBO(0, 71, 63, 1);
+const Color neutral4 = Color.fromRGBO(77, 77, 102, 1);
+const Color neutral3 = Color.fromRGBO(197, 197, 211, 1);
