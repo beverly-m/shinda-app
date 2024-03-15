@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Cart {
-  late final int? id;
+  // late final int? id;
   final int productId;
   final String productName;
   final double initialPrice;
@@ -11,7 +11,7 @@ class Cart {
   final String? image;
 
   Cart({
-    required this.id,
+    // required this.id,
     required this.productId,
     required this.productName,
     required this.initialPrice,
@@ -22,7 +22,8 @@ class Cart {
   });
 
   Cart.fromMap(Map<dynamic, dynamic> data)
-      : id = data['id'],
+      : 
+      // id = data['id'],
         productId = data['productId'],
         productName = data['productName'],
         initialPrice = data['initialPrice'],
@@ -33,7 +34,7 @@ class Cart {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
+      // 'id': id,
       'productId': productId,
       'productName': productName,
       'initialPrice': initialPrice,

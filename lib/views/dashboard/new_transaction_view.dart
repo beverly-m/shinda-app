@@ -9,6 +9,7 @@ import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
 import 'package:shinda_app/utilities/get_workspace.dart';
+import 'package:shinda_app/utilities/helpers/add_to_cart.dart';
 import 'package:shinda_app/utilities/helpers/db_helper.dart';
 import 'package:shinda_app/utilities/models/cart_model.dart';
 import 'package:shinda_app/utilities/product_data.dart';
@@ -467,7 +468,15 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                   color:
                                                                       primary),
                                                         ),
-                                                        onPressed: () {},
+                                                        onPressed: () {
+                                                          saveData(
+                                                            data:
+                                                                _productsData![
+                                                                    index],
+                                                            cartProvider: cart,
+                                                            dbHelper: dbHelper,
+                                                          );
+                                                        },
                                                         icon: const Icon(
                                                           Icons.add,
                                                           size: 24.0,
@@ -580,6 +589,9 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                   const EdgeInsets
                                                                       .all(8.0),
                                                               child: Row(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
                                                                 children: [
                                                                   Container(
                                                                     width: 48.0,
@@ -604,6 +616,9 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                     ),
                                                                   ),
                                                                   Column(
+                                                                    mainAxisSize:
+                                                                        MainAxisSize
+                                                                            .min,
                                                                     children: [
                                                                       Text(
                                                                         provider
@@ -612,7 +627,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                         style:
                                                                             body1,
                                                                       ),
-                                                                      const Expanded(
+                                                                      const Flexible(
                                                                           child:
                                                                               SizedBox()),
                                                                       Text(
@@ -643,7 +658,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                               .productId);
                                                                           dbHelper!
                                                                               .updateQuantity(Cart(
-                                                                            id: index,
+                                                                            // id: index,
                                                                             productId:
                                                                                 provider.cart[index].productId,
                                                                             productName:

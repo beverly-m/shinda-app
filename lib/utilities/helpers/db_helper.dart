@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:drift/drift.dart';
 import 'package:shinda_app/database/database.dart';
 import 'package:shinda_app/utilities/models/cart_model.dart';
@@ -40,7 +42,10 @@ class DBHelper {
     List<TransactionItem> queryResult =
         await dbClient.select(dbClient.transactionItems).get();
 
-    return queryResult.map((result) => Cart.fromMap(result as Map)).toList();
+    return queryResult.map((result) {
+      Map<dynamic, dynamic> data = result.toJson();
+      return Cart.fromMap(data);
+    }).toList();
   }
 
   // update quantity
