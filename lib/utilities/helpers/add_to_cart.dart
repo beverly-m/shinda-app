@@ -22,7 +22,7 @@ void saveData(
       productName: data["product"]["name"],
       initialPrice: data["product"]['price'],
       productPrice: data["product"]['price'],
-      quantity: ValueNotifier<int>(data['quantity']),
+      quantity: ValueNotifier<int>(1),
     ),
   )
       .then((value) {

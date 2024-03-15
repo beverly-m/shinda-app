@@ -573,6 +573,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                         itemBuilder:
                                                             (context, index) {
                                                           return Card(
+                                                            elevation: 0,
                                                             color: surface1,
                                                             shape:
                                                                 RoundedRectangleBorder(
@@ -619,6 +620,9 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                     mainAxisSize:
                                                                         MainAxisSize
                                                                             .min,
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
                                                                     children: [
                                                                       Text(
                                                                         provider
@@ -686,7 +690,22 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                             .toString(),
                                                                       );
                                                                     },
-                                                                  )
+                                                                  ),
+                                                                  IconButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        dbHelper!.deleteCartItem(provider
+                                                                            .cart[index]
+                                                                            .productId);
+                                                                        provider.removeItem(provider
+                                                                            .cart[index]
+                                                                            .productId);
+                                                                        provider
+                                                                            .removeCounter();
+                                                                      },
+                                                                      icon: const Icon(
+                                                                          Icons
+                                                                              .delete_outline),)
                                                                 ],
                                                               ),
                                                             ),
@@ -794,22 +813,27 @@ class PlusMinusButtons extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
-          IconButton.filled(
+          IconButton(
             onPressed: addQuantity,
             icon: const Icon(Icons.add),
           ),
-          const SizedBox(width: 16.0),
+          const SizedBox(width: 12.0),
           Container(
-            width: 32.0,
-            height: 32.0,
+            width: 56.0,
+            height: 40.0,
+            alignment: Alignment.center,
             decoration: BoxDecoration(
               border: Border.all(color: neutral4),
               borderRadius: BorderRadius.circular(8.0),
             ),
-            child: Text(text),
+            child: Text(
+              text,
+              style: subtitle2,
+              textAlign: TextAlign.center,
+            ),
           ),
-          const SizedBox(width: 16.0),
-          IconButton.filled(
+          const SizedBox(width: 12.0),
+          IconButton(
             onPressed: deleteQuantity,
             icon: const Icon(Icons.remove),
           ),
