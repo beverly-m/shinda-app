@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shinda_app/utilities/helpers/db_helper.dart';
@@ -21,6 +23,32 @@ class CartProvider with ChangeNotifier {
     cart = await dbHelper.getCartList();
     notifyListeners();
     return cart;
+  }
+
+  Future<void> saveData({required Map<String, dynamic> data}) async {
+    final index = cart.indexWhere(
+        (element) => element.productId == data["product"]["product_id"]);
+
+    log("isFound: $index");
+
+    if (index == -1) {
+      await dbHelper.insert(
+        Cart(
+          productId: data["product"]["product_id"],
+          productName: data["product"]["name"],
+          initialPrice: data["product"]['price'],
+          productPrice: data["product"]['price'],
+          quantity: ValueNotifier<int>(1),
+        ),
+      );
+      await getData();
+      addTotalPrice(data["product"]['price']);
+      addCounter();
+      notifyListeners();
+    } else {
+      addQuantity(data["product"]["product_id"]);
+      notifyListeners();
+    }
   }
 
   void _setPrefsItems() async {
@@ -55,14 +83,18 @@ class CartProvider with ChangeNotifier {
     return _counter;
   }
 
-  void addQuantity(int productId) {
+  void addQuantity(int productId) async {
     final index = cart.indexWhere((element) => element.productId == productId);
     cart[index].quantity.value = cart[index].quantity.value + 1;
+    await dbHelper.updateQuantity(
+      productId: productId,
+      quantity: cart[index].quantity.value,
+    );
     _setPrefsItems();
     notifyListeners();
   }
 
-  void deleteQuantity(int productId) {
+  void deleteQuantity(int productId) async {
     final index = cart.indexWhere((element) => element.productId == productId);
     final currentQuantity = cart[index].quantity.value;
 
@@ -70,6 +102,10 @@ class CartProvider with ChangeNotifier {
       currentQuantity == 1;
     } else {
       cart[index].quantity.value = currentQuantity - 1;
+      await dbHelper.updateQuantity(
+        productId: productId,
+        quantity: cart[index].quantity.value,
+      );
     }
 
     _setPrefsItems();
@@ -80,7 +116,7 @@ class CartProvider with ChangeNotifier {
     final index = cart.indexWhere((element) => element.productId == productId);
     cart.removeAt(index);
     _setPrefsItems();
-    notifyListeners(); 
+    notifyListeners();
   }
 
   int getQuantity(int quantity) {

@@ -12,7 +12,6 @@ import 'package:shinda_app/utilities/get_workspace.dart';
 import 'package:shinda_app/utilities/helpers/add_to_cart.dart';
 import 'package:shinda_app/utilities/helpers/db_helper.dart';
 import 'package:shinda_app/utilities/models/cart_model.dart';
-import 'package:shinda_app/utilities/product_data.dart';
 import 'package:shinda_app/utilities/providers/cart_provider.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
 
@@ -35,8 +34,8 @@ class _NewTransactionViewState extends State<NewTransactionView> {
   late final TextEditingController _reorderLevel;
   final CurrencyTextInputFormatter _formatter =
       CurrencyTextInputFormatter(symbol: "RWF ", turnOffGrouping: true);
-  late DataTableSource _productsDataSource;
   DBHelper? dbHelper = DBHelper();
+  final cartItems = [];
 
   final List<Map> myProducts = List.generate(
     10,
@@ -310,9 +309,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
       });
 
       if (_productsData != null) {
-        setState(() {
-          _productsDataSource = ProductData(data: _productsData!);
-        });
+        setState(() {});
       }
 
       setState(() {
@@ -468,14 +465,11 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                   color:
                                                                       primary),
                                                         ),
-                                                        onPressed: () {
-                                                          saveData(
-                                                            data:
-                                                                _productsData![
-                                                                    index],
-                                                            cartProvider: cart,
-                                                            dbHelper: dbHelper,
-                                                          );
+                                                        onPressed: () async {
+                                                          await cart.saveData(
+                                                              data:
+                                                                  _productsData![
+                                                                      index]);
                                                         },
                                                         icon: const Icon(
                                                           Icons.add,
@@ -660,25 +654,20 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                           cart.addQuantity(provider
                                                                               .cart[index]
                                                                               .productId);
-                                                                          dbHelper!
-                                                                              .updateQuantity(Cart(
-                                                                            // id: index,
-                                                                            productId:
-                                                                                provider.cart[index].productId,
-                                                                            productName:
-                                                                                provider.cart[index].productName,
-                                                                            initialPrice:
-                                                                                provider.cart[index].initialPrice,
-                                                                            productPrice:
-                                                                                provider.cart[index].productPrice,
-                                                                            quantity:
-                                                                                ValueNotifier(provider.cart[index].quantity.value),
-                                                                          ))
-                                                                              .then((value) {
-                                                                            setState(() {
-                                                                              cart.addTotalPrice(double.parse(provider.cart[index].productPrice.toString()));
-                                                                            });
+                                                                          // dbHelper!
+                                                                          //     .updateQuantity(
+                                                                          //   // id: index,
+                                                                          //   productId:
+                                                                          //       provider.cart[index].productId,
+                                                                          //   quantity:
+                                                                          //       provider.cart[index].quantity.value,
+                                                                          // )
+                                                                          //     .then((value) {
+                                                                          setState(
+                                                                              () {
+                                                                            cart.addTotalPrice(double.parse(provider.cart[index].productPrice.toString()));
                                                                           });
+                                                                          // });
                                                                         },
                                                                         deleteQuantity:
                                                                             () {
@@ -692,20 +681,23 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                     },
                                                                   ),
                                                                   IconButton(
-                                                                      onPressed:
-                                                                          () {
-                                                                        dbHelper!.deleteCartItem(provider
-                                                                            .cart[index]
-                                                                            .productId);
-                                                                        provider.removeItem(provider
-                                                                            .cart[index]
-                                                                            .productId);
-                                                                        provider
-                                                                            .removeCounter();
-                                                                      },
-                                                                      icon: const Icon(
-                                                                          Icons
-                                                                              .delete_outline),)
+                                                                    onPressed:
+                                                                        () {
+                                                                      dbHelper!.deleteCartItem(provider
+                                                                          .cart[
+                                                                              index]
+                                                                          .productId);
+                                                                      provider.removeItem(provider
+                                                                          .cart[
+                                                                              index]
+                                                                          .productId);
+                                                                      provider
+                                                                          .removeCounter();
+                                                                    },
+                                                                    icon: const Icon(
+                                                                        Icons
+                                                                            .delete_outline),
+                                                                  )
                                                                 ],
                                                               ),
                                                             ),

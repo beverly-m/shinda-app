@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:drift/drift.dart';
 import 'package:shinda_app/database/database.dart';
@@ -49,13 +48,13 @@ class DBHelper {
   }
 
   // update quantity
-  Future updateQuantity(Cart cart) {
+  Future updateQuantity({required int productId, required int quantity,}) {
     MyDatabase dbClient = database;
 
     return (dbClient.update(dbClient.transactionItems)
-          ..where((tbl) => tbl.productId.equals(cart.productId)))
+          ..where((tbl) => tbl.productId.equals(productId)))
         .write(TransactionItemsCompanion(
-      quantity: Value(cart.quantity.value),
+      quantity: Value(quantity),
     ));
   }
 
