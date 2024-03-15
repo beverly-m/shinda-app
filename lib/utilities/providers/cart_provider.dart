@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,8 +27,6 @@ class CartProvider with ChangeNotifier {
   Future<void> saveData({required Map<String, dynamic> data}) async {
     final index = cart.indexWhere(
         (element) => element.productId == data["product"]["product_id"]);
-
-    log("isFound: $index");
 
     if (index == -1) {
       await dbHelper.insert(

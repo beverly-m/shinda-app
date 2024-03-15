@@ -9,9 +9,7 @@ import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
 import 'package:shinda_app/utilities/get_workspace.dart';
-import 'package:shinda_app/utilities/helpers/add_to_cart.dart';
 import 'package:shinda_app/utilities/helpers/db_helper.dart';
-import 'package:shinda_app/utilities/models/cart_model.dart';
 import 'package:shinda_app/utilities/providers/cart_provider.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
 
@@ -431,7 +429,10 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                   Text(
                                                     _productsData![index]
                                                         ["product"]['name'],
-                                                    style: body1,
+                                                    style: body1.copyWith(
+                                                        overflow: TextOverflow
+                                                            .ellipsis),
+                                                    maxLines: 1,
                                                   ),
                                                   const SizedBox(height: 4.0),
                                                   Text(

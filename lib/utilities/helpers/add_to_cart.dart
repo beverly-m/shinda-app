@@ -9,12 +9,6 @@ void saveData(
     {required Map<String, dynamic> data,
     required CartProvider cartProvider,
     required DBHelper? dbHelper}) {
-  // data.forEach(
-  //   (key, value) {
-  //     log("$key: ${value.toString()}");
-  //   },
-  // );
-  log(data.keys.toString());
   dbHelper!
       .insert(
     Cart(
