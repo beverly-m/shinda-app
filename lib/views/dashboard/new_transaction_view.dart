@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 import 'package:shinda_app/components/buttons.dart';
 import 'package:shinda_app/constants/text_syles.dart';
@@ -24,7 +25,10 @@ class NewTransactionView extends StatefulWidget {
 class _NewTransactionViewState extends State<NewTransactionView> {
   bool _isLoading = false;
   List<Map<String, dynamic>>? _productsData;
+  String _phoneNumberWithCode = "";
+  PhoneNumber number = PhoneNumber(isoCode: 'RW');
   final GlobalKey<FormState> _formKey = GlobalKey();
+  final GlobalKey<FormState> _formKey2 = GlobalKey();
   late final TextEditingController _productName;
   late final TextEditingController _description;
   late final TextEditingController _price;
@@ -32,6 +36,9 @@ class _NewTransactionViewState extends State<NewTransactionView> {
   late final TextEditingController _expirationDate;
   late final TextEditingController _reorderLevel;
   late final TextEditingController _paymentModeController;
+  late final TextEditingController _clientName;
+  late final TextEditingController _phoneNumber;
+  late final TextEditingController _address;
   PaymentModeLabel? selectedPaymentMode;
   final CurrencyTextInputFormatter _formatter =
       CurrencyTextInputFormatter(symbol: "RWF ", turnOffGrouping: true);
@@ -58,6 +65,9 @@ class _NewTransactionViewState extends State<NewTransactionView> {
     _expirationDate = TextEditingController();
     _reorderLevel = TextEditingController();
     _paymentModeController = TextEditingController();
+    _clientName = TextEditingController();
+    _phoneNumber = TextEditingController();
+    _address = TextEditingController();
 
     context.read<CartProvider>().getData();
 
@@ -72,6 +82,10 @@ class _NewTransactionViewState extends State<NewTransactionView> {
     _quantity.dispose();
     _expirationDate.dispose();
     _reorderLevel.dispose();
+    _address.dispose();
+    _clientName.dispose();
+    _phoneNumber.dispose();
+    _paymentModeController.dispose();
 
     super.dispose();
   }
@@ -326,6 +340,149 @@ class _NewTransactionViewState extends State<NewTransactionView> {
       log(e.toString());
       _isLoading = false;
     }
+  }
+
+  Future<void> _showAddCreditPurchaseDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: surface1,
+          shape: OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          scrollable: true,
+          title: const Text("Credit Purchase Details"),
+          contentPadding: const EdgeInsets.all(24.0),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.4,
+            child: Form(
+              key: _formKey2,
+              child: Column(
+                children: [
+                  TextFormField(
+                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
+                    decoration: const InputDecoration(
+                      hoverColor: Color.fromRGBO(0, 121, 107, 1),
+                      focusColor: Color.fromRGBO(0, 121, 107, 1),
+                      labelText: "Client Name",
+                      hintText: "Enter the name of the client",
+                    ),
+                    controller: _clientName,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Client name required';
+                      } else if (value.length < 3) {
+                        return "At least 3 characters";
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16.0),
+                  InternationalPhoneNumberInput(
+                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
+                    initialValue: number,
+                    onInputChanged: (PhoneNumber number) {
+                      setState(() {
+                        _phoneNumberWithCode = number.phoneNumber!;
+                      });
+                      log(_phoneNumberWithCode);
+                    },
+                    onInputValidated: (bool value) {
+                      log(value.toString());
+                    },
+                    selectorConfig: const SelectorConfig(
+                        selectorType: PhoneInputSelectorType.DROPDOWN),
+                    ignoreBlank: false,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      signed: true,
+                      decimal: true,
+                    ),
+                    textFieldController: _phoneNumber,
+                  ),
+                  const SizedBox(height: 16.0),
+                  TextFormField(
+                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
+                    decoration: const InputDecoration(
+                      hoverColor: Color.fromRGBO(0, 121, 107, 1),
+                      focusColor: Color.fromRGBO(0, 121, 107, 1),
+                      labelText: "Address",
+                      hintText: "Enter your address here",
+                    ),
+                    controller: _address,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                _clientName.clear();
+                _address.clear();
+                _phoneNumber.clear();
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                "Cancel",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Color.fromRGBO(0, 121, 107, 1),
+                ),
+              ),
+            ),
+            FilledButton(
+              onPressed: _addDebtor,
+              style: const ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll(
+                  Color.fromRGBO(0, 121, 107, 1),
+                ),
+              ),
+              child: const Text(
+                "Add Debtor",
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _addDebtor() async {
+    final isValid = _formKey2.currentState?.validate();
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    log("${_clientName.text}, ${_address.text}, ${_phoneNumber.text}");
+
+    if (isValid != null && isValid) {
+      Navigator.of(context).pop();
+
+      final clientName = _clientName.text.trim();
+      final address = _address.text.trim();
+      final phoneNumber = _phoneNumberWithCode;
+
+      _clientName.clear();
+      _address.clear();
+      _phoneNumber.clear();
+
+      log("$clientName, $address, $phoneNumber");
+
+      setState(() {
+        _isLoading = false;
+      });
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -809,7 +966,10 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                 children: [
                                                                   OutlinedButton(
                                                                     onPressed:
-                                                                        () {},
+                                                                        () async {
+                                                                      await _showAddCreditPurchaseDialog(
+                                                                          context);
+                                                                    },
                                                                     child:
                                                                         const Text(
                                                                       "Credit Purchase",
