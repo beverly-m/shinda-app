@@ -127,6 +127,16 @@ class CartProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void clearCart() async {
+    cart.clear();
+    await dbHelper.clearCart();
+    _counter = 0;
+    _totalPrice = 0.0;
+    _quantity = 1;
+    _setPrefsItems();
+    notifyListeners();
+  }
+
   int getQuantity(int quantity) {
     _getPrefsItems();
     return _quantity;

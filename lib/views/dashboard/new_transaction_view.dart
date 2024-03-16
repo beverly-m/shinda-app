@@ -37,7 +37,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
       CurrencyTextInputFormatter(symbol: "RWF ", turnOffGrouping: true);
   DBHelper? dbHelper = DBHelper();
   final cartItems = [];
-  late final String _currentWorkspace;
+  String? _currentWorkspace;
 
   final List<Map> myProducts = List.generate(
     10,
@@ -549,12 +549,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                               Icons
                                                                   .shopping_cart_checkout_outlined,
                                                               size: 200,
-                                                              color: Color
-                                                                  .fromRGBO(
-                                                                      219,
-                                                                      240,
-                                                                      239,
-                                                                      1),
+                                                              color: surface3,
                                                             ),
                                                           ),
                                                           SizedBox(
@@ -840,7 +835,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                         await WorkspaceService()
                                                                             .addTransaction(
                                                                           workspaceId:
-                                                                              _currentWorkspace,
+                                                                              _currentWorkspace!,
                                                                           subTotal:
                                                                               totalPrice!,
                                                                           paymentMode:
@@ -852,6 +847,11 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                           products:
                                                                               provider.cart,
                                                                         );
+
+                                                                        provider
+                                                                            .clearCart();
+
+                                                                        _getProductData();
                                                                       } catch (e) {
                                                                         log(e
                                                                             .toString());

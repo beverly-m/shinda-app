@@ -1,4 +1,3 @@
-
 import 'package:drift/drift.dart';
 import 'package:shinda_app/database/database.dart';
 import 'package:shinda_app/utilities/models/cart_model.dart';
@@ -49,7 +48,10 @@ class DBHelper {
   }
 
   // update quantity
-  Future updateQuantity({required int productId, required int quantity,}) {
+  Future updateQuantity({
+    required int productId,
+    required int quantity,
+  }) {
     MyDatabase dbClient = database;
 
     return (dbClient.update(dbClient.transactionItems)
@@ -66,5 +68,11 @@ class DBHelper {
     return (dbClient.delete(dbClient.transactionItems)
           ..where((tbl) => tbl.productId.equals(productId)))
         .go();
+  }
+
+  Future<int> clearCart() {
+    MyDatabase dbClient = database;
+
+    return (dbClient.delete(dbClient.transactionItems).go());
   }
 }
