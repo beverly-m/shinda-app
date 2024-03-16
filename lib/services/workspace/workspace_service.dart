@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:shinda_app/constants/supabase.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_provider.dart';
+import 'package:shinda_app/utilities/models/cart_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class WorkspaceService implements WorkspaceProvider {
@@ -143,5 +144,58 @@ class WorkspaceService implements WorkspaceProvider {
   }) {
     // TODO: implement addDebtor
     throw UnimplementedError();
+  }
+
+  @override
+  addTransaction({
+    required String workspaceId,
+    required double subTotal,
+    required String paymentMode,
+    String? discountPercentage,
+    String? discountAmount,
+    String? taxPercentage,
+    String? taxAmount,
+    required double grandTotal,
+    required bool isPaid,
+    required List<Cart> products,
+    String? clientName,
+    String? phoneNumber,
+    String? address,
+  }) async {
+    try {
+      final List transactionItems = [];
+
+      List<Map<String, dynamic>> transaction =
+          await supabase.from('transaction').insert({
+        'workspace_id': workspaceId,
+        'subtotal': subTotal,
+        'payment_mode': paymentMode,
+        'grand_total': grandTotal,
+        'is_paid': isPaid,
+      }).select();
+
+      for (var element in products) {
+        transactionItems.add({
+          'workspace_id': workspaceId,
+          'transaction_id': transaction[0]["transaction_id"],
+          'product_id': element.productId,
+          'quantity': element.quantity,
+          'price_per_item': element.productPrice
+        });
+      }
+
+      log(transactionItems[0].toString());
+      log(transactionItems.length.toString());
+
+      await supabase.from('transaction_item').insert(transactionItems);
+
+      if (isPaid == false) {
+        log("adding debtor...");
+      } else {
+        log("The transaction was paid for!");
+      }
+    } catch (e) {
+      log(e.toString());
+    }
   }
 }

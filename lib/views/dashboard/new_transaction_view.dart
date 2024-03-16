@@ -826,8 +826,8 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                   FilledButton(
                                                                     onPressed:
                                                                         () {
-                                                                          
-                                                                        },
+                                                                      
+                                                                    },
                                                                     style: const ButtonStyle(
                                                                         backgroundColor:
                                                                             MaterialStatePropertyAll(primary)),

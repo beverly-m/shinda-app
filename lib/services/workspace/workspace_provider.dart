@@ -1,3 +1,5 @@
+import 'package:shinda_app/utilities/models/cart_model.dart';
+
 abstract class WorkspaceProvider {
   Future<void> createWorkspace({
     required String workspaceName,
@@ -24,5 +26,21 @@ abstract class WorkspaceProvider {
     required String phoneNumber,
     String? address,
     required List<Map<String, dynamic>> products,
+  });
+
+  addTransaction({
+    required String workspaceId,
+    required double subTotal,
+    required String paymentMode,
+    String? discountPercentage,
+    String? discountAmount,
+    String? taxPercentage,
+    String? taxAmount,
+    required double grandTotal,
+    required bool isPaid,
+    required List<Cart> products,
+    String? clientName,
+    String? phoneNumber,
+    String? address,
   });
 }
