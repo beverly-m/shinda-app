@@ -17,6 +17,7 @@ void saveData(
       initialPrice: data["product"]['price'],
       productPrice: data["product"]['price'],
       quantity: ValueNotifier<int>(1),
+      quantityAvailable: data["quantity"]
     ),
   )
       .then((value) {

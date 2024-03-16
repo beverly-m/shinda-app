@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shinda_app/components/buttons.dart';
 import 'package:shinda_app/constants/text_syles.dart';
+import 'package:shinda_app/enums/dropdown_menu.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
 import 'package:shinda_app/utilities/get_workspace.dart';
@@ -30,6 +31,8 @@ class _NewTransactionViewState extends State<NewTransactionView> {
   late final TextEditingController _quantity;
   late final TextEditingController _expirationDate;
   late final TextEditingController _reorderLevel;
+  late final TextEditingController _paymentModeController;
+  PaymentModeLabel? selectedPaymentMode;
   final CurrencyTextInputFormatter _formatter =
       CurrencyTextInputFormatter(symbol: "RWF ", turnOffGrouping: true);
   DBHelper? dbHelper = DBHelper();
@@ -53,6 +56,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
     _quantity = TextEditingController();
     _expirationDate = TextEditingController();
     _reorderLevel = TextEditingController();
+    _paymentModeController = TextEditingController();
 
     context.read<CartProvider>().getData();
 
@@ -496,7 +500,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                           Expanded(
                             child: Container(
                               width: MediaQuery.of(context).size.width * 0.2,
-                              height: MediaQuery.of(context).size.height * 0.9,
+                              height: MediaQuery.of(context).size.height * 0.8,
                               decoration: BoxDecoration(
                                 border: Border.all(color: surface1),
                                 borderRadius: BorderRadius.circular(8.0),
@@ -567,207 +571,273 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                         //         context)
                                                         //     .size
                                                         //     .height,
-                                                        child: Column(
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
-                                                          children: [
-                                                            SizedBox(
-                                                              height: 300.0,
-                                                              child: ListView
-                                                                  .builder(
-                                                                shrinkWrap:
-                                                                    true,
-                                                                itemCount:
-                                                                    provider
-                                                                        .cart
-                                                                        .length,
-                                                                itemBuilder:
-                                                                    (context,
-                                                                        index) {
-                                                                  return Card(
-                                                                    elevation:
-                                                                        0,
-                                                                    color:
-                                                                        surface1,
-                                                                    shape:
-                                                                        RoundedRectangleBorder(
-                                                                      side: const BorderSide(
-                                                                          color:
-                                                                              surface3),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              8.0),
-                                                                    ),
-                                                                    child:
-                                                                        Padding(
-                                                                      padding: const EdgeInsets
-                                                                          .all(
-                                                                          8.0),
+                                                        child:
+                                                            SingleChildScrollView(
+                                                          child: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              SizedBox(
+                                                                height: 300.0,
+                                                                child: ListView
+                                                                    .builder(
+                                                                  shrinkWrap:
+                                                                      true,
+                                                                  itemCount:
+                                                                      provider
+                                                                          .cart
+                                                                          .length,
+                                                                  itemBuilder:
+                                                                      (context,
+                                                                          index) {
+                                                                    return Card(
+                                                                      elevation:
+                                                                          0,
+                                                                      color:
+                                                                          surface1,
+                                                                      shape:
+                                                                          RoundedRectangleBorder(
+                                                                        side: const BorderSide(
+                                                                            color:
+                                                                                surface3),
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(8.0),
+                                                                      ),
                                                                       child:
-                                                                          Row(
-                                                                        mainAxisSize:
-                                                                            MainAxisSize.min,
-                                                                        children: [
-                                                                          Container(
-                                                                            width:
-                                                                                48.0,
-                                                                            height:
-                                                                                48.0,
-                                                                            decoration:
-                                                                                BoxDecoration(
-                                                                              borderRadius: BorderRadius.circular(8.0),
-                                                                              color: surface1,
-                                                                            ),
-                                                                            child:
-                                                                                const Icon(
-                                                                              Icons.shopping_bag_outlined,
-                                                                              color: Colors.black12,
-                                                                              size: 24.0,
-                                                                            ),
-                                                                          ),
-                                                                          Column(
-                                                                            mainAxisSize:
-                                                                                MainAxisSize.min,
-                                                                            crossAxisAlignment:
-                                                                                CrossAxisAlignment.start,
-                                                                            children: [
-                                                                              Text(
-                                                                                provider.cart[index].productName,
-                                                                                style: body1,
+                                                                          Padding(
+                                                                        padding: const EdgeInsets
+                                                                            .all(
+                                                                            8.0),
+                                                                        child:
+                                                                            Row(
+                                                                          mainAxisSize:
+                                                                              MainAxisSize.min,
+                                                                          children: [
+                                                                            Container(
+                                                                              width: 48.0,
+                                                                              height: 48.0,
+                                                                              decoration: BoxDecoration(
+                                                                                borderRadius: BorderRadius.circular(8.0),
+                                                                                color: surface1,
                                                                               ),
-                                                                              const Flexible(child: SizedBox()),
-                                                                              Text(
-                                                                                "RWF ${provider.cart[index].productPrice}",
-                                                                                style: body2.copyWith(color: neutral4),
+                                                                              child: const Icon(
+                                                                                Icons.shopping_bag_outlined,
+                                                                                color: Colors.black12,
+                                                                                size: 24.0,
                                                                               ),
-                                                                            ],
-                                                                          ),
-                                                                          const Expanded(
-                                                                              child: SizedBox()),
-                                                                          ValueListenableBuilder<
-                                                                              int>(
-                                                                            valueListenable:
-                                                                                provider.cart[index].quantity,
-                                                                            builder: (context,
-                                                                                value,
-                                                                                child) {
-                                                                              return PlusMinusButtons(
-                                                                                addQuantity: () {
-                                                                                  cart.addQuantity(provider.cart[index].productId);
-                                                                                  setState(() {
-                                                                                    cart.addTotalPrice(double.parse(provider.cart[index].productPrice.toString()));
-                                                                                  });
-                                                                                  // });
-                                                                                },
-                                                                                deleteQuantity: () {
-                                                                                  cart.deleteQuantity(provider.cart[index].productId);
-                                                                                },
-                                                                                text: value.toString(),
-                                                                              );
-                                                                            },
-                                                                          ),
-                                                                          IconButton(
-                                                                            onPressed:
-                                                                                () {
-                                                                              dbHelper!.deleteCartItem(provider.cart[index].productId);
-                                                                              provider.removeItem(provider.cart[index].productId);
-                                                                              provider.removeCounter();
-                                                                            },
-                                                                            icon:
-                                                                                const Icon(Icons.delete_outline),
-                                                                          )
-                                                                        ],
+                                                                            ),
+                                                                            Column(
+                                                                              mainAxisSize: MainAxisSize.min,
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                Text(
+                                                                                  provider.cart[index].productName,
+                                                                                  style: body1,
+                                                                                ),
+                                                                                const Flexible(child: SizedBox()),
+                                                                                Text(
+                                                                                  "RWF ${provider.cart[index].productPrice}",
+                                                                                  style: body2.copyWith(color: neutral4),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                            const Expanded(child: SizedBox()),
+                                                                            ValueListenableBuilder<int>(
+                                                                              valueListenable: provider.cart[index].quantity,
+                                                                              builder: (context, value, child) {
+                                                                                return PlusMinusButtons(
+                                                                                  addQuantity: () {
+                                                                                    cart.addQuantity(provider.cart[index].productId);
+                                                                                    setState(() {
+                                                                                      cart.addTotalPrice(double.parse(provider.cart[index].productPrice.toString()));
+                                                                                    });
+                                                                                    // });
+                                                                                  },
+                                                                                  deleteQuantity: () {
+                                                                                    cart.deleteQuantity(provider.cart[index].productId);
+                                                                                  },
+                                                                                  text: value.toString(),
+                                                                                );
+                                                                              },
+                                                                            ),
+                                                                            IconButton(
+                                                                              onPressed: () {
+                                                                                dbHelper!.deleteCartItem(provider.cart[index].productId);
+                                                                                provider.removeItem(provider.cart[index].productId);
+                                                                                provider.removeCounter();
+                                                                              },
+                                                                              icon: const Icon(Icons.delete_outline),
+                                                                            )
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                                ),
+                                                              ),
+                                                              const SizedBox(
+                                                                  height: 24.0),
+                                                              Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .stretch,
+                                                                children: [
+                                                                  DropdownMenu<
+                                                                      PaymentModeLabel>(
+                                                                    menuStyle:
+                                                                        MenuStyle(
+                                                                      shape:
+                                                                          MaterialStatePropertyAll(
+                                                                        RoundedRectangleBorder(
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(8.0),
+                                                                        ),
                                                                       ),
                                                                     ),
+                                                                    initialSelection:
+                                                                        PaymentModeLabel
+                                                                            .cash,
+                                                                    controller:
+                                                                        _paymentModeController,
+                                                                    requestFocusOnTap:
+                                                                        true,
+                                                                    label:
+                                                                        const Text(
+                                                                      'Payment Mode',
+                                                                      style:
+                                                                          body1,
+                                                                    ),
+                                                                    onSelected:
+                                                                        (PaymentModeLabel?
+                                                                            paymentMode) {
+                                                                      setState(
+                                                                          () {
+                                                                        selectedPaymentMode =
+                                                                            paymentMode;
+                                                                      });
+                                                                      log(selectedPaymentMode!
+                                                                          .label);
+                                                                    },
+                                                                    dropdownMenuEntries: PaymentModeLabel.values.map<
+                                                                        DropdownMenuEntry<
+                                                                            PaymentModeLabel>>((PaymentModeLabel
+                                                                        paymentMode) {
+                                                                      return DropdownMenuEntry<
+                                                                          PaymentModeLabel>(
+                                                                        value:
+                                                                            paymentMode,
+                                                                        label: paymentMode
+                                                                            .label,
+                                                                        enabled:
+                                                                            paymentMode.label !=
+                                                                                'Grey',
+                                                                        style: MenuItemButton.styleFrom(
+                                                                            textStyle:
+                                                                                body1),
+                                                                      );
+                                                                    }).toList(),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              const SizedBox(
+                                                                  height: 48.0),
+                                                              const Flexible(
+                                                                child:
+                                                                    SizedBox(),
+                                                              ),
+                                                              Consumer<
+                                                                  CartProvider>(
+                                                                builder: (BuildContext
+                                                                        context,
+                                                                    value,
+                                                                    Widget?
+                                                                        child) {
+                                                                  final ValueNotifier<
+                                                                          double?>
+                                                                      totalPrice =
+                                                                      ValueNotifier(
+                                                                          null);
+                                                                  for (var element
+                                                                      in value
+                                                                          .cart) {
+                                                                    totalPrice
+                                                                        .value = (element.productPrice *
+                                                                            element
+                                                                                .quantity.value) +
+                                                                        (totalPrice.value ??
+                                                                            0);
+                                                                  }
+                                                                  return Column(
+                                                                    children: [
+                                                                      ValueListenableBuilder<
+                                                                              double?>(
+                                                                          valueListenable:
+                                                                              totalPrice,
+                                                                          builder: (context,
+                                                                              val,
+                                                                              child) {
+                                                                            return ReusableWidget(
+                                                                              title: 'Sub Total',
+                                                                              value: r'RWF ' + (val?.toStringAsFixed(2) ?? '0.00'),
+                                                                            );
+                                                                          }),
+                                                                      const ReusableWidget(
+                                                                        title:
+                                                                            'Tax',
+                                                                        value:
+                                                                            'RWF 0.00',
+                                                                      ),
+                                                                      ValueListenableBuilder<
+                                                                              double?>(
+                                                                          valueListenable:
+                                                                              totalPrice,
+                                                                          builder: (context,
+                                                                              val,
+                                                                              child) {
+                                                                            return ReusableWidget(
+                                                                              title: 'Total',
+                                                                              value: r'RWF ' + (val?.toStringAsFixed(2) ?? '0.00'),
+                                                                              style: priceText,
+                                                                            );
+                                                                          }),
+                                                                    ],
                                                                   );
                                                                 },
                                                               ),
-                                                            ),
-                                                            const SizedBox(
-                                                                height: 32.0),
-                                                            const Flexible(
-                                                              child: SizedBox(),
-                                                            ),
-                                                            Consumer<
-                                                                CartProvider>(
-                                                              builder: (BuildContext
-                                                                      context,
-                                                                  value,
-                                                                  Widget?
-                                                                      child) {
-                                                                final ValueNotifier<
-                                                                        double?>
-                                                                    totalPrice =
-                                                                    ValueNotifier(
-                                                                        null);
-                                                                for (var element
-                                                                    in value
-                                                                        .cart) {
-                                                                  totalPrice
-                                                                      .value = (element
-                                                                              .productPrice *
-                                                                          element
-                                                                              .quantity
-                                                                              .value) +
-                                                                      (totalPrice
-                                                                              .value ??
-                                                                          0);
-                                                                }
-                                                                return Column(
-                                                                  children: [
-                                                                    ValueListenableBuilder<
-                                                                            double?>(
-                                                                        valueListenable:
-                                                                            totalPrice,
-                                                                        builder: (context,
-                                                                            val,
-                                                                            child) {
-                                                                          return ReusableWidget(
-                                                                            title:
-                                                                                'Sub Total',
-                                                                            value:
-                                                                                r'RWF ' + (val?.toStringAsFixed(2) ?? '0.00'),
-                                                                          );
-                                                                        }),
-                                                                    const ReusableWidget(
-                                                                      title:
-                                                                          'Tax',
-                                                                      value:
-                                                                          'RWF 0.00',
+                                                              const SizedBox(
+                                                                height: 24.0,
+                                                              ),
+                                                              Row(
+                                                                children: [
+                                                                  OutlinedButton(
+                                                                    onPressed:
+                                                                        () {},
+                                                                    child:
+                                                                        const Text(
+                                                                      "Credit Purchase",
+                                                                      style:
+                                                                          secondaryButtonStyle,
                                                                     ),
-                                                                    ValueListenableBuilder<
-                                                                            double?>(
-                                                                        valueListenable:
-                                                                            totalPrice,
-                                                                        builder: (context,
-                                                                            val,
-                                                                            child) {
-                                                                          return ReusableWidget(
-                                                                            title:
-                                                                                'Total',
-                                                                            value:
-                                                                                r'RWF ' + (val?.toStringAsFixed(2) ?? '0.00'),
-                                                                            style:
-                                                                                priceText,
-                                                                          );
-                                                                        }),
-                                                                  ],
-                                                                );
-                                                              },
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 24.0,
-                                                            ),
-                                                            FilledButton(
-                                                              onPressed: () {},
-                                                              style: const ButtonStyle(
-                                                                  backgroundColor:
-                                                                      MaterialStatePropertyAll(
-                                                                          primary)),
-                                                              child: const Text(
-                                                                  "Checkout"),
-                                                            ),
-                                                          ],
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 24.0,
+                                                                  ),
+                                                                  FilledButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                          
+                                                                        },
+                                                                    style: const ButtonStyle(
+                                                                        backgroundColor:
+                                                                            MaterialStatePropertyAll(primary)),
+                                                                    child: const Text(
+                                                                        "Checkout"),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
                                                       );
                                               },

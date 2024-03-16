@@ -1,3 +1,4 @@
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,6 +36,7 @@ class CartProvider with ChangeNotifier {
           productName: data["product"]["name"],
           initialPrice: data["product"]['price'],
           productPrice: data["product"]['price'],
+          quantityAvailable: data['quantity'],
           quantity: ValueNotifier<int>(1),
         ),
       );
@@ -82,11 +84,20 @@ class CartProvider with ChangeNotifier {
 
   void addQuantity(int productId) async {
     final index = cart.indexWhere((element) => element.productId == productId);
-    cart[index].quantity.value = cart[index].quantity.value + 1;
-    await dbHelper.updateQuantity(
-      productId: productId,
-      quantity: cart[index].quantity.value,
-    );
+
+    final currentQuantity = cart[index].quantity.value;
+    final maxQuantity = cart[index].quantityAvailable;
+
+    if (currentQuantity < maxQuantity) {
+      cart[index].quantity.value = cart[index].quantity.value + 1;
+      await dbHelper.updateQuantity(
+        productId: productId,
+        quantity: cart[index].quantity.value,
+      );
+    } else {
+      log("Max quantity $maxQuantity exceeded");
+    }
+
     _setPrefsItems();
     notifyListeners();
   }

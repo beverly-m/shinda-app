@@ -7,6 +7,7 @@ class Cart {
   final double initialPrice;
   final double productPrice;
   final ValueNotifier<int> quantity;
+  final int quantityAvailable;
   final String? unitTag;
   final String? image;
 
@@ -17,6 +18,7 @@ class Cart {
     required this.initialPrice,
     required this.productPrice,
     required this.quantity,
+    required this.quantityAvailable,
     this.unitTag,
     this.image,
   });
@@ -29,6 +31,7 @@ class Cart {
         initialPrice = data['initialPrice'],
         productPrice = data['productPrice'],
         quantity = ValueNotifier(data['quantity']),
+        quantityAvailable = data['quantityAvailable'],
         unitTag = data['unitTag'],
         image = data['image'];
 
@@ -40,6 +43,7 @@ class Cart {
       'initialPrice': initialPrice,
       'productPrice': productPrice,
       'quantity': quantity.value,
+      'quantityAvailable': quantityAvailable,
       'unitTag': unitTag,
       'image': image,
     };

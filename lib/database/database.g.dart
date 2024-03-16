@@ -39,6 +39,12 @@ class $TransactionItemsTable extends TransactionItems
   late final GeneratedColumn<int> quantity = GeneratedColumn<int>(
       'quantity', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _quantityAvailableMeta =
+      const VerificationMeta('quantityAvailable');
+  @override
+  late final GeneratedColumn<int> quantityAvailable = GeneratedColumn<int>(
+      'quantity_available', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _unitTagMeta =
       const VerificationMeta('unitTag');
   @override
@@ -57,6 +63,7 @@ class $TransactionItemsTable extends TransactionItems
         initialPrice,
         productPrice,
         quantity,
+        quantityAvailable,
         unitTag,
         image
       ];
@@ -106,6 +113,14 @@ class $TransactionItemsTable extends TransactionItems
     } else if (isInserting) {
       context.missing(_quantityMeta);
     }
+    if (data.containsKey('quantity_available')) {
+      context.handle(
+          _quantityAvailableMeta,
+          quantityAvailable.isAcceptableOrUnknown(
+              data['quantity_available']!, _quantityAvailableMeta));
+    } else if (isInserting) {
+      context.missing(_quantityAvailableMeta);
+    }
     if (data.containsKey('unit_tag')) {
       context.handle(_unitTagMeta,
           unitTag.isAcceptableOrUnknown(data['unit_tag']!, _unitTagMeta));
@@ -133,6 +148,8 @@ class $TransactionItemsTable extends TransactionItems
           .read(DriftSqlType.double, data['${effectivePrefix}product_price'])!,
       quantity: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}quantity'])!,
+      quantityAvailable: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}quantity_available'])!,
       unitTag: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}unit_tag']),
       image: attachedDatabase.typeMapping
@@ -152,6 +169,7 @@ class TransactionItem extends DataClass implements Insertable<TransactionItem> {
   final double initialPrice;
   final double productPrice;
   final int quantity;
+  final int quantityAvailable;
   final String? unitTag;
   final String? image;
   const TransactionItem(
@@ -160,6 +178,7 @@ class TransactionItem extends DataClass implements Insertable<TransactionItem> {
       required this.initialPrice,
       required this.productPrice,
       required this.quantity,
+      required this.quantityAvailable,
       this.unitTag,
       this.image});
   @override
@@ -170,6 +189,7 @@ class TransactionItem extends DataClass implements Insertable<TransactionItem> {
     map['initial_price'] = Variable<double>(initialPrice);
     map['product_price'] = Variable<double>(productPrice);
     map['quantity'] = Variable<int>(quantity);
+    map['quantity_available'] = Variable<int>(quantityAvailable);
     if (!nullToAbsent || unitTag != null) {
       map['unit_tag'] = Variable<String>(unitTag);
     }
@@ -186,6 +206,7 @@ class TransactionItem extends DataClass implements Insertable<TransactionItem> {
       initialPrice: Value(initialPrice),
       productPrice: Value(productPrice),
       quantity: Value(quantity),
+      quantityAvailable: Value(quantityAvailable),
       unitTag: unitTag == null && nullToAbsent
           ? const Value.absent()
           : Value(unitTag),
@@ -203,6 +224,7 @@ class TransactionItem extends DataClass implements Insertable<TransactionItem> {
       initialPrice: serializer.fromJson<double>(json['initialPrice']),
       productPrice: serializer.fromJson<double>(json['productPrice']),
       quantity: serializer.fromJson<int>(json['quantity']),
+      quantityAvailable: serializer.fromJson<int>(json['quantityAvailable']),
       unitTag: serializer.fromJson<String?>(json['unitTag']),
       image: serializer.fromJson<String?>(json['image']),
     );
@@ -216,6 +238,7 @@ class TransactionItem extends DataClass implements Insertable<TransactionItem> {
       'initialPrice': serializer.toJson<double>(initialPrice),
       'productPrice': serializer.toJson<double>(productPrice),
       'quantity': serializer.toJson<int>(quantity),
+      'quantityAvailable': serializer.toJson<int>(quantityAvailable),
       'unitTag': serializer.toJson<String?>(unitTag),
       'image': serializer.toJson<String?>(image),
     };
@@ -227,6 +250,7 @@ class TransactionItem extends DataClass implements Insertable<TransactionItem> {
           double? initialPrice,
           double? productPrice,
           int? quantity,
+          int? quantityAvailable,
           Value<String?> unitTag = const Value.absent(),
           Value<String?> image = const Value.absent()}) =>
       TransactionItem(
@@ -235,6 +259,7 @@ class TransactionItem extends DataClass implements Insertable<TransactionItem> {
         initialPrice: initialPrice ?? this.initialPrice,
         productPrice: productPrice ?? this.productPrice,
         quantity: quantity ?? this.quantity,
+        quantityAvailable: quantityAvailable ?? this.quantityAvailable,
         unitTag: unitTag.present ? unitTag.value : this.unitTag,
         image: image.present ? image.value : this.image,
       );
@@ -246,6 +271,7 @@ class TransactionItem extends DataClass implements Insertable<TransactionItem> {
           ..write('initialPrice: $initialPrice, ')
           ..write('productPrice: $productPrice, ')
           ..write('quantity: $quantity, ')
+          ..write('quantityAvailable: $quantityAvailable, ')
           ..write('unitTag: $unitTag, ')
           ..write('image: $image')
           ..write(')'))
@@ -254,7 +280,7 @@ class TransactionItem extends DataClass implements Insertable<TransactionItem> {
 
   @override
   int get hashCode => Object.hash(productId, productName, initialPrice,
-      productPrice, quantity, unitTag, image);
+      productPrice, quantity, quantityAvailable, unitTag, image);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -264,6 +290,7 @@ class TransactionItem extends DataClass implements Insertable<TransactionItem> {
           other.initialPrice == this.initialPrice &&
           other.productPrice == this.productPrice &&
           other.quantity == this.quantity &&
+          other.quantityAvailable == this.quantityAvailable &&
           other.unitTag == this.unitTag &&
           other.image == this.image);
 }
@@ -274,6 +301,7 @@ class TransactionItemsCompanion extends UpdateCompanion<TransactionItem> {
   final Value<double> initialPrice;
   final Value<double> productPrice;
   final Value<int> quantity;
+  final Value<int> quantityAvailable;
   final Value<String?> unitTag;
   final Value<String?> image;
   final Value<int> rowid;
@@ -283,6 +311,7 @@ class TransactionItemsCompanion extends UpdateCompanion<TransactionItem> {
     this.initialPrice = const Value.absent(),
     this.productPrice = const Value.absent(),
     this.quantity = const Value.absent(),
+    this.quantityAvailable = const Value.absent(),
     this.unitTag = const Value.absent(),
     this.image = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -293,6 +322,7 @@ class TransactionItemsCompanion extends UpdateCompanion<TransactionItem> {
     required double initialPrice,
     required double productPrice,
     required int quantity,
+    required int quantityAvailable,
     this.unitTag = const Value.absent(),
     this.image = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -300,13 +330,15 @@ class TransactionItemsCompanion extends UpdateCompanion<TransactionItem> {
         productName = Value(productName),
         initialPrice = Value(initialPrice),
         productPrice = Value(productPrice),
-        quantity = Value(quantity);
+        quantity = Value(quantity),
+        quantityAvailable = Value(quantityAvailable);
   static Insertable<TransactionItem> custom({
     Expression<int>? productId,
     Expression<String>? productName,
     Expression<double>? initialPrice,
     Expression<double>? productPrice,
     Expression<int>? quantity,
+    Expression<int>? quantityAvailable,
     Expression<String>? unitTag,
     Expression<String>? image,
     Expression<int>? rowid,
@@ -317,6 +349,7 @@ class TransactionItemsCompanion extends UpdateCompanion<TransactionItem> {
       if (initialPrice != null) 'initial_price': initialPrice,
       if (productPrice != null) 'product_price': productPrice,
       if (quantity != null) 'quantity': quantity,
+      if (quantityAvailable != null) 'quantity_available': quantityAvailable,
       if (unitTag != null) 'unit_tag': unitTag,
       if (image != null) 'image': image,
       if (rowid != null) 'rowid': rowid,
@@ -329,6 +362,7 @@ class TransactionItemsCompanion extends UpdateCompanion<TransactionItem> {
       Value<double>? initialPrice,
       Value<double>? productPrice,
       Value<int>? quantity,
+      Value<int>? quantityAvailable,
       Value<String?>? unitTag,
       Value<String?>? image,
       Value<int>? rowid}) {
@@ -338,6 +372,7 @@ class TransactionItemsCompanion extends UpdateCompanion<TransactionItem> {
       initialPrice: initialPrice ?? this.initialPrice,
       productPrice: productPrice ?? this.productPrice,
       quantity: quantity ?? this.quantity,
+      quantityAvailable: quantityAvailable ?? this.quantityAvailable,
       unitTag: unitTag ?? this.unitTag,
       image: image ?? this.image,
       rowid: rowid ?? this.rowid,
@@ -362,6 +397,9 @@ class TransactionItemsCompanion extends UpdateCompanion<TransactionItem> {
     if (quantity.present) {
       map['quantity'] = Variable<int>(quantity.value);
     }
+    if (quantityAvailable.present) {
+      map['quantity_available'] = Variable<int>(quantityAvailable.value);
+    }
     if (unitTag.present) {
       map['unit_tag'] = Variable<String>(unitTag.value);
     }
@@ -382,6 +420,7 @@ class TransactionItemsCompanion extends UpdateCompanion<TransactionItem> {
           ..write('initialPrice: $initialPrice, ')
           ..write('productPrice: $productPrice, ')
           ..write('quantity: $quantity, ')
+          ..write('quantityAvailable: $quantityAvailable, ')
           ..write('unitTag: $unitTag, ')
           ..write('image: $image, ')
           ..write('rowid: $rowid')

@@ -26,6 +26,7 @@ class DBHelper {
             initialPrice: cart.initialPrice,
             productPrice: cart.productPrice,
             quantity: cart.quantity.value,
+            quantityAvailable: cart.quantityAvailable,
             unitTag: Value(cart.unitTag),
             image: Value(cart.image),
           ),
