@@ -147,7 +147,7 @@ class WorkspaceService implements WorkspaceProvider {
   }
 
   @override
-  addTransaction({
+  Future<void> addTransaction({
     required String workspaceId,
     required double subTotal,
     required String paymentMode,
@@ -179,7 +179,7 @@ class WorkspaceService implements WorkspaceProvider {
           'workspace_id': workspaceId,
           'transaction_id': transaction[0]["transaction_id"],
           'product_id': element.productId,
-          'quantity': element.quantity,
+          'quantity': element.quantity.value,
           'price_per_item': element.productPrice
         });
       }
@@ -194,6 +194,10 @@ class WorkspaceService implements WorkspaceProvider {
       } else {
         log("The transaction was paid for!");
       }
+    } on PostgrestException catch (e) {
+      log(e.message);
+      log(e.hint!);
+      log(e.details.toString());
     } catch (e) {
       log(e.toString());
     }

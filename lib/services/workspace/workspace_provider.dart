@@ -20,7 +20,7 @@ abstract class WorkspaceProvider {
 
   Future<List<Map<String, dynamic>>> getProducts({required String workspaceId});
 
-    Future<void> addDebtor({
+  Future<void> addDebtor({
     required String workspaceId,
     required String clientName,
     required String phoneNumber,
@@ -28,7 +28,7 @@ abstract class WorkspaceProvider {
     required List<Map<String, dynamic>> products,
   });
 
-  addTransaction({
+  Future<void> addTransaction({
     required String workspaceId,
     required double subTotal,
     required String paymentMode,

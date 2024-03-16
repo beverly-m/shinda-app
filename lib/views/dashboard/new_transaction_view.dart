@@ -37,6 +37,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
       CurrencyTextInputFormatter(symbol: "RWF ", turnOffGrouping: true);
   DBHelper? dbHelper = DBHelper();
   final cartItems = [];
+  late final String _currentWorkspace;
 
   final List<Map> myProducts = List.generate(
     10,
@@ -308,6 +309,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
 
       setState(() {
         _productsData = products;
+        _currentWorkspace = currentWorkspace;
       });
 
       if (_productsData != null) {
@@ -825,8 +827,35 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                   ),
                                                                   FilledButton(
                                                                     onPressed:
-                                                                        () {
-                                                                      
+                                                                        () async {
+                                                                      try {
+                                                                        double?
+                                                                            totalPrice;
+
+                                                                        for (var element
+                                                                            in provider.cart) {
+                                                                          totalPrice =
+                                                                              (element.productPrice * element.quantity.value) + (totalPrice ?? 0);
+                                                                        }
+                                                                        await WorkspaceService()
+                                                                            .addTransaction(
+                                                                          workspaceId:
+                                                                              _currentWorkspace,
+                                                                          subTotal:
+                                                                              totalPrice!,
+                                                                          paymentMode:
+                                                                              _paymentModeController.text,
+                                                                          grandTotal:
+                                                                              totalPrice,
+                                                                          isPaid:
+                                                                              true,
+                                                                          products:
+                                                                              provider.cart,
+                                                                        );
+                                                                      } catch (e) {
+                                                                        log(e
+                                                                            .toString());
+                                                                      }
                                                                     },
                                                                     style: const ButtonStyle(
                                                                         backgroundColor:
