@@ -12,6 +12,7 @@ import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
 import 'package:shinda_app/utilities/get_workspace.dart';
 import 'package:shinda_app/utilities/helpers/db_helper.dart';
+import 'package:shinda_app/utilities/models/cart_model.dart';
 import 'package:shinda_app/utilities/providers/cart_provider.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
 
@@ -45,7 +46,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
   DBHelper? dbHelper = DBHelper();
   final cartItems = [];
   String? _currentWorkspace;
-
+  bool _isSubmitted = false;
   final List<Map> myProducts = List.generate(
     10,
     (index) => {
@@ -342,7 +343,15 @@ class _NewTransactionViewState extends State<NewTransactionView> {
     }
   }
 
-  Future<void> _showAddCreditPurchaseDialog(BuildContext context) {
+  Future<void> _showAddCreditPurchaseDialog({
+    required BuildContext context,
+    required String workspaceId,
+    required double subTotal,
+    required String paymentMode,
+    required double grandTotal,
+    required bool isPaid,
+    required List<Cart> products,
+  }) {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -434,7 +443,16 @@ class _NewTransactionViewState extends State<NewTransactionView> {
               ),
             ),
             FilledButton(
-              onPressed: _addDebtor,
+              onPressed: () {
+                _addDebtor(
+                  workspaceId: workspaceId,
+                  subTotal: subTotal,
+                  paymentMode: paymentMode,
+                  grandTotal: grandTotal,
+                  isPaid: isPaid,
+                  products: products,
+                );
+              },
               style: const ButtonStyle(
                 backgroundColor: MaterialStatePropertyAll(
                   Color.fromRGBO(0, 121, 107, 1),
@@ -453,14 +471,19 @@ class _NewTransactionViewState extends State<NewTransactionView> {
     );
   }
 
-  void _addDebtor() async {
+  void _addDebtor({
+    required String workspaceId,
+    required double subTotal,
+    required String paymentMode,
+    required double grandTotal,
+    required bool isPaid,
+    required List<Cart> products,
+  }) async {
     final isValid = _formKey2.currentState?.validate();
 
     setState(() {
       _isLoading = true;
     });
-
-    log("${_clientName.text}, ${_address.text}, ${_phoneNumber.text}");
 
     if (isValid != null && isValid) {
       Navigator.of(context).pop();
@@ -469,14 +492,30 @@ class _NewTransactionViewState extends State<NewTransactionView> {
       final address = _address.text.trim();
       final phoneNumber = _phoneNumberWithCode;
 
+      log("$clientName, $address, $phoneNumber");
+      log("$workspaceId, $subTotal, $paymentMode, $grandTotal, $isPaid, $products,");
+
       _clientName.clear();
       _address.clear();
       _phoneNumber.clear();
 
-      log("$clientName, $address, $phoneNumber");
+      // try {
+      //   await WorkspaceService().addTransaction(
+      //       workspaceId: workspaceId,
+      //       subTotal: subTotal,
+      //       paymentMode: _paymentModeController.text,
+      //       grandTotal: grandTotal,
+      //       isPaid: true,
+      //       products: products,
+      //       clientName: clientName,
+      //       address: address.isNotEmpty ? address : null);
+      // } catch (e) {
+      //   log(e.toString());
+      // }
 
       setState(() {
         _isLoading = false;
+        _isSubmitted = true;
       });
     }
 
@@ -967,8 +1006,45 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                   OutlinedButton(
                                                                     onPressed:
                                                                         () async {
+                                                                      double?
+                                                                          totalPrice;
+
+                                                                      for (var element
+                                                                          in provider
+                                                                              .cart) {
+                                                                        totalPrice =
+                                                                            (element.productPrice * element.quantity.value) +
+                                                                                (totalPrice ?? 0);
+                                                                      }
+
                                                                       await _showAddCreditPurchaseDialog(
-                                                                          context);
+                                                                        context:
+                                                                            context,
+                                                                        workspaceId:
+                                                                            _currentWorkspace!,
+                                                                        subTotal:
+                                                                            totalPrice!,
+                                                                        paymentMode:
+                                                                            _paymentModeController.text,
+                                                                        grandTotal:
+                                                                            totalPrice,
+                                                                        isPaid:
+                                                                            false,
+                                                                        products:
+                                                                            provider.cart,
+                                                                      );
+
+                                                                      if (_isSubmitted) {
+                                                                        provider
+                                                                            .clearCart();
+
+                                                                        _getProductData();
+                                                                        setState(
+                                                                            () {
+                                                                          _isSubmitted =
+                                                                              false;
+                                                                        });
+                                                                      }
                                                                     },
                                                                     child:
                                                                         const Text(
