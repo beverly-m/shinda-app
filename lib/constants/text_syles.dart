@@ -40,6 +40,12 @@ const TextStyle priceText = TextStyle(
   color: Colors.black87,
 );
 
+const TextStyle priceText2 = TextStyle(
+  fontSize: 16,
+  fontWeight: FontWeight.w700,
+  color: Colors.black87,
+);
+
 const TextStyle dashboardHeadings = TextStyle(
   fontSize: 24,
   fontWeight: FontWeight.w700,
