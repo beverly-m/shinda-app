@@ -46,7 +46,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
   DBHelper? dbHelper = DBHelper();
   final cartItems = [];
   String? _currentWorkspace;
-  bool _isSubmitted = false;
+
   final List<Map> myProducts = List.generate(
     10,
     (index) => {
@@ -351,6 +351,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
     required double grandTotal,
     required bool isPaid,
     required List<Cart> products,
+    required CartProvider cart,
   }) {
     return showDialog(
       context: context,
@@ -451,6 +452,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                   grandTotal: grandTotal,
                   isPaid: isPaid,
                   products: products,
+                  cart: cart,
                 );
               },
               style: const ButtonStyle(
@@ -478,6 +480,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
     required double grandTotal,
     required bool isPaid,
     required List<Cart> products,
+    required CartProvider cart,
   }) async {
     final isValid = _formKey2.currentState?.validate();
 
@@ -514,21 +517,24 @@ class _NewTransactionViewState extends State<NewTransactionView> {
 
         setState(() {
           _isLoading = false;
-          _isSubmitted = true;
         });
+        cart.clearCart();
+
+        _getProductData();
       } catch (e) {
         log(e.toString());
         setState(() {
           _isLoading = false;
-          _isSubmitted = true;
         });
       }
 
       setState(() {
         _isLoading = false;
-        _isSubmitted = true;
       });
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -1024,33 +1030,28 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                                 (totalPrice ?? 0);
                                                                       }
 
-                                                                      await _showAddCreditPurchaseDialog(
-                                                                        context:
-                                                                            context,
-                                                                        workspaceId:
-                                                                            _currentWorkspace!,
-                                                                        subTotal:
-                                                                            totalPrice!,
-                                                                        paymentMode:
-                                                                            _paymentModeController.text,
-                                                                        grandTotal:
-                                                                            totalPrice,
-                                                                        isPaid:
-                                                                            false,
-                                                                        products:
-                                                                            provider.cart,
-                                                                      );
-
-                                                                      if (_isSubmitted) {
-                                                                        provider
-                                                                            .clearCart();
-
-                                                                        _getProductData();
-                                                                        setState(
-                                                                            () {
-                                                                          _isSubmitted =
-                                                                              false;
-                                                                        });
+                                                                      try {
+                                                                        await _showAddCreditPurchaseDialog(
+                                                                          context:
+                                                                              context,
+                                                                          workspaceId:
+                                                                              _currentWorkspace!,
+                                                                          subTotal:
+                                                                              totalPrice!,
+                                                                          paymentMode:
+                                                                              _paymentModeController.text,
+                                                                          grandTotal:
+                                                                              totalPrice,
+                                                                          isPaid:
+                                                                              false,
+                                                                          products:
+                                                                              provider.cart,
+                                                                          cart:
+                                                                              provider,
+                                                                        );
+                                                                      } catch (e) {
+                                                                        log(e
+                                                                            .toString());
                                                                       }
                                                                     },
                                                                     child:
