@@ -25,7 +25,8 @@ abstract class WorkspaceProvider {
     required String clientName,
     required String phoneNumber,
     String? address,
-    required List<Map<String, dynamic>> products,
+    required double grandTotal,
+    required String transactionId
   });
 
   Future<void> addTransaction({

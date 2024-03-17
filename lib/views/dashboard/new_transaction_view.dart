@@ -499,29 +499,36 @@ class _NewTransactionViewState extends State<NewTransactionView> {
       _address.clear();
       _phoneNumber.clear();
 
-      // try {
-      //   await WorkspaceService().addTransaction(
-      //       workspaceId: workspaceId,
-      //       subTotal: subTotal,
-      //       paymentMode: _paymentModeController.text,
-      //       grandTotal: grandTotal,
-      //       isPaid: true,
-      //       products: products,
-      //       clientName: clientName,
-      //       address: address.isNotEmpty ? address : null);
-      // } catch (e) {
-      //   log(e.toString());
-      // }
+      try {
+        await WorkspaceService().addTransaction(
+          workspaceId: workspaceId,
+          subTotal: subTotal,
+          paymentMode: _paymentModeController.text,
+          grandTotal: grandTotal,
+          isPaid: false,
+          products: products,
+          clientName: clientName,
+          phoneNumber: phoneNumber,
+          address: address.isNotEmpty ? address : null,
+        );
+
+        setState(() {
+          _isLoading = false;
+          _isSubmitted = true;
+        });
+      } catch (e) {
+        log(e.toString());
+        setState(() {
+          _isLoading = false;
+          _isSubmitted = true;
+        });
+      }
 
       setState(() {
         _isLoading = false;
         _isSubmitted = true;
       });
     }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override

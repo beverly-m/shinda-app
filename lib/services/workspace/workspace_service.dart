@@ -140,10 +140,25 @@ class WorkspaceService implements WorkspaceProvider {
     required String clientName,
     required String phoneNumber,
     String? address,
-    required List<Map<String, dynamic>> products,
-  }) {
-    // TODO: implement addDebtor
-    throw UnimplementedError();
+    required double grandTotal,
+    required String transactionId,
+  }) async {
+    try {
+      await supabase.from('debtor').insert({
+        'workspace_id': workspaceId,
+        'client_name': clientName,
+        'amount_owed': grandTotal,
+        'phone_number': phoneNumber,
+        'transaction_id': transactionId,
+        'address': address,
+      }).select();
+    } on PostgrestException catch (e) {
+      log(e.message);
+      log(e.hint!);
+      log(e.details.toString());
+    } catch (e) {
+      log("${e.toString()} -- in add debtor");
+    }
   }
 
   @override
@@ -184,13 +199,21 @@ class WorkspaceService implements WorkspaceProvider {
         });
       }
 
-      log(transactionItems[0].toString());
-      log(transactionItems.length.toString());
-
       await supabase.from('transaction_item').insert(transactionItems);
 
       if (isPaid == false) {
         log("adding debtor...");
+        log("$workspaceId, $clientName, $phoneNumber}");
+        log("$address, $grandTotal, ${transaction[0]["transaction_id"]}");
+        await addDebtor(
+          workspaceId: workspaceId,
+          clientName: clientName!,
+          phoneNumber: phoneNumber!,
+          address: address,
+          grandTotal: grandTotal,
+          transactionId: transaction[0]["transaction_id"],
+        );
+        log("debtor added!");
       } else {
         log("The transaction was paid for!");
       }
@@ -199,7 +222,7 @@ class WorkspaceService implements WorkspaceProvider {
       log(e.hint!);
       log(e.details.toString());
     } catch (e) {
-      log(e.toString());
+      log("${e.toString()} -- in add transaction");
     }
   }
 }
