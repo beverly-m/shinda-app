@@ -110,6 +110,7 @@ class WorkspaceService implements WorkspaceProvider {
         stock_id,
         quantity,
         expiration_date,
+        reorder_level,
         quantity_sold,
         quantity_available,
         quantity_defective,
@@ -119,10 +120,6 @@ class WorkspaceService implements WorkspaceProvider {
         "workspace_id",
         workspaceId,
       );
-
-      for (var element in productsData) {
-        log(element.toString());
-      }
 
       return productsData;
     } on PostgrestException catch (e) {
@@ -202,9 +199,6 @@ class WorkspaceService implements WorkspaceProvider {
       await supabase.from('transaction_item').insert(transactionItems);
 
       if (isPaid == false) {
-        log("adding debtor...");
-        log("$workspaceId, $clientName, $phoneNumber}");
-        log("$address, $grandTotal, ${transaction[0]["transaction_id"]}");
         await addDebtor(
           workspaceId: workspaceId,
           clientName: clientName!,
@@ -213,7 +207,6 @@ class WorkspaceService implements WorkspaceProvider {
           grandTotal: grandTotal,
           transactionId: transaction[0]["transaction_id"],
         );
-        log("debtor added!");
       } else {
         log("The transaction was paid for!");
       }
@@ -223,6 +216,100 @@ class WorkspaceService implements WorkspaceProvider {
       log(e.details.toString());
     } catch (e) {
       log("${e.toString()} -- in add transaction");
+    }
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getDebtors(
+      {required String workspaceId}) async {
+    try {
+      final debtorsData = await supabase.from("debtor").select('''
+        debtor_id,
+        client_name,
+        amount_owed,
+        phone_number,
+        address,
+        date_paid,
+        transaction:transaction_id (transaction_id, payment_mode, is_paid)
+    ''').eq(
+        "workspace_id",
+        workspaceId,
+      );
+
+      for (var element in debtorsData) {
+        log(element.toString());
+      }
+
+      return debtorsData;
+    } on PostgrestException catch (e) {
+      log(e.code ?? "Error occurred");
+      log(e.message);
+      throw GenericWorkspaceException();
+    } catch (e) {
+      log(e.toString());
+      throw GenericWorkspaceException();
+    }
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getTransactions(
+      {required String workspaceId}) async {
+    try {
+      final transactionsData = await supabase.from("transaction").select('''
+        transaction_id,
+        grand_total,
+        payment_mode,
+        is_paid,
+        created_at
+        ''').eq(
+        "workspace_id",
+        workspaceId,
+      );
+      return transactionsData;
+    } on PostgrestException catch (e) {
+      log(e.code ?? "Error occurred");
+      log(e.message);
+      throw GenericWorkspaceException();
+    } catch (e) {
+      log(e.toString());
+      throw GenericWorkspaceException();
+    }
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getTransactionItems({
+    required String workspaceId,
+    required String transactionId,
+  }) async {
+    try {
+      final transactionItemsData = await supabase
+          .from("transaction_item")
+          .select('''
+        transaction_id,
+        product_id,
+        quantity,
+        price_per_item,
+        product:product_id(name)
+        ''')
+          .eq(
+            "workspace_id",
+            workspaceId,
+          )
+          .eq(
+            "transaction_id",
+            transactionId,
+          );
+      for (var element in transactionItemsData) {
+        log(element.toString());
+      }
+      return transactionItemsData;
+    } on PostgrestException catch (e) {
+      log(e.code ?? "Error occurred");
+      log(e.message);
+      throw GenericWorkspaceException();
+    } catch (e) {
+      log(e.toString());
+      throw GenericWorkspaceException();
     }
   }
 }
