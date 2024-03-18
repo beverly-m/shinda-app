@@ -50,6 +50,7 @@ dependencies:
   path_provider: ^2.1.2
   path: ^1.8.3
   sqlite3: ^2.4.0
+  pluto_grid: ^8.0.0
 
 dev_dependencies:
   flutter_test:

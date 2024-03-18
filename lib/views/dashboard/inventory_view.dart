@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
 import 'package:shinda_app/utilities/get_workspace.dart';
@@ -66,133 +67,125 @@ class _InventoryViewState extends State<InventoryView> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        child: _isLoading
-            ? const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(24.0),
-                  child: CircularProgressIndicator(
-                    color: Color.fromRGBO(0, 121, 107, 1),
+    return _isLoading
+        ? const Center(
+            child: Padding(
+              padding: EdgeInsets.all(24.0),
+              child: CircularProgressIndicator(
+                color: primary,
+              ),
+            ),
+          )
+        : Column(
+            children: [
+              Row(
+                children: [
+                  const Text(
+                    "Inventory",
+                    style: dashboardHeadline,
                   ),
-                ),
-              )
-            : Padding(
-                padding: const EdgeInsets.all(48.0),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          "Inventory",
-                          style: GoogleFonts.eczar(
-                              textStyle: const TextStyle(
-                            fontSize: 40,
-                            fontWeight: FontWeight.bold,
-                            color: Color.fromRGBO(0, 121, 107, 1),
-                          )),
-                        ),
-                        const Expanded(child: SizedBox()),
-                        _productsData != null && _productsData!.isNotEmpty
-                            ? FilledButton(
-                                style: const ButtonStyle(
-                                  backgroundColor: MaterialStatePropertyAll(
-                                    Color.fromRGBO(0, 121, 107, 1),
-                                  ),
-                                ),
-                                onPressed: () async {
-                                  await _showAddProductDialog(context);
-                                },
-                                child: const Text(
-                                  "Add Product",
-                                  style: TextStyle(fontSize: 16.0),
-                                ),
-                              )
-                            : const SizedBox(),
-                      ],
-                    ),
-                    const SizedBox(height: 48.0),
-                    _productsData != null && _productsData!.isNotEmpty
-                        ? SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            child: PaginatedDataTable(
-                              columns: productDataColumns,
-                              source: _productsDataSource,
-                              rowsPerPage: 10,
-                              columnSpacing: 100,
-                            ),
-                          )
-                        : Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(48.0),
-                              child: Column(
-                                children: [
-                                  const Icon(
-                                    Icons.inventory_2_outlined,
-                                    size: 200,
-                                    color: Color.fromRGBO(219, 240, 239, 1),
-                                  ),
-                                  const SizedBox(height: 48.0),
-                                  const Text(
-                                    "Add a new product to get started",
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                  const SizedBox(height: 48.0),
-                                  FilledButton(
-                                    style: const ButtonStyle(
-                                      backgroundColor: MaterialStatePropertyAll(
-                                        Color.fromRGBO(0, 121, 107, 1),
-                                      ),
-                                    ),
-                                    onPressed: () async {
-                                      await _showAddProductDialog(context);
-                                    },
-                                    child: const Text(
-                                      "Add Product",
-                                      style: TextStyle(fontSize: 16.0),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                  const Expanded(child: SizedBox()),
+                  _productsData != null && _productsData!.isNotEmpty
+                      ? FilledButton(
+                          style: const ButtonStyle(
+                            backgroundColor: MaterialStatePropertyAll(
+                              primary,
                             ),
                           ),
-                    // _productsData != null
-                    //     ? Container(
-                    //         padding: const EdgeInsets.all(16.0),
-                    //         child: ListView.builder(
-                    //           itemBuilder: (context, index) {
-                    //             return Container(
-                    //               margin: const EdgeInsets.only(bottom: 16.0),
-                    //               decoration: BoxDecoration(
-                    //                 border: Border.all(
-                    //                     color: const Color.fromARGB(
-                    //                         100, 141, 166, 255),
-                    //                     width: 2),
-                    //                 borderRadius: BorderRadius.circular(8),
-                    //               ),
-                    //               child: SizedBox(
-                    //                 width: 300.0,
-                    //                 child: ListTile(
-                    //                   title: Text(
-                    //                       _productsData![index]["product"]['name']),
-                    //                   subtitle: Text(_productsData![index]
-                    //                           ['product']['price']
-                    //                       .toString()),
-                    //                   onTap: () {
-                    //                     log(_productsData![index].toString());
-                    //                   },
-                    //                 ),
-                    //               ),
-                    //             );
-                    //           },
-                    //           itemCount: _productsData!.length,
-                    //           scrollDirection: Axis.vertical,
-                    //           shrinkWrap: true,
-                    //         ),
-                    //       )
-                    //     : const SizedBox(),
-                  ],
-                ),
-              ));
+                          onPressed: () async {
+                            await _showAddProductDialog(context);
+                          },
+                          child: const Text(
+                            "Add Product",
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                        )
+                      : const SizedBox(),
+                ],
+              ),
+              const SizedBox(height: 16.0),
+              _productsData != null && _productsData!.isNotEmpty
+                  ? SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      // child: PaginatedDataTable(
+                      //   columns: productDataColumns,
+                      //   source: _productsDataSource,
+                      //   rowsPerPage: 10,
+                      //   columnSpacing: 100,
+                      // ),
+                      child: ProductDataGrid(data: _productsData!),
+                    )
+                  : Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(48.0),
+                        child: Column(
+                          children: [
+                            const Icon(
+                              Icons.inventory_2_outlined,
+                              size: 200,
+                              color: Color.fromRGBO(219, 240, 239, 1),
+                            ),
+                            const SizedBox(height: 48.0),
+                            const Text(
+                              "Add a new product to get started",
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            const SizedBox(height: 48.0),
+                            FilledButton(
+                              style: const ButtonStyle(
+                                backgroundColor: MaterialStatePropertyAll(
+                                  Color.fromRGBO(0, 121, 107, 1),
+                                ),
+                              ),
+                              onPressed: () async {
+                                await _showAddProductDialog(context);
+                              },
+                              child: const Text(
+                                "Add Product",
+                                style: TextStyle(fontSize: 16.0),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+              // _productsData != null
+              //     ? Container(
+              //         padding: const EdgeInsets.all(16.0),
+              //         child: ListView.builder(
+              //           itemBuilder: (context, index) {
+              //             return Container(
+              //               margin: const EdgeInsets.only(bottom: 16.0),
+              //               decoration: BoxDecoration(
+              //                 border: Border.all(
+              //                     color: const Color.fromARGB(
+              //                         100, 141, 166, 255),
+              //                     width: 2),
+              //                 borderRadius: BorderRadius.circular(8),
+              //               ),
+              //               child: SizedBox(
+              //                 width: 300.0,
+              //                 child: ListTile(
+              //                   title: Text(
+              //                       _productsData![index]["product"]['name']),
+              //                   subtitle: Text(_productsData![index]
+              //                           ['product']['price']
+              //                       .toString()),
+              //                   onTap: () {
+              //                     log(_productsData![index].toString());
+              //                   },
+              //                 ),
+              //               ),
+              //             );
+              //           },
+              //           itemCount: _productsData!.length,
+              //           scrollDirection: Axis.vertical,
+              //           shrinkWrap: true,
+              //         ),
+              //       )
+              //     : const SizedBox(),
+            ],
+          );
   }
 
   void _addProduct() async {
