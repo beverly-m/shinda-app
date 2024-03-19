@@ -4,27 +4,32 @@ import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 
-class DebtorDataGrid extends StatefulWidget {
-  const DebtorDataGrid({super.key, required this.data});
+class TransactionDataGrid extends StatefulWidget {
+  const TransactionDataGrid({super.key, required this.data});
 
   final List<Map<String, dynamic>> data;
 
   @override
-  State<DebtorDataGrid> createState() => _DebtorDataGridState();
+  State<TransactionDataGrid> createState() => _TransactionDataGridState();
 }
 
-class _DebtorDataGridState extends State<DebtorDataGrid> {
+class _TransactionDataGridState extends State<TransactionDataGrid> {
   bool _isLoading = false;
 
-  List<PlutoColumn> debtorDataColumns = [
+  List<PlutoColumn> transactionDataColumns = [
     PlutoColumn(
-      title: 'Client name',
-      field: 'client_name',
+      title: 'Transaction id',
+      field: 'transaction_id',
       type: PlutoColumnType.text(),
     ),
     PlutoColumn(
-      title: 'Amount owed',
-      field: 'amount_owed',
+      title: 'Mode of payment',
+      field: 'payment_mode',
+      type: PlutoColumnType.text(),
+    ),
+    PlutoColumn(
+      title: 'Total Cost',
+      field: 'total_cost',
       type: PlutoColumnType.currency(
         name: 'RWF',
         symbol: 'RWF',
@@ -32,28 +37,18 @@ class _DebtorDataGridState extends State<DebtorDataGrid> {
       ),
     ),
     PlutoColumn(
-      title: 'Phone number',
-      field: 'phone_number',
-      type: PlutoColumnType.text(),
-    ),
-    PlutoColumn(
-      title: 'Address',
-      field: 'address',
-      type: PlutoColumnType.text(),
-    ),
-    PlutoColumn(
-      title: 'Date paid',
-      field: 'date_paid',
-      type: PlutoColumnType.date(),
-    ),
-    PlutoColumn(
       title: 'Paid',
       field: 'paid',
       type: PlutoColumnType.select(['true', 'false']),
     ),
+    PlutoColumn(
+      title: 'Date created',
+      field: 'date_created',
+      type: PlutoColumnType.date(),
+    ),
   ];
 
-  final List<PlutoRow> debtorDataRows = [];
+  final List<PlutoRow> transactionDataRows = [];
   late final PlutoGridStateManager stateManager;
 
   @override
@@ -68,18 +63,13 @@ class _DebtorDataGridState extends State<DebtorDataGrid> {
     });
 
     for (var element in widget.data) {
-      debtorDataRows.add(
-        PlutoRow(
-          cells: {
-            'client_name': PlutoCell(value: element['client_name']),
-            'amount_owed': PlutoCell(value: element['amount_owed']),
-            'phone_number': PlutoCell(value: element['phone_number']),
-            'address': PlutoCell(value: element['address']),
-            'date_paid': PlutoCell(value: element['date_paid']),
-            'paid': PlutoCell(value: element['transaction']['is_paid']),
-          },
-        ),
-      );
+      transactionDataRows.add(PlutoRow(cells: {
+        'transaction_id': PlutoCell(value: element['transaction_id']),
+        'payment_mode': PlutoCell(value: element['payment_mode']),
+        'total_cost': PlutoCell(value: element['grand_total']),
+        'paid': PlutoCell(value: element['is_paid']),
+        'date_created': PlutoCell(value: element['created_at']),
+      }));
     }
 
     setState(() {
@@ -100,8 +90,8 @@ class _DebtorDataGridState extends State<DebtorDataGrid> {
             height: MediaQuery.of(context).size.height,
             child: PlutoGrid(
               mode: PlutoGridMode.readOnly,
-              columns: debtorDataColumns,
-              rows: debtorDataRows,
+              columns: transactionDataColumns,
+              rows: transactionDataRows,
               noRowsWidget: const Column(
                 children: [
                   Icon(
@@ -112,7 +102,7 @@ class _DebtorDataGridState extends State<DebtorDataGrid> {
                   SizedBox(
                     height: 16.0,
                   ),
-                  Text("No debtors added"),
+                  Text("No transactions yet"),
                 ],
               ),
               onLoaded: (PlutoGridOnLoadedEvent event) {

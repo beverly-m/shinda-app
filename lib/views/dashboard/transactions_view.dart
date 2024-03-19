@@ -7,7 +7,7 @@ class TransactionsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child: Text(
-        "Sales",
+        "Transactions",
         style: TextStyle(
           fontSize: 32,
           fontWeight: FontWeight.bold,

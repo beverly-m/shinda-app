@@ -31,19 +31,19 @@ class ProductData extends DataTableSource {
   int get selectedRowCount => 0;
 }
 
-class ProductDataGrid extends StatefulWidget {
-  const ProductDataGrid({super.key, required this.data});
+class InventoryDataGrid extends StatefulWidget {
+  const InventoryDataGrid({super.key, required this.data});
 
   final List<Map<String, dynamic>> data;
 
   @override
-  State<ProductDataGrid> createState() => _ProductDataGridState();
+  State<InventoryDataGrid> createState() => _InventoryDataGridState();
 }
 
-class _ProductDataGridState extends State<ProductDataGrid> {
+class _InventoryDataGridState extends State<InventoryDataGrid> {
   bool _isLoading = false;
 
-  List<PlutoColumn> productDataColumns = [
+  List<PlutoColumn> inventoryDataColumns = [
     PlutoColumn(
       title: 'Name',
       field: 'name',
@@ -55,10 +55,16 @@ class _ProductDataGridState extends State<ProductDataGrid> {
       type: PlutoColumnType.currency(
         name: 'RWF',
         symbol: 'RWF',
+        decimalDigits: 2,
       ),
     ),
     PlutoColumn(
-      title: 'Quantity',
+      title: 'Date of expiry',
+      field: 'date_of_expiry',
+      type: PlutoColumnType.date(),
+    ),
+    PlutoColumn(
+      title: 'Start Quantity',
       field: 'quantity',
       type: PlutoColumnType.number(),
     ),
@@ -72,9 +78,19 @@ class _ProductDataGridState extends State<ProductDataGrid> {
       field: 'available',
       type: PlutoColumnType.number(),
     ),
+    PlutoColumn(
+      title: 'Defective',
+      field: 'defective',
+      type: PlutoColumnType.number(),
+    ),
+    PlutoColumn(
+      title: 'Reorder Level',
+      field: 'reorder_level',
+      type: PlutoColumnType.number(),
+    ),
   ];
 
-  final List<PlutoRow> productDataRows = [];
+  final List<PlutoRow> inventoryDataRows = [];
   late final PlutoGridStateManager stateManager;
 
   @override
@@ -88,14 +104,17 @@ class _ProductDataGridState extends State<ProductDataGrid> {
       _isLoading = true;
     });
     for (var element in widget.data) {
-      productDataRows.add(
+      inventoryDataRows.add(
         PlutoRow(
           cells: {
             'name': PlutoCell(value: element["product"]['name']),
             'price_rwf': PlutoCell(value: element["product"]['price']),
+            'date_of_expiry': PlutoCell(value: element["expiration_date"]),
             'quantity': PlutoCell(value: element['quantity']),
             'sold': PlutoCell(value: element['quantity_sold']),
             'available': PlutoCell(value: element['quantity_available']),
+            'defective': PlutoCell(value: element['quantity_defective']),
+            'reorder_level': PlutoCell(value: element['reorder_level']),
           },
         ),
       );
@@ -118,8 +137,8 @@ class _ProductDataGridState extends State<ProductDataGrid> {
             height: MediaQuery.of(context).size.height,
             child: PlutoGrid(
               mode: PlutoGridMode.readOnly,
-              columns: productDataColumns,
-              rows: productDataRows,
+              columns: inventoryDataColumns,
+              rows: inventoryDataRows,
               noRowsWidget: const Column(
                 children: [
                   Icon(

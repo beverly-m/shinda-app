@@ -3,12 +3,11 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
 import 'package:shinda_app/utilities/get_workspace.dart';
-import 'package:shinda_app/utilities/product_data.dart';
+import 'package:shinda_app/utilities/inventory_data.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
 
 class InventoryView extends StatefulWidget {
@@ -36,8 +35,6 @@ class _InventoryViewState extends State<InventoryView> {
   bool _isLoading = false;
 
   List<Map<String, dynamic>>? _productsData;
-
-  late DataTableSource _productsDataSource;
 
   @override
   void initState() {
@@ -113,7 +110,7 @@ class _InventoryViewState extends State<InventoryView> {
                       //   rowsPerPage: 10,
                       //   columnSpacing: 100,
                       // ),
-                      child: ProductDataGrid(data: _productsData!),
+                      child: InventoryDataGrid(data: _productsData!),
                     )
                   : Center(
                       child: Padding(
@@ -260,15 +257,6 @@ class _InventoryViewState extends State<InventoryView> {
 
       setState(() {
         _productsData = products;
-      });
-
-      if (_productsData != null) {
-        setState(() {
-          _productsDataSource = ProductData(data: _productsData!);
-        });
-      }
-
-      setState(() {
         _isLoading = false;
       });
     } on GenericWorkspaceException {

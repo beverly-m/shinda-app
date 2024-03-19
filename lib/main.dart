@@ -13,7 +13,7 @@ import 'package:shinda_app/views/auth/verify_email_view.dart';
 import 'package:shinda_app/views/dashboard/inventory_view.dart';
 import 'package:shinda_app/views/dashboard/products_view.dart';
 import 'package:shinda_app/views/dashboard/reports_view.dart';
-import 'package:shinda_app/views/dashboard/sales_view.dart';
+import 'package:shinda_app/views/dashboard/transactions_view.dart';
 import 'package:shinda_app/views/dashboard/settings_view.dart';
 import 'package:shinda_app/views/dashboard/users_view.dart';
 import 'package:google_fonts/google_fonts.dart';
