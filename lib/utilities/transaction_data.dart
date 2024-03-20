@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:shinda_app/components/buttons.dart';
 import 'package:shinda_app/constants/text_syles.dart';
@@ -25,6 +23,7 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
   bool _isLoading2 = false;
 
   List<Map<String, dynamic>>? _transactionItemsData;
+  Map<String, dynamic>? _debtorData;
 
   List<PlutoColumn> transactionDataColumns = [
     PlutoColumn(
@@ -59,29 +58,17 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
     PlutoColumn(
       title: 'Details',
       field: 'details',
-      type: PlutoColumnType.select([
-        IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.more_horiz_outlined),
-        ),
-      ]),
+      type: PlutoColumnType.text(),
     ),
   ];
 
   final List<PlutoRow> transactionDataRows = [];
   late final PlutoGridStateManager stateManager;
-  late StreamSubscription removeKeyboardListener;
 
   @override
   void initState() {
     super.initState();
     _getData();
-  }
-
-  @override
-  void dispose() {
-    removeKeyboardListener.cancel();
-    super.dispose();
   }
 
   void _getData() {
@@ -98,7 +85,7 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
             'total_cost': PlutoCell(value: element['grand_total']),
             'paid': PlutoCell(value: element['is_paid']),
             'date_created': PlutoCell(value: element['created_at']),
-            'details': PlutoCell(value: ''),
+            'details': PlutoCell(value: 'View Details'),
           },
         ),
       );
@@ -112,6 +99,7 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
   void _openDetail({
     required PlutoRow row,
     required List<Map<String, dynamic>> items,
+    Map<String, dynamic>? debtor,
     required bool isPaid,
   }) async {
     double totalPrice = 0;
@@ -240,17 +228,79 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
                     ),
                     isPaid
                         ? const SizedBox()
-                        : Padding(
-                            padding: const EdgeInsets.only(top: 24.0),
-                            child: OutlinedAppButton(
-                              onPressed: () {},
-                              labelText: "Mark As Paid",
-                            ),
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                height: 16.0,
+                              ),
+                              const Divider(
+                                height: 0.5,
+                                thickness: 0.5,
+                                color: surface3,
+                              ),
+                              const SizedBox(
+                                height: 16.0,
+                              ),
+                              const Text(
+                                "Client details",
+                                style: dashboardSubtitle,
+                              ),
+                              const SizedBox(height: 8.0),
+                              ListTile(
+                                contentPadding:
+                                    const EdgeInsets.symmetric(vertical: 4.0),
+                                leading: Container(
+                                  width: 48.0,
+                                  height: 48.0,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    color: surface1,
+                                  ),
+                                  child: const Icon(
+                                    Icons.person_outline,
+                                    color: Colors.black12,
+                                    size: 24.0,
+                                  ),
+                                ),
+                                title: Text(debtor!['client_name']),
+                                subtitle: Text.rich(
+                                  TextSpan(
+                                    text: debtor['phone_number'],
+                                    children: [
+                                      debtor['address'] != null
+                                          ? TextSpan(
+                                              text: ' | ${debtor['address']}')
+                                          : const TextSpan()
+                                    ],
+                                  ),
+                                ),
+                                trailing: OutlinedAppButton(
+                                  onPressed: () {},
+                                  labelText: "Mark As Paid",
+                                ),
+                              ),
+                            ],
                           ),
                   ],
                 ),
               ),
             ),
+            actions: [
+              Row(
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      "Close",
+                      style: body1.copyWith(color: primary),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           );
         });
   }
@@ -279,6 +329,25 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
     } catch (e) {
       log(e.toString());
       _isLoading2 = false;
+    }
+  }
+
+  Future<void> _getDebtorData({required String transactionId}) async {
+    try {
+      final currentWorkspace = await getCurrentWorkspaceId();
+
+      final Map<String, dynamic> item = await WorkspaceService().getDebtor(
+        workspaceId: currentWorkspace!,
+        transactionId: transactionId,
+      );
+
+      setState(() {
+        _debtorData = item;
+      });
+    } on GenericWorkspaceException {
+      log("Error occurred");
+    } catch (e) {
+      log(e.toString());
     }
   }
 
@@ -328,11 +397,15 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
                       .map((e) => e.value.value)
                       .toList()[3] as bool;
                   await _getTransactionItemsData(transactionId: transactionId);
+                  if (!isPaid) {
+                    await _getDebtorData(transactionId: transactionId);
+                  }
                   log(transactionId);
                   _openDetail(
                     row: event.row!,
                     items: _transactionItemsData!,
                     isPaid: isPaid,
+                    debtor: _debtorData,
                   );
                 }
               },

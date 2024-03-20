@@ -312,4 +312,43 @@ class WorkspaceService implements WorkspaceProvider {
       throw GenericWorkspaceException();
     }
   }
+
+  @override
+  Future<Map<String, dynamic>> getDebtor({
+    required String workspaceId,
+    required String transactionId,
+  }) async {
+    try {
+      final debtorData = await supabase
+          .from("debtor")
+          .select('''
+            debtor_id,
+            client_name,
+            amount_owed,
+            phone_number,
+            address,
+            date_paid,
+            transaction:transaction_id (transaction_id, payment_mode, is_paid)
+          ''')
+          .eq(
+            'workspace_id',
+            workspaceId,
+          )
+          .eq(
+            'transaction_id',
+            transactionId,
+          )
+          .limit(1)
+          .single();
+
+      return debtorData;
+    } on PostgrestException catch (e) {
+      log(e.code ?? "Error occurred");
+      log(e.message);
+      throw GenericWorkspaceException();
+    } catch (e) {
+      log(e.toString());
+      throw GenericWorkspaceException();
+    }
+  }
 }

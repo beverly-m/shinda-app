@@ -30,6 +30,8 @@ abstract class WorkspaceProvider {
 
   Future<List<Map<String, dynamic>>> getDebtors({required String workspaceId});
 
+  Future<Map<String, dynamic>> getDebtor({required String workspaceId, required String transactionId,});
+
   Future<void> addTransaction({
     required String workspaceId,
     required double subTotal,
