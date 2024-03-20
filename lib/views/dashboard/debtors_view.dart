@@ -27,11 +27,6 @@ class _DebtorsViewState extends State<DebtorsView> {
     _getDebtorData();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   void _getDebtorData() async {
     setState(() {
       _isLoading = true;

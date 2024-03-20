@@ -17,6 +17,11 @@ const TextStyle body2 = TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+const TextStyle subtitle1 = TextStyle(
+  fontSize: 16,
+  fontWeight: FontWeight.w600,
+);
+
 const TextStyle subtitle2 = TextStyle(
   fontSize: 14,
   fontWeight: FontWeight.w600,
