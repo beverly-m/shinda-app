@@ -23,6 +23,7 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
   bool _isLoading = false;
   bool _isLoading2 = false;
 
+  List<Map<String, dynamic>>? _transactionsData;
   List<Map<String, dynamic>>? _transactionItemsData;
   Map<String, dynamic>? _debtorData;
 
@@ -82,29 +83,49 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
     super.dispose();
   }
 
-  void _getData() {
+  void _getData() async {
     setState(() {
       _isLoading = true;
+      // _transactionsData = widget.data;
     });
 
-    for (var element in widget.data) {
-      transactionDataRows.add(
-        PlutoRow(
-          cells: {
-            'transaction_id': PlutoCell(value: element['transaction_id']),
-            'payment_mode': PlutoCell(value: element['payment_mode']),
-            'total_cost': PlutoCell(value: element['grand_total']),
-            'paid': PlutoCell(value: element['is_paid']),
-            'date_created': PlutoCell(value: element['created_at']),
-            'details': PlutoCell(value: 'View Details'),
-          },
-        ),
-      );
-    }
+    try {
+      final currentWorkspace = await getCurrentWorkspaceId();
 
-    setState(() {
+      final List<Map<String, dynamic>> transactions = await WorkspaceService()
+          .getTransactions(workspaceId: currentWorkspace!);
+
+      setState(() {
+        _transactionsData = transactions;
+      });
+
+      transactionDataRows.clear();
+
+      for (var element in _transactionsData!) {
+        transactionDataRows.add(
+          PlutoRow(
+            cells: {
+              'transaction_id': PlutoCell(value: element['transaction_id']),
+              'payment_mode': PlutoCell(value: element['payment_mode']),
+              'total_cost': PlutoCell(value: element['grand_total']),
+              'paid': PlutoCell(value: element['is_paid']),
+              'date_created': PlutoCell(value: element['created_at']),
+              'details': PlutoCell(value: 'View Details'),
+            },
+          ),
+        );
+      }
+
+      setState(() {
+        _isLoading = false;
+      });
+    } on GenericWorkspaceException {
+      log("Error occurred");
       _isLoading = false;
-    });
+    } catch (e) {
+      log(e.toString());
+      _isLoading = false;
+    }
   }
 
   void _openDetail({
@@ -321,8 +342,6 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
   }
 
   Future<void> _showUpdateTransactionDialog({required String transactionId}) {
-    log("Selected payment mode:");
-    log(selectedPaymentMode?.label ?? "null");
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -360,7 +379,6 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
                       setState(() {
                         selectedPaymentMode = paymentMode;
                       });
-                      log(selectedPaymentMode!.label);
                     },
                     dropdownMenuEntries: PaymentModeLabel.values
                         .map<DropdownMenuEntry<PaymentModeLabel>>(
@@ -392,9 +410,6 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
                   ),
                   FilledButton(
                     onPressed: () {
-                      log('Update the following transaction');
-                      log(transactionId);
-
                       _updateTransaction(
                         transactionId: transactionId,
                         paymentMode: selectedPaymentMode!.label,
@@ -433,7 +448,6 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
 
       setState(() {
         _isLoading = false;
-        stateManager = null;
       });
 
       _getData();
@@ -485,8 +499,6 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
       setState(() {
         _debtorData = item;
       });
-      // log("Debtor data");
-      // log(_debtorData!['transaction'].toString());
     } on GenericWorkspaceException {
       log("Error occurred");
     } catch (e) {
@@ -523,9 +535,10 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
                 ],
               ),
               onLoaded: (PlutoGridOnLoadedEvent event) {
-                stateManager = event.stateManager;
+                // stateManager = event.stateManager;
                 // stateManager.setShowColumnFilter(true);
-                stateManager!.setSelectingMode(PlutoGridSelectingMode.none);
+                event.stateManager
+                    .setSelectingMode(PlutoGridSelectingMode.none);
               },
               onChanged: (PlutoGridOnChangedEvent event) {
                 log(event.toString());

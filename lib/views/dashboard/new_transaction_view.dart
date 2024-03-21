@@ -398,7 +398,6 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                       setState(() {
                         _phoneNumberWithCode = number.phoneNumber!;
                       });
-                      log(_phoneNumberWithCode);
                     },
                     onInputValidated: (bool value) {
                       log(value.toString());
@@ -494,9 +493,6 @@ class _NewTransactionViewState extends State<NewTransactionView> {
       final clientName = _clientName.text.trim();
       final address = _address.text.trim();
       final phoneNumber = _phoneNumberWithCode;
-
-      log("$clientName, $address, $phoneNumber");
-      log("$workspaceId, $subTotal, $grandTotal, $isPaid, $products,");
 
       _clientName.clear();
       _address.clear();
@@ -922,8 +918,6 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                         selectedPaymentMode =
                                                                             paymentMode;
                                                                       });
-                                                                      log(selectedPaymentMode!
-                                                                          .label);
                                                                     },
                                                                     dropdownMenuEntries: PaymentModeLabel.values.map<
                                                                         DropdownMenuEntry<
