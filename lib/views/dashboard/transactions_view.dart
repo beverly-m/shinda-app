@@ -67,10 +67,7 @@ class _TransactionsViewState extends State<TransactionsView> {
                 children: [
                   Text(
                     "Transactions",
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: dashboardHeadline,
                   ),
                 ],
               ),
