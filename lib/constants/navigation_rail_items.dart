@@ -29,7 +29,7 @@ final List<NavigationRailDestination> navigationRailItems = [
         color: Colors.white,
       ),
     ),
-    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+    padding: const EdgeInsets.symmetric(horizontal: 16.0),
   ),
   const NavigationRailDestination(
     label: Text(
@@ -38,7 +38,7 @@ final List<NavigationRailDestination> navigationRailItems = [
     ),
     icon: Icon(Icons.home_outlined),
     selectedIcon: Icon(Icons.home),
-    padding: EdgeInsets.symmetric(horizontal: 24.0),
+    padding: EdgeInsets.symmetric(horizontal: 16.0),
   ),
   const NavigationRailDestination(
     label: Text(
@@ -47,7 +47,7 @@ final List<NavigationRailDestination> navigationRailItems = [
     ),
     icon: Icon(Icons.receipt_long_outlined),
     selectedIcon: Icon(Icons.receipt_long),
-    padding: EdgeInsets.symmetric(horizontal: 24.0),
+    padding: EdgeInsets.symmetric(horizontal: 16.0),
   ),
   const NavigationRailDestination(
     label: Text(
@@ -56,7 +56,7 @@ final List<NavigationRailDestination> navigationRailItems = [
     ),
     icon: Icon(Icons.inventory_2_outlined),
     selectedIcon: Icon(Icons.inventory),
-    padding: EdgeInsets.symmetric(horizontal: 24.0),
+    padding: EdgeInsets.symmetric(horizontal: 16.0),
   ),
   const NavigationRailDestination(
     label: Text(
@@ -65,7 +65,7 @@ final List<NavigationRailDestination> navigationRailItems = [
     ),
     icon: Icon(Icons.monetization_on_outlined),
     selectedIcon: Icon(Icons.monetization_on),
-    padding: EdgeInsets.symmetric(horizontal: 24.0),
+    padding: EdgeInsets.symmetric(horizontal: 16.0),
   ),
   const NavigationRailDestination(
     label: Text(
@@ -74,7 +74,7 @@ final List<NavigationRailDestination> navigationRailItems = [
     ),
     icon: Icon(Icons.auto_graph_outlined),
     selectedIcon: Icon(Icons.auto_graph),
-    padding: EdgeInsets.symmetric(horizontal: 24.0),
+    padding: EdgeInsets.symmetric(horizontal: 16.0),
   ),
   const NavigationRailDestination(
     label: Text(
@@ -83,7 +83,7 @@ final List<NavigationRailDestination> navigationRailItems = [
     ),
     icon: Icon(Icons.person_4_outlined),
     selectedIcon: Icon(Icons.person_4),
-    padding: EdgeInsets.symmetric(horizontal: 24.0),
+    padding: EdgeInsets.symmetric(horizontal: 16.0),
   ),
   const NavigationRailDestination(
     label: Text(
@@ -92,7 +92,7 @@ final List<NavigationRailDestination> navigationRailItems = [
     ),
     icon: Icon(Icons.settings_outlined),
     selectedIcon: Icon(Icons.settings),
-    padding: EdgeInsets.symmetric(horizontal: 24.0),
+    padding: EdgeInsets.symmetric(horizontal: 16.0),
   ),
   const NavigationRailDestination(
     label: Text(
@@ -101,6 +101,6 @@ final List<NavigationRailDestination> navigationRailItems = [
     ),
     icon: Icon(Icons.logout_outlined),
     selectedIcon: Icon(Icons.logout),
-    padding: EdgeInsets.symmetric(horizontal: 24.0),
+    padding: EdgeInsets.symmetric(horizontal: 16.0),
   ),
 ];

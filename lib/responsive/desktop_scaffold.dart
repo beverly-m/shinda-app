@@ -152,190 +152,207 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
             ),
           )
         : Scaffold(
-            body: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.height,
-                  decoration: const BoxDecoration(
-                    border: Border(
-                      right: BorderSide(
-                        color: surface3,
-                      ),
-                    ),
-                  ),
-                  child: SingleChildScrollView(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                          minHeight: MediaQuery.of(context).size.height),
-                      child: IntrinsicHeight(
-                        child: NavigationRail(
-                          indicatorColor: surface3,
-                          selectedIndex: _selectedIndex,
-                          groupAlignment: 0.0,
-                          onDestinationSelected: (int index) async {
-                            if (index != (navigationRailItems.length - 1)) {
-                              setState(() {
-                                _selectedIndex = index;
-                              });
-                            } else {
-                              final isLogout = await showLogOutDialog(context);
-                              if (isLogout) {
-                                try {
-                                  await AuthService.supabase().logOut();
-                                  if (context.mounted) {
-                                    Navigator.of(context)
-                                        .pushNamedAndRemoveUntil(
-                                      loginRoute,
-                                      (_) => false,
-                                    );
-                                  }
-                                } on UserNotLoggedInAuthException {
-                                  if (context.mounted) {
-                                    Navigator.of(context)
-                                        .pushNamedAndRemoveUntil(
-                                      loginRoute,
-                                      (_) => false,
-                                    );
-                                  }
-                                } on GenericAuthException {
-                                  if (context.mounted) {
-                                    await showErrorDialog(
-                                      context,
-                                      "An error occurred. Try again.",
-                                    );
-                                  }
-                                } catch (_) {
-                                  if (context.mounted) {
-                                    await showErrorDialog(
-                                      context,
-                                      "An error occurred. Try again.",
-                                    );
-                                  }
-                                }
-                              }
-                            }
-                          },
-                          labelType: NavigationRailLabelType.all,
-                          destinations: navigationRailItems,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                    child: Column(
-                  children: [
-                    Container(
+            body: SafeArea(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      height: MediaQuery.of(context).size.height,
                       decoration: const BoxDecoration(
                         border: Border(
-                          bottom: BorderSide(
+                          right: BorderSide(
                             color: surface3,
                           ),
                         ),
                       ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32.0,
-                        vertical: 12.0,
+                      child: SingleChildScrollView(
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                              minHeight: MediaQuery.of(context).size.height),
+                          child: IntrinsicHeight(
+                            child: NavigationRail(
+                              indicatorColor: surface3,
+                              selectedIndex: _selectedIndex,
+                              groupAlignment: 0.0,
+                              onDestinationSelected: (int index) async {
+                                if (index != (navigationRailItems.length - 1)) {
+                                  setState(() {
+                                    _selectedIndex = index;
+                                  });
+                                } else {
+                                  final isLogout =
+                                      await showLogOutDialog(context);
+                                  if (isLogout) {
+                                    try {
+                                      await AuthService.supabase().logOut();
+                                      if (context.mounted) {
+                                        Navigator.of(context)
+                                            .pushNamedAndRemoveUntil(
+                                          loginRoute,
+                                          (_) => false,
+                                        );
+                                      }
+                                    } on UserNotLoggedInAuthException {
+                                      if (context.mounted) {
+                                        Navigator.of(context)
+                                            .pushNamedAndRemoveUntil(
+                                          loginRoute,
+                                          (_) => false,
+                                        );
+                                      }
+                                    } on GenericAuthException {
+                                      if (context.mounted) {
+                                        await showErrorDialog(
+                                          context,
+                                          "An error occurred. Try again.",
+                                        );
+                                      }
+                                    } catch (_) {
+                                      if (context.mounted) {
+                                        await showErrorDialog(
+                                          context,
+                                          "An error occurred. Try again.",
+                                        );
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              labelType: NavigationRailLabelType.all,
+                              destinations: navigationRailItems,
+                            ),
+                          ),
+                        ),
                       ),
-                      child: Row(
+                    ),
+                  ),
+                  Expanded(
+                      flex: 11,
+                      child: Column(
                         children: [
-                          _currentWorkspaceName != null &&
-                                  _workspaceData != null &&
-                                  _workspaceData!.isNotEmpty
-                              ? InkWell(
-                                  onTap: () {
-                                    _showWorkspaceMenu();
-                                  },
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 4.0,
-                                      horizontal: 8.0,
-                                    ).copyWith(left: 12.0),
-                                    decoration: BoxDecoration(
-                                      color: surface1,
-                                      border: const Border.fromBorderSide(
-                                        BorderSide(color: surface3),
-                                      ),
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          "$_currentWorkspaceName's workspace",
-                                          style: body2,
-                                        ),
-                                        const SizedBox(width: 8.0),
-                                        const Column(
-                                          children: [
-                                            Icon(
-                                              Icons.keyboard_arrow_up_outlined,
-                                              size: 16.0,
-                                            ),
-                                            Icon(
-                                              Icons
-                                                  .keyboard_arrow_down_outlined,
-                                              size: 16.0,
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              : const SizedBox(),
-                          const Expanded(child: SizedBox()),
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 4.0,
-                              horizontal: 8.0,
-                            ).copyWith(left: 12.0),
-                            decoration: BoxDecoration(
-                              border: const Border.fromBorderSide(
-                                BorderSide(color: surface3),
+                            decoration: const BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: surface3,
+                                ),
                               ),
-                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 32.0,
+                              vertical: 12.0,
                             ),
                             child: Row(
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      _isLoading ? "" : _currentUser!.fullName!,
-                                      style: subtitle2,
+                                _currentWorkspaceName != null &&
+                                        _workspaceData != null &&
+                                        _workspaceData!.isNotEmpty
+                                    ? InkWell(
+                                        onTap: () {
+                                          _showWorkspaceMenu();
+                                        },
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 4.0,
+                                            horizontal: 8.0,
+                                          ).copyWith(left: 12.0),
+                                          decoration: BoxDecoration(
+                                            color: surface1,
+                                            border: const Border.fromBorderSide(
+                                              BorderSide(color: surface3),
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(8.0),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                "$_currentWorkspaceName's workspace",
+                                                style: body2,
+                                              ),
+                                              const SizedBox(width: 8.0),
+                                              const Column(
+                                                children: [
+                                                  Icon(
+                                                    Icons
+                                                        .keyboard_arrow_up_outlined,
+                                                    size: 16.0,
+                                                  ),
+                                                  Icon(
+                                                    Icons
+                                                        .keyboard_arrow_down_outlined,
+                                                    size: 16.0,
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    : const SizedBox(),
+                                const Expanded(child: SizedBox()),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 4.0,
+                                    horizontal: 8.0,
+                                  ).copyWith(left: 12.0),
+                                  decoration: BoxDecoration(
+                                    border: const Border.fromBorderSide(
+                                      BorderSide(color: surface3),
                                     ),
-                                    Text(
-                                      _isLoading ? "" : _currentUser!.email!,
-                                      style: body2,
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(width: 8.0),
-                                const Icon(
-                                  Icons.account_circle,
-                                  size: 32,
-                                  color: Colors.black54,
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            _isLoading
+                                                ? ""
+                                                : _currentUser!.fullName!,
+                                            style: subtitle2,
+                                          ),
+                                          Text(
+                                            _isLoading
+                                                ? ""
+                                                : _currentUser!.email!,
+                                            style: body2,
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(width: 8.0),
+                                      const Icon(
+                                        Icons.account_circle,
+                                        size: 32,
+                                        color: Colors.black54,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
                           ),
+                          Expanded(
+                            flex: 11,
+                            child: SingleChildScrollView(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 32.0,
+                                vertical: 24.0,
+                              ),
+                              child:
+                                  SizedBox(child: drawerViews[_selectedIndex]),
+                            ),
+                          ),
                         ],
-                      ),
-                    ),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 32.0,
-                          vertical: 24.0,
-                        ),
-                        child: SizedBox(child: drawerViews[_selectedIndex]),
-                      ),
-                    ),
-                  ],
-                )),
-              ],
+                      )),
+                ],
+              ),
             ),
           );
   }

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shinda_app/components/dashboard_widget.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
@@ -212,61 +213,39 @@ class _DashboardViewState extends State<DashboardView> {
                     )
                   : const SizedBox(),
               _workspaceData != null && _workspaceData!.isNotEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.all(48.0),
-                      child: Center(
-                          child: Column(
-                        children: [
-                          const Icon(
-                            Icons.summarize_outlined,
-                            size: 200,
-                            color: Color.fromRGBO(219, 240, 239, 1),
+                  ? Row(
+                      children: [
+                        const Expanded(
+                          flex: 8,
+                          child: DashboardWidget() ,
+                          // child: Padding(
+                          //   padding: const EdgeInsets.all(48.0),
+                          //   child: Center(
+                          //       child: Column(
+                          //     children: [
+                          //       const Icon(
+                          //         Icons.summarize_outlined,
+                          //         size: 200,
+                          //         color: Color.fromRGBO(219, 240, 239, 1),
+                          //       ),
+                          //       const SizedBox(height: 48.0),
+                          //       Text(
+                          //         "$_currentWorkspaceName Workspace Data Summary",
+                          //         style: const TextStyle(fontSize: 16),
+                          //       ),
+                          //     ],
+                          //   )),
+                          // ),
+                        ),
+                        Expanded(
+                          flex: 3,
+                          child: Container(
+                            color: Colors.black,
+                            child: Text("Side info"),
                           ),
-                          const SizedBox(height: 48.0),
-                          Text(
-                            "$_currentWorkspaceName Workspace Data Summary",
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        ],
-                      )),
+                        )
+                      ],
                     )
-                  // ? Container(
-                  //     padding: const EdgeInsets.all(16.0),
-                  //     child: ListView.builder(
-                  //       itemBuilder: (context, index) {
-                  //         return Container(
-                  //           margin: const EdgeInsets.only(bottom: 16.0),
-                  //           decoration: BoxDecoration(
-                  //             border: Border.all(
-                  //                 color: const Color.fromARGB(
-                  //                     100, 141, 166, 255),
-                  //                 width: 2),
-                  //             borderRadius: BorderRadius.circular(8),
-                  //           ),
-                  //           child: SizedBox(
-                  //             width: 300.0,
-                  //             child: ListTile(
-                  //               title: Text(_workspaceData![index]
-                  //                   ["workspace"]['name']),
-                  //               subtitle: Text(
-                  //                   _workspaceData![index]['workspace_id']),
-                  //               onTap: () {
-                  //                 _selectWorkspace(
-                  //                   workspace: _workspaceData![index]
-                  //                       ['workspace_id'],
-                  //                   workspaceName: _workspaceData![index]
-                  //                       ['name'],
-                  //                 );
-                  //               },
-                  //             ),
-                  //           ),
-                  //         );
-                  //       },
-                  //       itemCount: _workspaceData!.length,
-                  //       scrollDirection: Axis.vertical,
-                  //       shrinkWrap: true,
-                  //     ),
-                  //   )
                   : Center(
                       child: Padding(
                         padding: const EdgeInsets.all(48.0),
