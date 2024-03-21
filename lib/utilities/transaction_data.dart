@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:shinda_app/components/buttons.dart';
 import 'package:shinda_app/constants/text_syles.dart';
+import 'package:shinda_app/enums/dropdown_menu.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
 import 'package:shinda_app/utilities/get_workspace.dart';
@@ -24,6 +25,9 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
 
   List<Map<String, dynamic>>? _transactionItemsData;
   Map<String, dynamic>? _debtorData;
+
+  late final TextEditingController _paymentModeController;
+  PaymentModeLabel? selectedPaymentMode = PaymentModeLabel.cash;
 
   List<PlutoColumn> transactionDataColumns = [
     PlutoColumn(
@@ -63,12 +67,19 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
   ];
 
   final List<PlutoRow> transactionDataRows = [];
-  late final PlutoGridStateManager stateManager;
+  late final PlutoGridStateManager? stateManager;
 
   @override
   void initState() {
     super.initState();
+    _paymentModeController = TextEditingController();
     _getData();
+  }
+
+  @override
+  void dispose() {
+    _paymentModeController.dispose();
+    super.dispose();
   }
 
   void _getData() {
@@ -276,7 +287,11 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
                                   ),
                                 ),
                                 trailing: OutlinedAppButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    _showUpdateTransactionDialog(
+                                        transactionId: debtor['transaction']
+                                            ['transaction_id']);
+                                  },
                                   labelText: "Mark As Paid",
                                 ),
                               ),
@@ -303,6 +318,132 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
             ],
           );
         });
+  }
+
+  Future<void> _showUpdateTransactionDialog({required String transactionId}) {
+    log("Selected payment mode:");
+    log(selectedPaymentMode?.label ?? "null");
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            surfaceTintColor: surface1,
+            shape: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            title: const Text("Update Transaction"),
+            contentPadding: const EdgeInsets.all(24.0),
+            content: SizedBox(
+              height: 120,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 16.0),
+                  DropdownMenu<PaymentModeLabel>(
+                    menuStyle: MenuStyle(
+                      shape: MaterialStatePropertyAll(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                    ),
+                    initialSelection: PaymentModeLabel.cash,
+                    controller: _paymentModeController,
+                    requestFocusOnTap: true,
+                    label: const Text(
+                      'Payment Mode',
+                      style: body1,
+                    ),
+                    onSelected: (PaymentModeLabel? paymentMode) {
+                      setState(() {
+                        selectedPaymentMode = paymentMode;
+                      });
+                      log(selectedPaymentMode!.label);
+                    },
+                    dropdownMenuEntries: PaymentModeLabel.values
+                        .map<DropdownMenuEntry<PaymentModeLabel>>(
+                            (PaymentModeLabel paymentMode) {
+                      return DropdownMenuEntry<PaymentModeLabel>(
+                        value: paymentMode,
+                        label: paymentMode.label,
+                        enabled: paymentMode.label != 'Grey',
+                        style: MenuItemButton.styleFrom(
+                          textStyle: body1,
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              Row(
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                  const SizedBox(
+                    width: 16.0,
+                  ),
+                  FilledButton(
+                    onPressed: () {
+                      log('Update the following transaction');
+                      log(transactionId);
+
+                      _updateTransaction(
+                        transactionId: transactionId,
+                        paymentMode: selectedPaymentMode!.label,
+                      );
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Update Transaction'),
+                  ),
+                ],
+              )
+            ],
+          );
+        });
+  }
+
+  Future<void> _updateTransaction({
+    required String transactionId,
+    required String paymentMode,
+  }) async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      final currentWorkspace = await getCurrentWorkspaceId();
+
+      await WorkspaceService().updateTransaction(
+        workspaceId: currentWorkspace!,
+        transactionId: transactionId,
+        paymentMode: paymentMode,
+      );
+
+      if (!mounted) {
+        return;
+      }
+      Navigator.of(context).pop();
+
+      setState(() {
+        _isLoading = false;
+        stateManager = null;
+      });
+
+      _getData();
+    } on GenericWorkspaceException {
+      log("Error occurred");
+      _isLoading = false;
+    } catch (e) {
+      log(e.toString());
+      _isLoading = false;
+    }
   }
 
   Future<void> _getTransactionItemsData({required String transactionId}) async {
@@ -344,6 +485,8 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
       setState(() {
         _debtorData = item;
       });
+      // log("Debtor data");
+      // log(_debtorData!['transaction'].toString());
     } on GenericWorkspaceException {
       log("Error occurred");
     } catch (e) {
@@ -382,7 +525,7 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
               onLoaded: (PlutoGridOnLoadedEvent event) {
                 stateManager = event.stateManager;
                 // stateManager.setShowColumnFilter(true);
-                stateManager.setSelectingMode(PlutoGridSelectingMode.none);
+                stateManager!.setSelectingMode(PlutoGridSelectingMode.none);
               },
               onChanged: (PlutoGridOnChangedEvent event) {
                 log(event.toString());
@@ -400,7 +543,6 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
                   if (!isPaid) {
                     await _getDebtorData(transactionId: transactionId);
                   }
-                  log(transactionId);
                   _openDetail(
                     row: event.row!,
                     items: _transactionItemsData!,

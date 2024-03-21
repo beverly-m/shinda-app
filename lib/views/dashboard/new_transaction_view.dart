@@ -347,7 +347,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
     required BuildContext context,
     required String workspaceId,
     required double subTotal,
-    required String paymentMode,
+    // required String paymentMode,
     required double grandTotal,
     required bool isPaid,
     required List<Cart> products,
@@ -448,7 +448,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                 _addDebtor(
                   workspaceId: workspaceId,
                   subTotal: subTotal,
-                  paymentMode: paymentMode,
+                  // paymentMode: paymentMode,
                   grandTotal: grandTotal,
                   isPaid: isPaid,
                   products: products,
@@ -476,7 +476,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
   void _addDebtor({
     required String workspaceId,
     required double subTotal,
-    required String paymentMode,
+    // String? paymentMode,
     required double grandTotal,
     required bool isPaid,
     required List<Cart> products,
@@ -496,7 +496,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
       final phoneNumber = _phoneNumberWithCode;
 
       log("$clientName, $address, $phoneNumber");
-      log("$workspaceId, $subTotal, $paymentMode, $grandTotal, $isPaid, $products,");
+      log("$workspaceId, $subTotal, $grandTotal, $isPaid, $products,");
 
       _clientName.clear();
       _address.clear();
@@ -506,7 +506,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
         await WorkspaceService().addTransaction(
           workspaceId: workspaceId,
           subTotal: subTotal,
-          paymentMode: _paymentModeController.text,
+          // paymentMode: _paymentModeController.text,
           grandTotal: grandTotal,
           isPaid: false,
           products: products,
@@ -901,9 +901,9 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                         ),
                                                                       ),
                                                                     ),
-                                                                    initialSelection:
-                                                                        PaymentModeLabel
-                                                                            .cash,
+                                                                    // initialSelection:
+                                                                    //     PaymentModeLabel
+                                                                    //         .cash,
                                                                     controller:
                                                                         _paymentModeController,
                                                                     requestFocusOnTap:
@@ -1038,8 +1038,8 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                               _currentWorkspace!,
                                                                           subTotal:
                                                                               totalPrice!,
-                                                                          paymentMode:
-                                                                              _paymentModeController.text,
+                                                                          // paymentMode:
+                                                                          //     _paymentModeController.text,
                                                                           grandTotal:
                                                                               totalPrice,
                                                                           isPaid:

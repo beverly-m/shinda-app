@@ -162,7 +162,7 @@ class WorkspaceService implements WorkspaceProvider {
   Future<void> addTransaction({
     required String workspaceId,
     required double subTotal,
-    required String paymentMode,
+    String? paymentMode,
     String? discountPercentage,
     String? discountAmount,
     String? taxPercentage,
@@ -342,6 +342,31 @@ class WorkspaceService implements WorkspaceProvider {
           .single();
 
       return debtorData;
+    } on PostgrestException catch (e) {
+      log(e.code ?? "Error occurred");
+      log(e.message);
+      throw GenericWorkspaceException();
+    } catch (e) {
+      log(e.toString());
+      throw GenericWorkspaceException();
+    }
+  }
+
+  @override
+  Future<void> updateTransaction({
+    required String workspaceId,
+    required String transactionId,
+    required String paymentMode,
+  }) async {
+    // update payment_mode
+    // set is_paid = true
+
+    try {
+      await supabase
+          .from('transaction')
+          .update({'payment_mode': paymentMode, 'is_paid': true})
+          .eq('workspace_id', workspaceId)
+          .eq('transaction_id', transactionId);
     } on PostgrestException catch (e) {
       log(e.code ?? "Error occurred");
       log(e.message);

@@ -35,7 +35,7 @@ abstract class WorkspaceProvider {
   Future<void> addTransaction({
     required String workspaceId,
     required double subTotal,
-    required String paymentMode,
+    required String? paymentMode,
     String? discountPercentage,
     String? discountAmount,
     String? taxPercentage,
@@ -50,6 +50,12 @@ abstract class WorkspaceProvider {
 
   Future<List<Map<String, dynamic>>> getTransactions(
       {required String workspaceId});
+  
+  Future<void> updateTransaction({
+    required String workspaceId,
+    required String transactionId,
+    required String paymentMode,
+  });
 
   Future<List<Map<String, dynamic>>> getTransactionItems({
     required String workspaceId,
