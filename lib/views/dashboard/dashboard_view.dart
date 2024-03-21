@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shinda_app/components/dashboard_widget.dart';
+import 'package:shinda_app/components/side_dashboard_widget.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
@@ -213,37 +214,20 @@ class _DashboardViewState extends State<DashboardView> {
                     )
                   : const SizedBox(),
               _workspaceData != null && _workspaceData!.isNotEmpty
-                  ? Row(
+                  ? const Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Expanded(
+                        Expanded(
                           flex: 8,
-                          child: DashboardWidget() ,
-                          // child: Padding(
-                          //   padding: const EdgeInsets.all(48.0),
-                          //   child: Center(
-                          //       child: Column(
-                          //     children: [
-                          //       const Icon(
-                          //         Icons.summarize_outlined,
-                          //         size: 200,
-                          //         color: Color.fromRGBO(219, 240, 239, 1),
-                          //       ),
-                          //       const SizedBox(height: 48.0),
-                          //       Text(
-                          //         "$_currentWorkspaceName Workspace Data Summary",
-                          //         style: const TextStyle(fontSize: 16),
-                          //       ),
-                          //     ],
-                          //   )),
-                          // ),
+                          child: DashboardWidget(),
+                        ),
+                        SizedBox(
+                          width: 16.0,
                         ),
                         Expanded(
                           flex: 3,
-                          child: Container(
-                            color: Colors.black,
-                            child: Text("Side info"),
-                          ),
-                        )
+                          child: SideDashboardWidget(),
+                        ),
                       ],
                     )
                   : Center(
