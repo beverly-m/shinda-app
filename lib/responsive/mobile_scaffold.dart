@@ -10,6 +10,7 @@ import 'package:shinda_app/services/auth/auth_exceptions.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
 import 'package:shinda_app/views/dashboard/home_view.dart';
+import 'package:shinda_app/views/dashboard/new_transaction_view.dart';
 
 class MobileScaffold extends StatefulWidget {
   const MobileScaffold({super.key});
@@ -32,7 +33,14 @@ class _MobileScaffoldState extends State<MobileScaffold> {
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: FilledButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        const NewTransactionView(),
+                  ),
+                );
+              },
               style: FilledButton.styleFrom(
                 backgroundColor: primary,
                 shape: RoundedRectangleBorder(

@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:shinda_app/components/buttons.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/enums/dropdown_menu.dart';
+import 'package:shinda_app/responsive/responsive_layout.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
 import 'package:shinda_app/utilities/get_workspace.dart';
@@ -15,6 +16,7 @@ import 'package:shinda_app/utilities/helpers/db_helper.dart';
 import 'package:shinda_app/utilities/models/cart_model.dart';
 import 'package:shinda_app/utilities/providers/cart_provider.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
+import 'package:shinda_app/views/mobile_views/new_sale_view.dart';
 
 class NewTransactionView extends StatefulWidget {
   const NewTransactionView({super.key});
@@ -546,617 +548,603 @@ class _NewTransactionViewState extends State<NewTransactionView> {
               ),
             ),
           )
-        : SizedBox(
-            width: double.infinity,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "New Transaction",
-                  style: dashboardHeadline,
-                ),
-                const SizedBox(height: 16.0),
-                _productsData != null && _productsData!.isNotEmpty
-                    ? Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: SingleChildScrollView(
-                              child: SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.8,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
+        : Responsive.isDesktop(context)
+            ? SizedBox(
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "New Transaction",
+                      style: dashboardHeadline,
+                    ),
+                    const SizedBox(height: 16.0),
+                    _productsData != null && _productsData!.isNotEmpty
+                        ? Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: SingleChildScrollView(
+                                  child: SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.8,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        const Text(
-                                          "Products",
-                                          style: dashboardSubtitle,
-                                        ),
-                                        Expanded(
-                                          child: SizedBox(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                          ),
-                                        ),
-                                        OutlinedAppButton(
-                                          onPressed: () async {
-                                            await _showAddProductDialog(
-                                                context);
-                                          },
-                                          labelText: "New Product",
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 16.0),
-                                    Expanded(
-                                      child: GridView.builder(
-                                        gridDelegate:
-                                            const SliverGridDelegateWithMaxCrossAxisExtent(
-                                          maxCrossAxisExtent: 216.0,
-                                          crossAxisSpacing: 16.0,
-                                          mainAxisSpacing: 16.0,
-                                          childAspectRatio: 0.65,
-                                        ),
-                                        itemCount: _productsData!.length,
-                                        shrinkWrap: true,
-                                        itemBuilder: (context, index) {
-                                          return Card(
-                                            elevation: 0.0,
-                                            surfaceTintColor: Colors.white,
-                                            shape: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                              borderSide: const BorderSide(
-                                                  color: surface3),
+                                        Row(
+                                          children: [
+                                            const Text(
+                                              "Products",
+                                              style: dashboardSubtitle,
                                             ),
-                                            child: Container(
-                                              width: 200.0,
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    width: double.infinity,
-                                                    height: 122.0,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8.0),
-                                                      color: surface1,
-                                                    ),
-                                                    child: const Icon(
-                                                      Icons
-                                                          .shopping_bag_outlined,
-                                                      color: Colors.black12,
-                                                      size: 32.0,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(height: 16.0),
-                                                  Text(
-                                                    _productsData![index]
-                                                        ["product"]['name'],
-                                                    style: body1.copyWith(
-                                                        overflow: TextOverflow
-                                                            .ellipsis),
-                                                    maxLines: 1,
-                                                  ),
-                                                  const SizedBox(height: 4.0),
-                                                  Text(
-                                                    "RWF ${_productsData![index]["product"]['price'].toStringAsFixed(2)}",
-                                                    style: priceText2,
-                                                  ),
-                                                  const SizedBox(height: 8.0),
-                                                  Row(
+                                            Expanded(
+                                              child: SizedBox(
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                              ),
+                                            ),
+                                            OutlinedAppButton(
+                                              onPressed: () async {
+                                                await _showAddProductDialog(
+                                                    context);
+                                              },
+                                              labelText: "New Product",
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 16.0),
+                                        Expanded(
+                                          child: GridView.builder(
+                                            gridDelegate:
+                                                const SliverGridDelegateWithMaxCrossAxisExtent(
+                                              maxCrossAxisExtent: 216.0,
+                                              crossAxisSpacing: 16.0,
+                                              mainAxisSpacing: 16.0,
+                                              childAspectRatio: 0.65,
+                                            ),
+                                            itemCount: _productsData!.length,
+                                            shrinkWrap: true,
+                                            itemBuilder: (context, index) {
+                                              return Card(
+                                                elevation: 0.0,
+                                                surfaceTintColor: Colors.white,
+                                                shape: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.0),
+                                                  borderSide: const BorderSide(
+                                                      color: surface3),
+                                                ),
+                                                child: Container(
+                                                  width: 200.0,
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Column(
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment
-                                                            .baseline,
-                                                    textBaseline:
-                                                        TextBaseline.alphabetic,
+                                                            .start,
                                                     children: [
-                                                      Text(
-                                                        "${_productsData![index]['quantity_available'].toString()} in stock",
-                                                        style: labelText,
+                                                      Container(
+                                                        width: double.infinity,
+                                                        height: 122.0,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      8.0),
+                                                          color: surface1,
+                                                        ),
+                                                        child: const Icon(
+                                                          Icons
+                                                              .shopping_bag_outlined,
+                                                          color: Colors.black12,
+                                                          size: 32.0,
+                                                        ),
                                                       ),
-                                                      const Expanded(
-                                                          child: SizedBox()),
-                                                      IconButton(
-                                                        style: IconButton
-                                                            .styleFrom(
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          8.0)),
-                                                          side:
-                                                              const BorderSide(
+                                                      const SizedBox(
+                                                          height: 16.0),
+                                                      Text(
+                                                        _productsData![index]
+                                                            ["product"]['name'],
+                                                        style: body1.copyWith(
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis),
+                                                        maxLines: 1,
+                                                      ),
+                                                      const SizedBox(
+                                                          height: 4.0),
+                                                      Text(
+                                                        "RWF ${_productsData![index]["product"]['price'].toStringAsFixed(2)}",
+                                                        style: priceText2,
+                                                      ),
+                                                      const SizedBox(
+                                                          height: 8.0),
+                                                      Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .baseline,
+                                                        textBaseline:
+                                                            TextBaseline
+                                                                .alphabetic,
+                                                        children: [
+                                                          Text(
+                                                            "${_productsData![index]['quantity_available'].toString()} in stock",
+                                                            style: labelText,
+                                                          ),
+                                                          const Expanded(
+                                                              child:
+                                                                  SizedBox()),
+                                                          IconButton(
+                                                            style: IconButton
+                                                                .styleFrom(
+                                                              shape: RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              8.0)),
+                                                              side: const BorderSide(
                                                                   color:
                                                                       primary),
-                                                        ),
-                                                        onPressed: () async {
-                                                          await cart.saveData(
-                                                              data:
-                                                                  _productsData![
+                                                            ),
+                                                            onPressed:
+                                                                () async {
+                                                              await cart.saveData(
+                                                                  data: _productsData![
                                                                       index]);
-                                                        },
-                                                        icon: const Icon(
-                                                          Icons.add,
-                                                          size: 24.0,
-                                                          color: primary,
-                                                        ),
+                                                            },
+                                                            icon: const Icon(
+                                                              Icons.add,
+                                                              size: 24.0,
+                                                              color: primary,
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ],
                                                   ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 48.0),
-                          Expanded(
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.2,
-                              height: MediaQuery.of(context).size.height * 0.8,
-                              decoration: BoxDecoration(
-                                border: Border.all(color: surface1),
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(24.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        const Text(
-                                          "Cart",
-                                          style: dashboardHeadings,
-                                        ),
-                                        const SizedBox(width: 8.0),
-                                        Badge(
-                                          backgroundColor: primary,
-                                          textColor: Colors.white,
-                                          label: Consumer<CartProvider>(
-                                            builder: (context, value, child) {
-                                              return Text(value
-                                                  .getCounter()
-                                                  .toString());
+                                                ),
+                                              );
                                             },
                                           ),
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 24.0),
-                                    Expanded(
-                                      child: Column(
-                                        children: [
-                                          Expanded(
-                                            child: Consumer<CartProvider>(
-                                              builder:
-                                                  (context, provider, widget) {
-                                                return provider.cart.isEmpty
-                                                    ? const Column(
-                                                        children: [
-                                                          Center(
-                                                            child: Icon(
-                                                              Icons
-                                                                  .shopping_cart_checkout_outlined,
-                                                              size: 200,
-                                                              color: surface3,
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                              height: 24.0),
-                                                          Center(
-                                                            child: Text(
-                                                              "Cart items shown here",
-                                                              style: TextStyle(
-                                                                  fontSize: 16),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      )
-                                                    : SizedBox(
-                                                        // height: MediaQuery.of(
-                                                        //         context)
-                                                        //     .size
-                                                        //     .height,
-                                                        child:
-                                                            SingleChildScrollView(
-                                                          child: Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 48.0),
+                              Expanded(
+                                child: Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.2,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.8,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: surface1),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(24.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            const Text(
+                                              "Cart",
+                                              style: dashboardHeadings,
+                                            ),
+                                            const SizedBox(width: 8.0),
+                                            Badge(
+                                              backgroundColor: primary,
+                                              textColor: Colors.white,
+                                              label: Consumer<CartProvider>(
+                                                builder:
+                                                    (context, value, child) {
+                                                  return Text(value
+                                                      .getCounter()
+                                                      .toString());
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 24.0),
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              Expanded(
+                                                child: Consumer<CartProvider>(
+                                                  builder: (context, provider,
+                                                      widget) {
+                                                    return provider.cart.isEmpty
+                                                        ? const Column(
                                                             children: [
-                                                              SizedBox(
-                                                                height: 300.0,
-                                                                child: ListView
-                                                                    .builder(
-                                                                  shrinkWrap:
-                                                                      true,
-                                                                  itemCount:
-                                                                      provider
-                                                                          .cart
-                                                                          .length,
-                                                                  itemBuilder:
-                                                                      (context,
-                                                                          index) {
-                                                                    return Card(
-                                                                      elevation:
-                                                                          0,
-                                                                      color:
-                                                                          surface1,
-                                                                      shape:
-                                                                          RoundedRectangleBorder(
-                                                                        side: const BorderSide(
-                                                                            color:
-                                                                                surface3),
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(8.0),
-                                                                      ),
-                                                                      child:
-                                                                          Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .all(
-                                                                            8.0),
-                                                                        child:
-                                                                            Row(
-                                                                          mainAxisSize:
-                                                                              MainAxisSize.min,
-                                                                          children: [
-                                                                            Container(
-                                                                              width: 48.0,
-                                                                              height: 48.0,
-                                                                              decoration: BoxDecoration(
-                                                                                borderRadius: BorderRadius.circular(8.0),
-                                                                                color: surface1,
-                                                                              ),
-                                                                              child: const Icon(
-                                                                                Icons.shopping_bag_outlined,
-                                                                                color: Colors.black12,
-                                                                                size: 24.0,
-                                                                              ),
-                                                                            ),
-                                                                            Column(
-                                                                              mainAxisSize: MainAxisSize.min,
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                Text(
-                                                                                  provider.cart[index].productName,
-                                                                                  style: body1,
-                                                                                ),
-                                                                                const Flexible(child: SizedBox()),
-                                                                                Text(
-                                                                                  "RWF ${provider.cart[index].productPrice}",
-                                                                                  style: body2.copyWith(color: neutral4),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                            const Expanded(child: SizedBox()),
-                                                                            ValueListenableBuilder<int>(
-                                                                              valueListenable: provider.cart[index].quantity,
-                                                                              builder: (context, value, child) {
-                                                                                return PlusMinusButtons(
-                                                                                  addQuantity: () {
-                                                                                    cart.addQuantity(provider.cart[index].productId);
-                                                                                    setState(() {
-                                                                                      cart.addTotalPrice(double.parse(provider.cart[index].productPrice.toString()));
-                                                                                    });
-                                                                                    // });
-                                                                                  },
-                                                                                  deleteQuantity: () {
-                                                                                    cart.deleteQuantity(provider.cart[index].productId);
-                                                                                  },
-                                                                                  text: value.toString(),
-                                                                                );
-                                                                              },
-                                                                            ),
-                                                                            IconButton(
-                                                                              onPressed: () {
-                                                                                dbHelper!.deleteCartItem(provider.cart[index].productId);
-                                                                                provider.removeItem(provider.cart[index].productId);
-                                                                                provider.removeCounter();
-                                                                              },
-                                                                              icon: const Icon(Icons.delete_outline),
-                                                                            )
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                    );
-                                                                  },
+                                                              Center(
+                                                                child: Icon(
+                                                                  Icons
+                                                                      .shopping_cart_checkout_outlined,
+                                                                  size: 200,
+                                                                  color:
+                                                                      surface3,
                                                                 ),
                                                               ),
-                                                              const SizedBox(
+                                                              SizedBox(
                                                                   height: 24.0),
-                                                              Column(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .stretch,
+                                                              Center(
+                                                                child: Text(
+                                                                  "Cart items shown here",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          16),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          )
+                                                        : SizedBox(
+                                                            // height: MediaQuery.of(
+                                                            //         context)
+                                                            //     .size
+                                                            //     .height,
+                                                            child:
+                                                                SingleChildScrollView(
+                                                              child: Column(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
                                                                 children: [
-                                                                  DropdownMenu<
-                                                                      PaymentModeLabel>(
-                                                                    menuStyle:
-                                                                        MenuStyle(
-                                                                      shape:
-                                                                          MaterialStatePropertyAll(
-                                                                        RoundedRectangleBorder(
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(8.0),
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                    // initialSelection:
-                                                                    //     PaymentModeLabel
-                                                                    //         .cash,
-                                                                    controller:
-                                                                        _paymentModeController,
-                                                                    requestFocusOnTap:
-                                                                        true,
-                                                                    label:
-                                                                        const Text(
-                                                                      'Payment Mode',
-                                                                      style:
-                                                                          body1,
-                                                                    ),
-                                                                    onSelected:
-                                                                        (PaymentModeLabel?
-                                                                            paymentMode) {
-                                                                      setState(
-                                                                          () {
-                                                                        selectedPaymentMode =
-                                                                            paymentMode;
-                                                                      });
-                                                                    },
-                                                                    dropdownMenuEntries: PaymentModeLabel.values.map<
-                                                                        DropdownMenuEntry<
-                                                                            PaymentModeLabel>>((PaymentModeLabel
-                                                                        paymentMode) {
-                                                                      return DropdownMenuEntry<
-                                                                          PaymentModeLabel>(
-                                                                        value:
-                                                                            paymentMode,
-                                                                        label: paymentMode
-                                                                            .label,
-                                                                        enabled:
-                                                                            paymentMode.label !=
-                                                                                'Grey',
-                                                                        style: MenuItemButton.styleFrom(
-                                                                            textStyle:
-                                                                                body1),
-                                                                      );
-                                                                    }).toList(),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              const SizedBox(
-                                                                  height: 48.0),
-                                                              const Flexible(
-                                                                child:
-                                                                    SizedBox(),
-                                                              ),
-                                                              Consumer<
-                                                                  CartProvider>(
-                                                                builder: (BuildContext
-                                                                        context,
-                                                                    value,
-                                                                    Widget?
-                                                                        child) {
-                                                                  final ValueNotifier<
-                                                                          double?>
-                                                                      totalPrice =
-                                                                      ValueNotifier(
-                                                                          null);
-                                                                  for (var element
-                                                                      in value
-                                                                          .cart) {
-                                                                    totalPrice
-                                                                        .value = (element.productPrice *
-                                                                            element
-                                                                                .quantity.value) +
-                                                                        (totalPrice.value ??
-                                                                            0);
-                                                                  }
-                                                                  return Column(
-                                                                    children: [
-                                                                      ValueListenableBuilder<
-                                                                              double?>(
-                                                                          valueListenable:
-                                                                              totalPrice,
-                                                                          builder: (context,
-                                                                              val,
-                                                                              child) {
-                                                                            return ReusableWidget(
-                                                                              title: 'Sub Total',
-                                                                              value: r'RWF ' + (val?.toStringAsFixed(2) ?? '0.00'),
-                                                                            );
-                                                                          }),
-                                                                      const ReusableWidget(
-                                                                        title:
-                                                                            'Tax',
-                                                                        value:
-                                                                            'RWF 0.00',
-                                                                      ),
-                                                                      ValueListenableBuilder<
-                                                                              double?>(
-                                                                          valueListenable:
-                                                                              totalPrice,
-                                                                          builder: (context,
-                                                                              val,
-                                                                              child) {
-                                                                            return ReusableWidget(
-                                                                              title: 'Total',
-                                                                              value: r'RWF ' + (val?.toStringAsFixed(2) ?? '0.00'),
-                                                                              style: priceText,
-                                                                            );
-                                                                          }),
-                                                                    ],
-                                                                  );
-                                                                },
-                                                              ),
-                                                              const SizedBox(
-                                                                height: 24.0,
-                                                              ),
-                                                              Row(
-                                                                children: [
-                                                                  OutlinedButton(
-                                                                    onPressed:
-                                                                        () async {
-                                                                      double?
-                                                                          totalPrice;
-
-                                                                      for (var element
-                                                                          in provider
-                                                                              .cart) {
-                                                                        totalPrice =
-                                                                            (element.productPrice * element.quantity.value) +
-                                                                                (totalPrice ?? 0);
-                                                                      }
-
-                                                                      try {
-                                                                        await _showAddCreditPurchaseDialog(
-                                                                          context:
-                                                                              context,
-                                                                          workspaceId:
-                                                                              _currentWorkspace!,
-                                                                          subTotal:
-                                                                              totalPrice!,
-                                                                          // paymentMode:
-                                                                          //     _paymentModeController.text,
-                                                                          grandTotal:
-                                                                              totalPrice,
-                                                                          isPaid:
-                                                                              false,
-                                                                          products:
-                                                                              provider.cart,
-                                                                          cart:
-                                                                              provider,
+                                                                  SizedBox(
+                                                                    height:
+                                                                        300.0,
+                                                                    child: ListView
+                                                                        .builder(
+                                                                      shrinkWrap:
+                                                                          true,
+                                                                      itemCount: provider
+                                                                          .cart
+                                                                          .length,
+                                                                      itemBuilder:
+                                                                          (context,
+                                                                              index) {
+                                                                        return Card(
+                                                                          elevation:
+                                                                              0,
+                                                                          color:
+                                                                              surface1,
+                                                                          shape:
+                                                                              RoundedRectangleBorder(
+                                                                            side:
+                                                                                const BorderSide(color: surface3),
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(8.0),
+                                                                          ),
+                                                                          child:
+                                                                              Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.all(8.0),
+                                                                            child:
+                                                                                Row(
+                                                                              mainAxisSize: MainAxisSize.min,
+                                                                              children: [
+                                                                                Container(
+                                                                                  width: 48.0,
+                                                                                  height: 48.0,
+                                                                                  decoration: BoxDecoration(
+                                                                                    borderRadius: BorderRadius.circular(8.0),
+                                                                                    color: surface1,
+                                                                                  ),
+                                                                                  child: const Icon(
+                                                                                    Icons.shopping_bag_outlined,
+                                                                                    color: Colors.black12,
+                                                                                    size: 24.0,
+                                                                                  ),
+                                                                                ),
+                                                                                Column(
+                                                                                  mainAxisSize: MainAxisSize.min,
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  children: [
+                                                                                    Text(
+                                                                                      provider.cart[index].productName,
+                                                                                      style: body1,
+                                                                                    ),
+                                                                                    const Flexible(child: SizedBox()),
+                                                                                    Text(
+                                                                                      "RWF ${provider.cart[index].productPrice}",
+                                                                                      style: body2.copyWith(color: neutral4),
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                                const Expanded(child: SizedBox()),
+                                                                                ValueListenableBuilder<int>(
+                                                                                  valueListenable: provider.cart[index].quantity,
+                                                                                  builder: (context, value, child) {
+                                                                                    return PlusMinusButtons(
+                                                                                      addQuantity: () {
+                                                                                        cart.addQuantity(provider.cart[index].productId);
+                                                                                        setState(() {
+                                                                                          cart.addTotalPrice(double.parse(provider.cart[index].productPrice.toString()));
+                                                                                        });
+                                                                                        // });
+                                                                                      },
+                                                                                      deleteQuantity: () {
+                                                                                        cart.deleteQuantity(provider.cart[index].productId);
+                                                                                      },
+                                                                                      text: value.toString(),
+                                                                                    );
+                                                                                  },
+                                                                                ),
+                                                                                IconButton(
+                                                                                  onPressed: () {
+                                                                                    dbHelper!.deleteCartItem(provider.cart[index].productId);
+                                                                                    provider.removeItem(provider.cart[index].productId);
+                                                                                    provider.removeCounter();
+                                                                                  },
+                                                                                  icon: const Icon(Icons.delete_outline),
+                                                                                )
+                                                                              ],
+                                                                            ),
+                                                                          ),
                                                                         );
-                                                                      } catch (e) {
-                                                                        log(e
-                                                                            .toString());
-                                                                      }
-                                                                    },
-                                                                    child:
-                                                                        const Text(
-                                                                      "Credit Purchase",
-                                                                      style:
-                                                                          secondaryButtonStyle,
+                                                                      },
                                                                     ),
                                                                   ),
                                                                   const SizedBox(
-                                                                    width: 24.0,
+                                                                      height:
+                                                                          24.0),
+                                                                  Column(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .stretch,
+                                                                    children: [
+                                                                      DropdownMenu<
+                                                                          PaymentModeLabel>(
+                                                                        menuStyle:
+                                                                            MenuStyle(
+                                                                          shape:
+                                                                              MaterialStatePropertyAll(
+                                                                            RoundedRectangleBorder(
+                                                                              borderRadius: BorderRadius.circular(8.0),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        // initialSelection:
+                                                                        //     PaymentModeLabel
+                                                                        //         .cash,
+                                                                        controller:
+                                                                            _paymentModeController,
+                                                                        requestFocusOnTap:
+                                                                            true,
+                                                                        label:
+                                                                            const Text(
+                                                                          'Payment Mode',
+                                                                          style:
+                                                                              body1,
+                                                                        ),
+                                                                        onSelected:
+                                                                            (PaymentModeLabel?
+                                                                                paymentMode) {
+                                                                          setState(
+                                                                              () {
+                                                                            selectedPaymentMode =
+                                                                                paymentMode;
+                                                                          });
+                                                                        },
+                                                                        dropdownMenuEntries: PaymentModeLabel
+                                                                            .values
+                                                                            .map<DropdownMenuEntry<PaymentModeLabel>>((PaymentModeLabel
+                                                                                paymentMode) {
+                                                                          return DropdownMenuEntry<
+                                                                              PaymentModeLabel>(
+                                                                            value:
+                                                                                paymentMode,
+                                                                            label:
+                                                                                paymentMode.label,
+                                                                            enabled:
+                                                                                paymentMode.label != 'Grey',
+                                                                            style:
+                                                                                MenuItemButton.styleFrom(textStyle: body1),
+                                                                          );
+                                                                        }).toList(),
+                                                                      ),
+                                                                    ],
                                                                   ),
-                                                                  FilledButton(
-                                                                    onPressed:
-                                                                        () async {
-                                                                      try {
-                                                                        double?
-                                                                            totalPrice;
-
-                                                                        for (var element
-                                                                            in provider.cart) {
+                                                                  const SizedBox(
+                                                                      height:
+                                                                          48.0),
+                                                                  const Flexible(
+                                                                    child:
+                                                                        SizedBox(),
+                                                                  ),
+                                                                  Consumer<
+                                                                      CartProvider>(
+                                                                    builder: (BuildContext
+                                                                            context,
+                                                                        value,
+                                                                        Widget?
+                                                                            child) {
+                                                                      final ValueNotifier<
+                                                                              double?>
                                                                           totalPrice =
-                                                                              (element.productPrice * element.quantity.value) + (totalPrice ?? 0);
-                                                                        }
-                                                                        await WorkspaceService()
-                                                                            .addTransaction(
-                                                                          workspaceId:
-                                                                              _currentWorkspace!,
-                                                                          subTotal:
-                                                                              totalPrice!,
-                                                                          paymentMode:
-                                                                              _paymentModeController.text,
-                                                                          grandTotal:
-                                                                              totalPrice,
-                                                                          isPaid:
-                                                                              true,
-                                                                          products:
-                                                                              provider.cart,
-                                                                        );
-
-                                                                        provider
-                                                                            .clearCart();
-
-                                                                        _getProductData();
-                                                                      } catch (e) {
-                                                                        log(e
-                                                                            .toString());
+                                                                          ValueNotifier(
+                                                                              null);
+                                                                      for (var element
+                                                                          in value
+                                                                              .cart) {
+                                                                        totalPrice
+                                                                            .value = (element.productPrice *
+                                                                                element.quantity.value) +
+                                                                            (totalPrice.value ?? 0);
                                                                       }
+                                                                      return Column(
+                                                                        children: [
+                                                                          ValueListenableBuilder<double?>(
+                                                                              valueListenable: totalPrice,
+                                                                              builder: (context, val, child) {
+                                                                                return ReusableWidget(
+                                                                                  title: 'Sub Total',
+                                                                                  value: r'RWF ' + (val?.toStringAsFixed(2) ?? '0.00'),
+                                                                                );
+                                                                              }),
+                                                                          const ReusableWidget(
+                                                                            title:
+                                                                                'Tax',
+                                                                            value:
+                                                                                'RWF 0.00',
+                                                                          ),
+                                                                          ValueListenableBuilder<double?>(
+                                                                              valueListenable: totalPrice,
+                                                                              builder: (context, val, child) {
+                                                                                return ReusableWidget(
+                                                                                  title: 'Total',
+                                                                                  value: r'RWF ' + (val?.toStringAsFixed(2) ?? '0.00'),
+                                                                                  style: priceText,
+                                                                                );
+                                                                              }),
+                                                                        ],
+                                                                      );
                                                                     },
-                                                                    style: const ButtonStyle(
-                                                                        backgroundColor:
-                                                                            MaterialStatePropertyAll(primary)),
-                                                                    child: const Text(
-                                                                        "Checkout"),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    height:
+                                                                        24.0,
+                                                                  ),
+                                                                  Row(
+                                                                    children: [
+                                                                      OutlinedButton(
+                                                                        onPressed:
+                                                                            () async {
+                                                                          double?
+                                                                              totalPrice;
+
+                                                                          for (var element
+                                                                              in provider.cart) {
+                                                                            totalPrice =
+                                                                                (element.productPrice * element.quantity.value) + (totalPrice ?? 0);
+                                                                          }
+
+                                                                          try {
+                                                                            await _showAddCreditPurchaseDialog(
+                                                                              context: context,
+                                                                              workspaceId: _currentWorkspace!,
+                                                                              subTotal: totalPrice!,
+                                                                              // paymentMode:
+                                                                              //     _paymentModeController.text,
+                                                                              grandTotal: totalPrice,
+                                                                              isPaid: false,
+                                                                              products: provider.cart,
+                                                                              cart: provider,
+                                                                            );
+                                                                          } catch (e) {
+                                                                            log(e.toString());
+                                                                          }
+                                                                        },
+                                                                        child:
+                                                                            const Text(
+                                                                          "Credit Purchase",
+                                                                          style:
+                                                                              secondaryButtonStyle,
+                                                                        ),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            24.0,
+                                                                      ),
+                                                                      FilledButton(
+                                                                        onPressed:
+                                                                            () async {
+                                                                          try {
+                                                                            double?
+                                                                                totalPrice;
+
+                                                                            for (var element
+                                                                                in provider.cart) {
+                                                                              totalPrice = (element.productPrice * element.quantity.value) + (totalPrice ?? 0);
+                                                                            }
+                                                                            await WorkspaceService().addTransaction(
+                                                                              workspaceId: _currentWorkspace!,
+                                                                              subTotal: totalPrice!,
+                                                                              paymentMode: _paymentModeController.text,
+                                                                              grandTotal: totalPrice,
+                                                                              isPaid: true,
+                                                                              products: provider.cart,
+                                                                            );
+
+                                                                            provider.clearCart();
+
+                                                                            _getProductData();
+                                                                          } catch (e) {
+                                                                            log(e.toString());
+                                                                          }
+                                                                        },
+                                                                        style: const ButtonStyle(
+                                                                            backgroundColor:
+                                                                                MaterialStatePropertyAll(primary)),
+                                                                        child: const Text(
+                                                                            "Checkout"),
+                                                                      ),
+                                                                    ],
                                                                   ),
                                                                 ],
                                                               ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      );
-                                              },
-                                            ),
+                                                            ),
+                                                          );
+                                                  },
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    : Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(48.0),
-                          child: Column(
-                            children: [
-                              const Icon(
-                                Icons.inventory_2_outlined,
-                                size: 200,
-                                color: Color.fromRGBO(219, 240, 239, 1),
-                              ),
-                              const SizedBox(height: 48.0),
-                              const Text(
-                                "Add a new product to get started",
-                                style: TextStyle(fontSize: 16),
-                              ),
-                              const SizedBox(height: 48.0),
-                              FilledButton(
-                                style: const ButtonStyle(
-                                  backgroundColor: MaterialStatePropertyAll(
-                                    Color.fromRGBO(0, 121, 107, 1),
                                   ),
-                                ),
-                                onPressed: () async {
-                                  await _showAddProductDialog(context);
-                                },
-                                child: const Text(
-                                  "Add Product",
-                                  style: TextStyle(fontSize: 16.0),
                                 ),
                               ),
                             ],
+                          )
+                        : Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(48.0),
+                              child: Column(
+                                children: [
+                                  const Icon(
+                                    Icons.inventory_2_outlined,
+                                    size: 200,
+                                    color: Color.fromRGBO(219, 240, 239, 1),
+                                  ),
+                                  const SizedBox(height: 48.0),
+                                  const Text(
+                                    "Add a new product to get started",
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  const SizedBox(height: 48.0),
+                                  FilledButton(
+                                    style: const ButtonStyle(
+                                      backgroundColor: MaterialStatePropertyAll(
+                                        Color.fromRGBO(0, 121, 107, 1),
+                                      ),
+                                    ),
+                                    onPressed: () async {
+                                      await _showAddProductDialog(context);
+                                    },
+                                    child: const Text(
+                                      "Add Product",
+                                      style: TextStyle(fontSize: 16.0),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-              ],
-            ),
-          );
+                  ],
+                ),
+              )
+            : const NewSaleView();
   }
 }
 
