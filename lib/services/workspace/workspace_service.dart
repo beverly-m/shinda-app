@@ -376,4 +376,38 @@ class WorkspaceService implements WorkspaceProvider {
       throw GenericWorkspaceException();
     }
   }
+
+  @override
+  Future<Map<String, dynamic>> getDashboardMeta({required String workspaceId}) async {
+    final Map<String, dynamic> dashboardMeta = {
+      'income': 0,
+      'transactions': 0,
+      'productsLowInStock': 0,
+      'outstandingPayments': 0,
+      'expiredProducts': [],
+      'salesData': {},
+    };
+
+    final currentDate = "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}";
+
+    // log(currentDate.toString());2024-03-16 19:53:46.035074+00
+
+    try {
+      // get total income
+      final income = await supabase.from('transaction').select('grand_total').gte('created_at', '');
+      // get number of transactions
+      // get products low in stock
+      // get outstanding payments
+      // get expiring or expired products
+      // get sales data for the past 7 days
+      return dashboardMeta;
+    } on PostgrestException catch (e) {
+      log(e.code ?? "Error occurred");
+      log(e.message);
+      throw GenericWorkspaceException();
+    } catch (e) {
+      log(e.toString());
+      throw GenericWorkspaceException();
+    }
+  }
 }

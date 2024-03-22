@@ -40,7 +40,10 @@ class _TabletScaffoldState extends State<TabletScaffold> {
         ),
       ),
       body: SingleChildScrollView(
-        child: drawerViews[_selectedIndex],
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: drawerViewsMobileTablet[_selectedIndex],
+        ),
       ),
     );
   }
@@ -118,7 +121,7 @@ class _TabletScaffoldState extends State<TabletScaffold> {
 
   void _selectItem({required int index}) async {
     Navigator.pop(context);
-    if (index != (drawerViews.length)) {
+    if (index != (drawerViewsMobileTablet.length)) {
       setState(() {
         _selectedIndex = index;
       });

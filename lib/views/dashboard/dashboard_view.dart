@@ -11,6 +11,7 @@ import 'package:shinda_app/services/workspace/workspace_service.dart';
 import 'package:shinda_app/utilities/get_workspace.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shinda_app/responsive/responsive_layout.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
@@ -148,6 +149,8 @@ class _DashboardViewState extends State<DashboardView> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDesktop = Responsive.isDesktop(context);
+
     return _isLoading
         ? const Center(
             child: Padding(
@@ -164,6 +167,17 @@ class _DashboardViewState extends State<DashboardView> {
                 "Dashboard",
                 style: dashboardHeadline,
               ),
+              _currentWorkspaceName != null &&
+                      _workspaceData != null &&
+                      _workspaceData!.isNotEmpty
+                  ? const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(
+                        'Here is what is happening in your store today.',
+                        style: body1,
+                      ),
+                    )
+                  : const SizedBox(),
               const SizedBox(height: 24.0),
               _currentWorkspaceName != null &&
                       _workspaceData != null &&
@@ -214,20 +228,20 @@ class _DashboardViewState extends State<DashboardView> {
                     )
                   : const SizedBox(),
               _workspaceData != null && _workspaceData!.isNotEmpty
-                  ? const Row(
+                  ? Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
+                        const Expanded(
                           flex: 8,
                           child: DashboardWidget(),
                         ),
-                        SizedBox(
-                          width: 16.0,
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: SideDashboardWidget(),
-                        ),
+                        if(isDesktop) 
+                        const SizedBox(width: 16,),
+                        if (isDesktop)
+                          const Expanded(
+                            flex: 3,
+                            child: SideDashboardWidget(),
+                          ),
                       ],
                     )
                   : Center(

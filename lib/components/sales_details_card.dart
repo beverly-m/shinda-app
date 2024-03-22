@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shinda_app/components/custom_card.dart';
 import 'package:shinda_app/constants/text_syles.dart';
+import 'package:shinda_app/responsive/responsive_layout.dart';
 import 'package:shinda_app/utilities/models/sales_model.dart';
 
 class SalesDetailsCard extends StatelessWidget {
@@ -13,10 +14,10 @@ class SalesDetailsCard extends StatelessWidget {
     final salesDetails = SalesDetails();
 
     return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
-        crossAxisSpacing: 16.0,
-        mainAxisSpacing: 16.0,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: Responsive.isMobile(context) ? 2 : 4,
+        crossAxisSpacing: Responsive.isMobile(context) ? 8.0 : 16.0,
+        mainAxisSpacing: Responsive.isMobile(context) ? 8.0 : 16.0,
       ),
       itemBuilder: (context, index) => CustomCard(
         child: Column(
@@ -28,13 +29,15 @@ class SalesDetailsCard extends StatelessWidget {
             Text(
               salesDetails.salesData[index].value,
               style: GoogleFonts.eczar(
-                textStyle: const TextStyle(fontSize: 24.0),
+                textStyle: TextStyle(
+                    fontSize: Responsive.isMobile(context) ? 20.0 : 24.0),
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 4.0),
             Text(
               salesDetails.salesData[index].title,
+              textAlign: TextAlign.center,
               style: const TextStyle(color: neutral4),
             ),
           ],

@@ -18,18 +18,18 @@ final List<DrawerItem> drawerItems = [
     title: "Debtors",
     icon: Icons.monetization_on_outlined,
   ),
-  const DrawerItem(
-    title: "Reports",
-    icon: Icons.auto_graph_outlined,
-  ),
-  const DrawerItem(
-    title: "Management",
-    icon: Icons.person_4_outlined,
-  ),
-  const DrawerItem(
-    title: "Settings",
-    icon: Icons.settings_outlined,
-  ),
+  // const DrawerItem(
+  //   title: "Reports",
+  //   icon: Icons.auto_graph_outlined,
+  // ),
+  // const DrawerItem(
+  //   title: "Management",
+  //   icon: Icons.person_4_outlined,
+  // ),
+  // const DrawerItem(
+  //   title: "Settings",
+  //   icon: Icons.settings_outlined,
+  // ),
   const DrawerItem(
     title: "Logout",
     icon: Icons.logout_outlined,

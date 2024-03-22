@@ -61,4 +61,6 @@ abstract class WorkspaceProvider {
     required String workspaceId,
     required String transactionId,
   });
+
+  Future<Map<String, dynamic>> getDashboardMeta({required String workspaceId});
 }

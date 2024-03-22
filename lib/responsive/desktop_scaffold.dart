@@ -345,8 +345,8 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
                                 horizontal: 32.0,
                                 vertical: 24.0,
                               ),
-                              child:
-                                  SizedBox(child: drawerViews[_selectedIndex]),
+                              child: SizedBox(
+                                  child: drawerViewsDesktop[_selectedIndex]),
                             ),
                           ),
                         ],
