@@ -17,8 +17,8 @@ class OutlinedAppButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(8.0),
           ),
           padding: const EdgeInsets.symmetric(
-            vertical: 12.0,
-            horizontal: 36.0,
+            vertical: 6.0,
+            horizontal: 24.0,
           )),
       onPressed: onPressed,
       child: Text(

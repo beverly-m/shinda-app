@@ -77,6 +77,7 @@ class _TransactionsViewState extends State<TransactionsView> {
               _transactionsData != null && _transactionsData!.isNotEmpty
                   ? Responsive.isMobile(context)
                       ? ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           itemBuilder: (BuildContext context, int index) {
                             DateTime date = DateTime.parse(
@@ -146,7 +147,8 @@ class _TransactionsViewState extends State<TransactionsView> {
                                                   TransactionDetailsView(
                                                 id: _transactionsData![index]
                                                     ['transaction_id'],
-                                                    isPaid: _transactionsData![index]
+                                                isPaid:
+                                                    _transactionsData![index]
                                                         ['is_paid'],
                                               ),
                                             ),

@@ -3,6 +3,7 @@ import 'package:shinda_app/constants/routes.dart';
 import 'package:shinda_app/services/auth/auth_exceptions.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
+import 'package:shinda_app/responsive/responsive_layout.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -120,7 +121,9 @@ class _RegisterViewState extends State<RegisterView> {
         ),
         child: Center(
           child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.6,
+            width: Responsive.isMobile(context)
+                ? MediaQuery.of(context).size.width
+                : MediaQuery.of(context).size.width * 0.6,
             child: Form(
               key: _formKey,
               child: Column(

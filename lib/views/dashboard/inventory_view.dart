@@ -115,12 +115,13 @@ class _InventoryViewState extends State<InventoryView> {
                       ? GridView.builder(
                           shrinkWrap: true,
                           itemCount: _productsData!.length,
+                          physics: const NeverScrollableScrollPhysics(),
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
                             crossAxisSpacing: 8.0,
                             mainAxisSpacing: 8.0,
-                            childAspectRatio: 0.9,
+                            childAspectRatio: 0.7,
                           ),
                           itemBuilder: (BuildContext context, int index) {
                             return Card(

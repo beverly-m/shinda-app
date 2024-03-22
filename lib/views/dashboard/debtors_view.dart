@@ -80,6 +80,7 @@ class _DebtorsViewState extends State<DebtorsView> {
                   ? Responsive.isMobile(context)
                       ? ListView.builder(
                           shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (BuildContext context, int index) {
                             // DateTime date = DateTime.parse(
                             //     _debtorsData![index]['created_at']);
