@@ -124,7 +124,7 @@ class _DebtorsViewState extends State<DebtorsView> {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       subtitle: Text(
-                                          "Owing: RWF ${_debtorsData![index]['amount_owed'].toStringAsFixed(2)}"),
+                                          "${!_debtorsData![index]['transaction']['is_paid'] ? "Owing" : "Paid"}: RWF ${_debtorsData![index]['amount_owed'].toStringAsFixed(2)}"),
                                       trailing: IconButton(
                                         icon: const Icon(
                                             Icons.chevron_right_outlined),
