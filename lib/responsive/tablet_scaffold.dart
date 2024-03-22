@@ -25,7 +25,9 @@ class _TabletScaffoldState extends State<TabletScaffold> {
     final safeArea =
         EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top);
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        scrolledUnderElevation: 0.0,
+      ),
       drawer: Drawer(
         child: ListView(
           children: [

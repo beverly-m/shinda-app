@@ -5,6 +5,7 @@ import 'package:shinda_app/components/drawer_item.dart';
 import 'package:shinda_app/constants/drawer_items.dart';
 import 'package:shinda_app/constants/drawer_views.dart';
 import 'package:shinda_app/constants/routes.dart';
+import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/auth/auth_exceptions.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
@@ -25,8 +26,35 @@ class _MobileScaffoldState extends State<MobileScaffold> {
     final safeArea =
         EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top);
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        scrolledUnderElevation: 0.0,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: FilledButton(
+              onPressed: () {},
+              style: FilledButton.styleFrom(
+                backgroundColor: primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              child: const Row(
+                children: [
+                  Icon(Icons.add),
+                  SizedBox(width: 4.0),
+                  Text(
+                    "New Sale",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
       drawer: Drawer(
+        backgroundColor: Colors.white,
         child: ListView(
           children: [
             const SizedBox(height: 16.0),

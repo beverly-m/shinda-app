@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shinda_app/components/buttons.dart';
 import 'package:shinda_app/components/dashboard_widget.dart';
 import 'package:shinda_app/components/side_dashboard_widget.dart';
 import 'package:shinda_app/constants/text_syles.dart';
@@ -209,20 +210,27 @@ class _DashboardViewState extends State<DashboardView> {
                         ),
                         const Expanded(child: SizedBox()),
                         _workspaceData != null && _workspaceData!.isNotEmpty
-                            ? FilledButton(
-                                style: const ButtonStyle(
-                                  backgroundColor: MaterialStatePropertyAll(
-                                    Color.fromRGBO(0, 121, 107, 1),
-                                  ),
-                                ),
-                                onPressed: () async {
-                                  await _showAddWorkspaceDialog(context);
-                                },
-                                child: const Text(
-                                  "New workspace",
-                                  style: TextStyle(fontSize: 16.0),
-                                ),
-                              )
+                            ? Responsive.isDesktop(context)
+                                ? FilledButton(
+                                    style: const ButtonStyle(
+                                      backgroundColor: MaterialStatePropertyAll(
+                                        primary,
+                                      ),
+                                    ),
+                                    onPressed: () async {
+                                      await _showAddWorkspaceDialog(context);
+                                    },
+                                    child: const Text(
+                                      "New workspace",
+                                      style: TextStyle(fontSize: 16.0),
+                                    ),
+                                  )
+                                : OutlinedAppButton(
+                                    onPressed: () async {
+                                      await _showAddWorkspaceDialog(context);
+                                    },
+                                    labelText: "New workspace",
+                                  )
                             : const SizedBox(),
                       ],
                     )
@@ -235,8 +243,10 @@ class _DashboardViewState extends State<DashboardView> {
                           flex: 8,
                           child: DashboardWidget(),
                         ),
-                        if(isDesktop) 
-                        const SizedBox(width: 16,),
+                        if (isDesktop)
+                          const SizedBox(
+                            width: 16,
+                          ),
                         if (isDesktop)
                           const Expanded(
                             flex: 3,
