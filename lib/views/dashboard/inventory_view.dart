@@ -3,7 +3,9 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/services.dart';
+import 'package:shinda_app/components/buttons.dart';
 import 'package:shinda_app/constants/text_syles.dart';
+import 'package:shinda_app/responsive/responsive_layout.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
 import 'package:shinda_app/utilities/get_workspace.dart';
@@ -83,35 +85,103 @@ class _InventoryViewState extends State<InventoryView> {
                   ),
                   const Expanded(child: SizedBox()),
                   _productsData != null && _productsData!.isNotEmpty
-                      ? FilledButton(
-                          style: const ButtonStyle(
-                            backgroundColor: MaterialStatePropertyAll(
-                              primary,
-                            ),
-                          ),
-                          onPressed: () async {
-                            await _showAddProductDialog(context);
-                          },
-                          child: const Text(
-                            "Add Product",
-                            style: TextStyle(fontSize: 16.0),
-                          ),
-                        )
+                      ? Responsive.isDesktop(context)
+                          ? FilledButton(
+                              style: const ButtonStyle(
+                                backgroundColor: MaterialStatePropertyAll(
+                                  primary,
+                                ),
+                              ),
+                              onPressed: () async {
+                                await _showAddProductDialog(context);
+                              },
+                              child: const Text(
+                                "Add Product",
+                                style: TextStyle(fontSize: 16.0),
+                              ),
+                            )
+                          : OutlinedAppButton(
+                              onPressed: () async {
+                                await _showAddProductDialog(context);
+                              },
+                              labelText: "Add Product",
+                            )
                       : const SizedBox(),
                 ],
               ),
               const SizedBox(height: 16.0),
               _productsData != null && _productsData!.isNotEmpty
-                  ? SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      // child: PaginatedDataTable(
-                      //   columns: productDataColumns,
-                      //   source: _productsDataSource,
-                      //   rowsPerPage: 10,
-                      //   columnSpacing: 100,
-                      // ),
-                      child: InventoryDataGrid(data: _productsData!),
-                    )
+                  ? Responsive.isMobile(context)
+                      ? GridView.builder(
+                          shrinkWrap: true,
+                          itemCount: _productsData!.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 8.0,
+                            mainAxisSpacing: 8.0,
+                            childAspectRatio: 0.9,
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return Card(
+                              elevation: 0.0,
+                              surfaceTintColor: Colors.white,
+                              shape: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                borderSide: const BorderSide(color: surface3),
+                              ),
+                              child: Container(
+                                // width: 200.0,
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      width: double.infinity,
+                                      height: 122.0,
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                        color: surface1,
+                                      ),
+                                      child: const Icon(
+                                        Icons.shopping_bag_outlined,
+                                        color: Colors.black12,
+                                        size: 32.0,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16.0),
+                                    Text(
+                                      _productsData![index]["product"]['name'],
+                                      style: body1.copyWith(
+                                          overflow: TextOverflow.ellipsis),
+                                      maxLines: 1,
+                                    ),
+                                    const SizedBox(height: 4.0),
+                                    Text(
+                                      "RWF ${_productsData![index]["product"]['price'].toStringAsFixed(2)}",
+                                      style: priceText2,
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    Text(
+                                      "${_productsData![index]['quantity_available'].toString()} in stock",
+                                      style: labelText,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          })
+                      : SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          // child: PaginatedDataTable(
+                          //   columns: productDataColumns,
+                          //   source: _productsDataSource,
+                          //   rowsPerPage: 10,
+                          //   columnSpacing: 100,
+                          // ),
+                          child: InventoryDataGrid(data: _productsData!),
+                        )
                   : Center(
                       child: Padding(
                         padding: const EdgeInsets.all(48.0),
