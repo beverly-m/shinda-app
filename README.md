@@ -1,16 +1,7 @@
-# shinda_app
+# Shinda - A Financial Management Application for Small Business
 
-A new Flutter project.
+Shinda is a Flutter application built to improve financial management among small businesses. SME's are essential for our communities as they contribute immensely to the economy through aspects such as job creation. Therefore, it is essential that small business owners have adequate tools to maintain business profitability and sustainability. I hope this application will be a valuable contribution to this cause.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Application Tests
+Other than manual tests, unit and widget tests have been conducted to ensure the application's reliability and accuracy.
+These tests can be found in the "test/" folder. Several files within the folder contain tests conducted for core functionalities available in the application.
