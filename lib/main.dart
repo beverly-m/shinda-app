@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shinda_app/constants/routes.dart';
+import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
 import 'package:shinda_app/utilities/providers/cart_provider.dart';
-import 'package:shinda_app/utilities/providers/navigation_provider.dart';
 import 'package:shinda_app/views/dashboard/dashboard_view.dart';
 import 'package:shinda_app/views/dashboard/debtors_view.dart';
 import 'package:shinda_app/views/dashboard/home_view.dart';
@@ -59,7 +59,7 @@ ThemeData _buildTheme(brightness) {
 
   return baseTheme.copyWith(
     textTheme: GoogleFonts.robotoCondensedTextTheme(baseTheme.textTheme),
-    colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    colorScheme: ColorScheme.fromSeed(seedColor: primary),
   );
 }
 

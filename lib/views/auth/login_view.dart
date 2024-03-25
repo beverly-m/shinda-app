@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shinda_app/components/textfields.dart';
 import 'package:shinda_app/constants/routes.dart';
+import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/auth/auth_exceptions.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
@@ -14,11 +16,10 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   final GlobalKey<FormState> _formKey = GlobalKey();
-
   late final TextEditingController _email;
   late final TextEditingController _password;
-
   bool _isLoading = false;
+  bool _obscureText = true;
 
   void _logIn() async {
     final isValid = _formKey.currentState?.validate();
@@ -47,19 +48,17 @@ class _LoginViewState extends State<LoginView> {
         });
 
         if (user?.isEmailVerified ?? false) {
-          if (context.mounted) {
-            Navigator.of(context).pushNamedAndRemoveUntil(
-              homeRoute,
-              (route) => false,
-            );
-          }
+          if (!mounted) return;
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            homeRoute,
+            (route) => false,
+          );
         } else {
-          if (context.mounted) {
-            Navigator.of(context).pushNamedAndRemoveUntil(
-              verifyEmailRoute,
-              (route) => false,
-            );
-          }
+          if (!mounted) return;
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            verifyEmailRoute,
+            (route) => false,
+          );
         }
       } on UnverifiedUserAuthException {
         setState(() {
@@ -123,6 +122,7 @@ class _LoginViewState extends State<LoginView> {
             child: Form(
               key: _formKey,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
                     "Login",
@@ -132,35 +132,11 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ),
                   const SizedBox(height: 48.0),
-                  TextFormField(
+                  NormalTextFormField(
                     controller: _email,
-                    textInputAction: TextInputAction.next,
-                    enableSuggestions: false,
-                    autocorrect: false,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        borderSide: BorderSide(
-                          color: Theme.of(context).primaryColorDark,
-                          width: 1,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        borderSide: BorderSide(
-                          color: Theme.of(context).primaryColor,
-                          width: 1,
-                        ),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 16.0,
-                        horizontal: 12.0,
-                      ),
-                      hintText: 'Enter your email',
-                      labelText: 'Email',
-                    ),
+                    hintText: 'Enter your email',
+                    labelText: 'Email',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Email required';
@@ -168,46 +144,8 @@ class _LoginViewState extends State<LoginView> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 32.0),
-                  TextFormField(
-                    controller: _password,
-                    keyboardType: TextInputType.visiblePassword,
-                    textInputAction: TextInputAction.next,
-                    obscureText: true,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    decoration: InputDecoration(
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        borderSide: BorderSide(
-                          color: Theme.of(context).primaryColorDark,
-                          width: 1,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        borderSide: BorderSide(
-                          color: Theme.of(context).primaryColor,
-                          width: 1,
-                        ),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 16.0,
-                        horizontal: 12.0,
-                      ),
-                      hintText: 'Enter your password',
-                      labelText: 'Password',
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Password required.';
-                      } else if (value.length < 8) {
-                        return 'Password length must be more than 8 characters.';
-                      }
-                      return null;
-                    },
-                  ),
+                  const SizedBox(height: 24.0),
+                  PasswordTextFormField(controller: _password),
                   const SizedBox(height: 48.0),
                   FilledButton(
                     onPressed: _isLoading ? null : _logIn,
