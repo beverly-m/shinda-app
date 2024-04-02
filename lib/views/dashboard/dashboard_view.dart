@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shinda_app/components/buttons.dart';
 import 'package:shinda_app/components/dashboard_widget.dart';
 import 'package:shinda_app/components/side_dashboard_widget.dart';
+import 'package:shinda_app/constants/supabase.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
@@ -13,6 +14,7 @@ import 'package:shinda_app/utilities/get_workspace.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shinda_app/responsive/responsive_layout.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
@@ -88,6 +90,37 @@ class _DashboardViewState extends State<DashboardView> {
     } catch (e) {
       log(e.toString());
       _isLoading = false;
+    }
+
+    try {
+      DateTime timestamp = DateTime.timestamp();
+      DateTime timestampTomorrow =
+          DateTime.timestamp().add(const Duration(days: 1));
+
+      String today =
+          '${timestamp.year}-${timestamp.month > 10 ? timestamp.month : '0${timestamp.month}'}-${timestamp.day > 10 ? timestamp.day : '0${timestamp.day}'}T00:00:00';
+      String tomorrow =
+          '${timestampTomorrow.year}-${timestampTomorrow.month > 10 ? timestampTomorrow.month : '0${timestampTomorrow.month}'}-${timestampTomorrow.day > 10 ? timestampTomorrow.day : '0${timestampTomorrow.day}'}T00:00:00';
+
+      final Map<String, dynamic> dashboardMeta = {
+        'income': 0.00,
+        'transactions': 0,
+        'productsLowInStock': 0,
+        'outstandingPayments': 0,
+        'expiredProducts': [],
+        'salesData': {},
+      };
+      // get number of transactions
+      // get products low in stock
+      // get outstanding payments
+      // get expiring or expired products
+      // get sales data for the past 7 days
+      // return dashboardMeta;
+    } on PostgrestException catch (e) {
+      log(e.code ?? "Error occurred");
+      log(e.message);
+    } catch (e) {
+      log(e.toString());
     }
   }
 

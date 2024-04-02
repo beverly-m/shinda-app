@@ -389,17 +389,30 @@ class WorkspaceService implements WorkspaceProvider {
       'salesData': {},
     };
 
-    final currentDate =
-        "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}";
-
-    // log(currentDate.toString());2024-03-16 19:53:46.035074+00
-
     try {
+      DateTime timestamp = DateTime.timestamp();
+      DateTime timestampTomorrow =
+          DateTime.timestamp().add(const Duration(days: 1));
+
+      String today =
+          '${timestamp.year}-${timestamp.month > 10 ? timestamp.month : '0${timestamp.month}'}-${timestamp.day > 10 ? timestamp.day : '0${timestamp.day}'}T00:00:00';
+      String tomorrow =
+          '${timestampTomorrow.year}-${timestampTomorrow.month > 10 ? timestampTomorrow.month : '0${timestampTomorrow.month}'}-${timestampTomorrow.day > 10 ? timestampTomorrow.day : '0${timestampTomorrow.day}'}T00:00:00';
+
       // get total income
-      final income = await supabase
+      await supabase
           .from('transaction')
-          .select('grand_total')
-          .gte('created_at', '');
+          .select()
+          .lt('created_at', tomorrow)
+          .gte('created_at', today)
+          .eq('is_paid', true)
+          .then((value) {
+        for (var element in value) {
+          dashboardMeta['income'] =
+              dashboardMeta['income'] + element['grand_total'];
+        }
+        log('Daily Income ${dashboardMeta['income']}');
+      });
       // get number of transactions
       // get products low in stock
       // get outstanding payments
