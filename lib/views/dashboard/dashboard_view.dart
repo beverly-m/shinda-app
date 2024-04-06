@@ -91,37 +91,6 @@ class _DashboardViewState extends State<DashboardView> {
       log(e.toString());
       _isLoading = false;
     }
-
-    try {
-      DateTime timestamp = DateTime.timestamp();
-      DateTime timestampTomorrow =
-          DateTime.timestamp().add(const Duration(days: 1));
-
-      String today =
-          '${timestamp.year}-${timestamp.month > 10 ? timestamp.month : '0${timestamp.month}'}-${timestamp.day > 10 ? timestamp.day : '0${timestamp.day}'}T00:00:00';
-      String tomorrow =
-          '${timestampTomorrow.year}-${timestampTomorrow.month > 10 ? timestampTomorrow.month : '0${timestampTomorrow.month}'}-${timestampTomorrow.day > 10 ? timestampTomorrow.day : '0${timestampTomorrow.day}'}T00:00:00';
-
-      final Map<String, dynamic> dashboardMeta = {
-        'income': 0.00,
-        'transactions': 0,
-        'productsLowInStock': 0,
-        'outstandingPayments': 0,
-        'expiredProducts': [],
-        'salesData': {},
-      };
-      // get number of transactions
-      // get products low in stock
-      // get outstanding payments
-      // get expiring or expired products
-      // get sales data for the past 7 days
-      // return dashboardMeta;
-    } on PostgrestException catch (e) {
-      log(e.code ?? "Error occurred");
-      log(e.message);
-    } catch (e) {
-      log(e.toString());
-    }
   }
 
   void _createWorkspace() async {

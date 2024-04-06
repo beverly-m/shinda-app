@@ -382,42 +382,174 @@ class WorkspaceService implements WorkspaceProvider {
       {required String workspaceId}) async {
     final Map<String, dynamic> dashboardMeta = {
       'income': 0,
+      'momo': 0,
+      'cash': 0,
+      'card': 0,
+      'bank': 0,
       'transactions': 0,
       'productsLowInStock': 0,
       'outstandingPayments': 0,
-      'expiredProducts': [],
-      'salesData': {},
+      'expiredProducts': 0,
+      'outstandingPaymentsData': [],
+      'expireProductsData': [],
+      'productsLowInStockData': [],
+      'mostSoldProductsData': [],
+      'salesData': [],
     };
 
     try {
       DateTime timestamp = DateTime.timestamp();
       DateTime timestampTomorrow =
           DateTime.timestamp().add(const Duration(days: 1));
+      DateTime timestampWeekAway =
+          DateTime.timestamp().add(const Duration(days: 7));
 
       String today =
           '${timestamp.year}-${timestamp.month > 10 ? timestamp.month : '0${timestamp.month}'}-${timestamp.day > 10 ? timestamp.day : '0${timestamp.day}'}T00:00:00';
       String tomorrow =
           '${timestampTomorrow.year}-${timestampTomorrow.month > 10 ? timestampTomorrow.month : '0${timestampTomorrow.month}'}-${timestampTomorrow.day > 10 ? timestampTomorrow.day : '0${timestampTomorrow.day}'}T00:00:00';
+      String weekAway =
+          '${timestampWeekAway.year}-${timestampWeekAway.month > 10 ? timestampWeekAway.month : '0${timestampWeekAway.month}'}-${timestampWeekAway.day > 10 ? timestampWeekAway.day : '0${timestampWeekAway.day}'}';
 
-      // get total income
+      // TOTAL INCOME, INCOME BREAKDOWN & NUM OF TRANSACTIONS
       await supabase
           .from('transaction')
           .select()
           .lt('created_at', tomorrow)
           .gte('created_at', today)
+          .eq('workspace_id', workspaceId)
           .eq('is_paid', true)
           .then((value) {
-        for (var element in value) {
-          dashboardMeta['income'] =
-              dashboardMeta['income'] + element['grand_total'];
+        // get number of transactions
+        dashboardMeta['transactions'] = value.length;
+
+        if (value.isNotEmpty) {
+          for (var element in value) {
+            // get total income
+            dashboardMeta['income'] =
+                dashboardMeta['income'] + element['grand_total'];
+
+            // get income from different payment modes
+            switch (element['payment_mode']) {
+              case 'Mobile money':
+                dashboardMeta['momo'] =
+                    dashboardMeta['momo'] + element['grand_total'];
+                break;
+              case 'Cash':
+                dashboardMeta['cash'] =
+                    dashboardMeta['cash'] + element['grand_total'];
+                break;
+              case 'Card':
+                dashboardMeta['card'] =
+                    dashboardMeta['card'] + element['grand_total'];
+                break;
+              case 'Bank transfer':
+                dashboardMeta['bank'] =
+                    dashboardMeta['bank'] + element['grand_total'];
+                break;
+              default:
+            }
+          }
         }
         log('Daily Income ${dashboardMeta['income']}');
+        log('Momo Income ${dashboardMeta['momo']}');
+        log('Cash Income ${dashboardMeta['cash']}');
+        log('Card Income ${dashboardMeta['card']}');
+        log('Bank Transfer Income ${dashboardMeta['bank']}');
+        log('Number of transactions ${dashboardMeta['transactions']}');
       });
-      // get number of transactions
-      // get products low in stock
-      // get outstanding payments
-      // get expiring or expired products
-      // get sales data for the past 7 days
+
+      // NUM OF PRODUCTS LOW IN STOCK & PRODUCTS LOW IN STOCK
+      await supabase
+          .from('stock')
+          .select()
+          .eq('workspace_id', workspaceId)
+          .then((value) {
+        for (var element in value) {
+          // check if quantity is less than or equal to reorder level
+          if (element['reorder_level'] >= element['quantity_available']) {
+            // get number of products low in stock
+            dashboardMeta['productsLowInStock'] =
+                dashboardMeta['productsLowInStock'] + 1;
+
+            dashboardMeta['productsLowInStockData'].add(element);
+          }
+        }
+
+        log('Number of products ${dashboardMeta['productsLowInStock']}');
+        log('Products ${dashboardMeta['productsLowInStockData']}');
+      });
+
+      // NUM OF OUTSTANDING PAYMENTS & OUTSTANDING PAYMENTS
+      await supabase
+          .from('debtor')
+          .select()
+          .eq('workspace_id', workspaceId)
+          .filter('date_paid', 'is', 'null')
+          .then((value) {
+        // get number of outstanding payments
+        dashboardMeta['outstandingPayments'] = value.length;
+
+        // get outstanding payments
+        dashboardMeta['outstandingPaymentsData'] = value;
+
+        log('Number of outstanding payments ${dashboardMeta['outstandingPayments']}');
+
+        log('Outstanding payments ${dashboardMeta['outstandingPaymentsData']}');
+      });
+
+      // NUM OF PRODUCTS EXPIRING/EXPIRED & PRODUCTS EXPIRING/EXPIRED
+      await supabase
+          .from('stock')
+          .select()
+          .eq('workspace_id', workspaceId)
+          .lte('expiration_date', weekAway)
+          .then((value) {
+        dashboardMeta['expiredProducts'] = value.length;
+
+        if (value.isNotEmpty) {
+          dashboardMeta['expiredProductsData'] = value;
+        }
+
+        log("Expired products: ${dashboardMeta['expiredProductsData']}");
+        log("Number of expired products: ${dashboardMeta['expiredProducts']}");
+      });
+
+      // MOST SOLD PRODUCTS
+      await supabase
+          .from('transaction_item')
+          .select('''product_id, quantity, created_at''')
+          .lt('created_at', tomorrow)
+          .gte('created_at', today)
+          .then((value) {
+            final products = [];
+            log(value.length.toString());
+            for (var element in value) {
+              // check if product is already recorded
+              if (products.contains(element['product_id'])) {
+                // increment the quantity
+                dashboardMeta['mostSoldProductsData'][element['product_id']] =
+                    dashboardMeta['mostSoldProductsData']
+                            [element['product_id']] +
+                        element['quantity'];
+              } else {
+                // add the product to the list
+                dashboardMeta['mostSoldProductsData']
+                    .add({element['product_id']: element['quantity']});
+
+                products.add(element['product_id']);
+              }
+            }
+
+            log("Most sold: ${dashboardMeta['mostSoldProductsData']}");
+          });
+
+      // SALES DATA FOR THE PAST 7 DAYS
+      await supabase.from('week_sales_view').select().then((value) {
+        dashboardMeta['salesData'] = value;
+        log("Sales overview: ${dashboardMeta['salesData']}");
+      });
+      
       return dashboardMeta;
     } on PostgrestException catch (e) {
       log(e.code ?? "Error occurred");

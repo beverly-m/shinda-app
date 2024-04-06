@@ -25,7 +25,7 @@ void main() {
     ChangeNotifierProvider(
       create: (context) => CartProvider(),
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Shinda',
         // theme: ThemeData(
         //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         //   useMaterial3: true,
