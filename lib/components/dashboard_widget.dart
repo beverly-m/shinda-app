@@ -5,7 +5,8 @@ import 'package:shinda_app/components/side_dashboard_widget.dart';
 import 'package:shinda_app/responsive/responsive_layout.dart';
 
 class DashboardWidget extends StatefulWidget {
-  const DashboardWidget({super.key});
+  const DashboardWidget({super.key, required this.workspaceId});
+  final String workspaceId;
 
   @override
   State<DashboardWidget> createState() => _DashboardWidgetState();
@@ -21,7 +22,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
           const SizedBox(
             height: 24.0,
           ),
-          const SalesDetailsCard(),
+          // SalesDetailsCard(workspaceId: widget.workspaceId,),
           const SizedBox(height: 16),
           const LineChartCard(),
           if (Responsive.isDesktop(context))

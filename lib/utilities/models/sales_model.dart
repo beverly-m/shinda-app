@@ -14,14 +14,29 @@ class SalesModel {
 }
 
 class SalesDetails {
-  final List<SalesModel> salesData = [
+  SalesDetails({
+    required this.totalIncome,
+    required this.transactions,
+    required this.outstandingPayments,
+    required this.productsLowInStock,
+    required this.productsExpiring,
+  });
+
+  final double totalIncome;
+  final int transactions;
+  final int outstandingPayments;
+  final int productsLowInStock;
+  final int productsExpiring;
+
+  List<SalesModel> salesData() {
+    return [
     SalesModel(
       icon: const Icon(
         Icons.point_of_sale_outlined,
         size: 30,
         color: primary,
       ),
-      value: 'RWF 100,000.00',
+      value: 'RWF ${totalIncome.toStringAsFixed(2)}',
       title: "Total Income",
     ),
     SalesModel(
@@ -30,17 +45,8 @@ class SalesDetails {
         size: 30,
         color: primary,
       ),
-      value: '56',
+      value: '$transactions',
       title: "Transactions",
-    ),
-    SalesModel(
-      icon: const Icon(
-        Icons.production_quantity_limits_outlined,
-        size: 30,
-        color: primary,
-      ),
-      value: '3',
-      title: "Products low in stock",
     ),
     SalesModel(
       icon: const Icon(
@@ -48,8 +54,27 @@ class SalesDetails {
         size: 30,
         color: primary,
       ),
-      value: '5',
+      value: '$outstandingPayments',
       title: "Outstanding client payments",
     ),
+    SalesModel(
+      icon: const Icon(
+        Icons.production_quantity_limits_outlined,
+        size: 30,
+        color: primary,
+      ),
+      value: '$productsLowInStock',
+      title: "Products low in stock",
+    ),
+    SalesModel(
+      icon: const Icon(
+        Icons.remove_shopping_cart_outlined,
+        size: 30,
+        color: primary,
+      ),
+      value: '$productsExpiring',
+      title: "Products expiring",
+    ),
   ];
+  }
 }

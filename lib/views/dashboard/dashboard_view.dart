@@ -1,11 +1,10 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shinda_app/components/buttons.dart';
 import 'package:shinda_app/components/dashboard_widget.dart';
+import 'package:shinda_app/components/sales_details_card.dart';
 import 'package:shinda_app/components/side_dashboard_widget.dart';
-import 'package:shinda_app/constants/supabase.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
@@ -14,7 +13,6 @@ import 'package:shinda_app/utilities/get_workspace.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shinda_app/responsive/responsive_layout.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
@@ -86,10 +84,14 @@ class _DashboardViewState extends State<DashboardView> {
       }
     } on GenericWorkspaceException {
       log("Error occurred");
-      _isLoading = false;
+      setState(() {
+        _isLoading = false;
+      });
     } catch (e) {
       log(e.toString());
-      _isLoading = false;
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -121,14 +123,14 @@ class _DashboardViewState extends State<DashboardView> {
         setState(() {
           _isLoading = false;
         });
-        if (context.mounted) {
+        if (mounted) {
           showErrorDialog(context, "Some error occurred");
         }
       } catch (e) {
         setState(() {
           _isLoading = false;
         });
-        if (context.mounted) {
+        if (mounted) {
           showErrorDialog(context, e.toString());
         }
       }
@@ -237,13 +239,19 @@ class _DashboardViewState extends State<DashboardView> {
                       ],
                     )
                   : const SizedBox(),
+              if (_workspaceData != null && _workspaceData!.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: SalesDetailsCard(workspaceId: _currentWorkspace!),
+                ),
               _workspaceData != null && _workspaceData!.isNotEmpty
                   ? Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Expanded(
+                        Expanded(
                           flex: 8,
-                          child: DashboardWidget(),
+                          child:
+                              DashboardWidget(workspaceId: _currentWorkspace!),
                         ),
                         if (isDesktop)
                           const SizedBox(

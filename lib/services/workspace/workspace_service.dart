@@ -523,7 +523,6 @@ class WorkspaceService implements WorkspaceProvider {
           .gte('created_at', today)
           .then((value) {
             final products = [];
-            log(value.length.toString());
             for (var element in value) {
               // check if product is already recorded
               if (products.contains(element['product_id'])) {
@@ -549,7 +548,7 @@ class WorkspaceService implements WorkspaceProvider {
         dashboardMeta['salesData'] = value;
         log("Sales overview: ${dashboardMeta['salesData']}");
       });
-      
+
       return dashboardMeta;
     } on PostgrestException catch (e) {
       log(e.code ?? "Error occurred");
