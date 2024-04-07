@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:shinda_app/components/buttons.dart';
 import 'package:shinda_app/components/dashboard_widget.dart';
 import 'package:shinda_app/components/sales_details_card.dart';
 import 'package:shinda_app/components/side_dashboard_widget.dart';
@@ -172,73 +171,72 @@ class _DashboardViewState extends State<DashboardView> {
                 "Dashboard",
                 style: dashboardHeadline,
               ),
-              _currentWorkspaceName != null &&
-                      _workspaceData != null &&
-                      _workspaceData!.isNotEmpty
-                  ? const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text(
-                        'Here is what is happening in your store today.',
-                        style: body1,
-                      ),
-                    )
-                  : const SizedBox(),
-              const SizedBox(height: 24.0),
-              _currentWorkspaceName != null &&
-                      _workspaceData != null &&
-                      _workspaceData!.isNotEmpty
-                  ? Row(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            _showSelectWorkspaceDialog(context);
-                          },
-                          child: Chip(
-                            label: Text(
-                              "$_currentWorkspaceName's Workspace",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                                color: primary,
-                              ),
-                            ),
-                            avatar: const Icon(
-                              Icons.arrow_drop_down_circle_outlined,
-                              color: primary,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              side: const BorderSide(color: surface3),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                          ),
-                        ),
-                        const Expanded(child: SizedBox()),
-                        _workspaceData != null && _workspaceData!.isNotEmpty
-                            ? Responsive.isDesktop(context)
-                                ? FilledButton(
-                                    style: const ButtonStyle(
-                                      backgroundColor: MaterialStatePropertyAll(
-                                        primary,
-                                      ),
-                                    ),
-                                    onPressed: () async {
-                                      await _showAddWorkspaceDialog(context);
-                                    },
-                                    child: const Text(
-                                      "New workspace",
-                                      style: TextStyle(fontSize: 16.0),
-                                    ),
-                                  )
-                                : OutlinedAppButton(
-                                    onPressed: () async {
-                                      await _showAddWorkspaceDialog(context);
-                                    },
-                                    labelText: "New workspace",
-                                  )
-                            : const SizedBox(),
-                      ],
-                    )
-                  : const SizedBox(),
+              if (_currentWorkspaceName != null &&
+                  _workspaceData != null &&
+                  _workspaceData!.isNotEmpty)
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(
+                    'Here is what is happening in your store today.',
+                    style: body1,
+                  ),
+                ),
+              const SizedBox(height: 16.0),
+              // _currentWorkspaceName != null &&
+              //         _workspaceData != null &&
+              //         _workspaceData!.isNotEmpty
+              //     ? Row(
+              //         children: [
+              //           InkWell(
+              //             onTap: () {
+              //               _showSelectWorkspaceDialog(context);
+              //             },
+              //             child: Chip(
+              //               label: Text(
+              //                 "$_currentWorkspaceName's Workspace",
+              //                 style: const TextStyle(
+              //                   fontWeight: FontWeight.w600,
+              //                   fontSize: 14,
+              //                   color: primary,
+              //                 ),
+              //               ),
+              //               avatar: const Icon(
+              //                 Icons.arrow_drop_down_circle_outlined,
+              //                 color: primary,
+              //               ),
+              //               shape: RoundedRectangleBorder(
+              //                 side: const BorderSide(color: surface3),
+              //                 borderRadius: BorderRadius.circular(8.0),
+              //               ),
+              //             ),
+              //           ),
+              //           const Expanded(child: SizedBox()),
+              //           _workspaceData != null && _workspaceData!.isNotEmpty
+              //               ? Responsive.isDesktop(context)
+              //                   ? FilledButton(
+              //                       style: const ButtonStyle(
+              //                         backgroundColor: MaterialStatePropertyAll(
+              //                           primary,
+              //                         ),
+              //                       ),
+              //                       onPressed: () async {
+              //                         await _showAddWorkspaceDialog(context);
+              //                       },
+              //                       child: const Text(
+              //                         "New workspace",
+              //                         style: TextStyle(fontSize: 16.0),
+              //                       ),
+              //                     )
+              //                   : OutlinedAppButton(
+              //                       onPressed: () async {
+              //                         await _showAddWorkspaceDialog(context);
+              //                       },
+              //                       labelText: "New workspace",
+              //                     )
+              //               : const SizedBox(),
+              //         ],
+              //       )
+              //     : const SizedBox(),
               if (_workspaceData != null && _workspaceData!.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 16),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shinda_app/components/line_chart_card.dart';
-import 'package:shinda_app/components/sales_details_card.dart';
 import 'package:shinda_app/components/side_dashboard_widget.dart';
 import 'package:shinda_app/responsive/responsive_layout.dart';
 
@@ -22,7 +21,6 @@ class _DashboardWidgetState extends State<DashboardWidget> {
           const SizedBox(
             height: 24.0,
           ),
-          // SalesDetailsCard(workspaceId: widget.workspaceId,),
           const SizedBox(height: 16),
           const LineChartCard(),
           if (Responsive.isDesktop(context))

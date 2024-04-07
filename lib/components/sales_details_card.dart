@@ -1,8 +1,6 @@
 import 'dart:developer';
-import 'dart:js_interop';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shinda_app/components/custom_card.dart';
 import 'package:shinda_app/constants/text_syles.dart';
@@ -68,13 +66,6 @@ class _SalesDetailsCardState extends State<SalesDetailsCard> {
 
   @override
   Widget build(BuildContext context) {
-    // final salesDetails = SalesDetails(
-    //   totalIncome: _dashboardMetadata!['income'],
-    //   transactions: _dashboardMetadata!['transactions'],
-    //   outstandingPayments: _dashboardMetadata!['outstandingPayments'],
-    //   productsLowInStock: _dashboardMetadata!['productsLowInStock'],
-    //   productsExpiring: _dashboardMetadata!['productsExpiring'],
-    // );
 
     return _isLoading
         ? const CircularProgressIndicator()
