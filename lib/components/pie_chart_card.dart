@@ -1,0 +1,171 @@
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
+import 'package:shinda_app/components/indicator.dart';
+import 'package:shinda_app/constants/text_syles.dart';
+
+class PieChartCard extends StatefulWidget {
+  const PieChartCard({super.key, required this.salesData});
+  final List<dynamic> salesData;
+
+  @override
+  State<PieChartCard> createState() => _PieChartCardState();
+}
+
+class _PieChartCardState extends State<PieChartCard> {
+  int touchedIndex = -1;
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+        aspectRatio: 0.9,
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: surface3),
+            borderRadius: BorderRadius.circular(8.0),
+            color: surface1,
+          ),
+          child: Column(children: [
+            const SizedBox(height: 16.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                children: [
+                  Text(
+                    "Daily Income by Mode of Payment",
+                    textAlign: TextAlign.left,
+                    style: subtitle1.copyWith(fontSize: 18),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: PieChart(
+                  PieChartData(
+                    pieTouchData: PieTouchData(
+                      touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                        setState(() {
+                          if (!event.isInterestedForInteractions ||
+                              pieTouchResponse == null ||
+                              pieTouchResponse.touchedSection == null) {
+                            touchedIndex = -1;
+                            return;
+                          }
+                          touchedIndex = pieTouchResponse
+                              .touchedSection!.touchedSectionIndex;
+                        });
+                      },
+                    ),
+                    borderData: FlBorderData(show: false),
+                    sectionsSpace: 0,
+                    centerSpaceRadius: 40,
+                    sections: showSections(),
+                  ),
+                ),
+              ),
+            ),
+            GridView.count(
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              padding: const EdgeInsets.all(16.0),
+              childAspectRatio: 5,
+              children: [
+                Indicator(
+                  color: const Color.fromRGBO(9, 82, 86, 1),
+                  text: 'Cash',
+                  isSquare: false,
+                  size: touchedIndex == 0 ? 18 : 16,
+                  textColor:
+                      touchedIndex == 0 ? Colors.black87 : Colors.black54,
+                ),
+                Indicator(
+                  color: const Color.fromRGBO(187, 159, 6, 1),
+                  text: 'Mobile money',
+                  isSquare: false,
+                  size: touchedIndex == 1 ? 18 : 16,
+                  textColor:
+                      touchedIndex == 1 ? Colors.black87 : Colors.black54,
+                ),
+                Indicator(
+                  color: const Color.fromRGBO(8, 127, 140, 1),
+                  text: 'Card',
+                  isSquare: false,
+                  size: touchedIndex == 2 ? 18 : 16,
+                  textColor:
+                      touchedIndex == 2 ? Colors.black87 : Colors.black54,
+                ),
+                Indicator(
+                  color: Colors.pink,
+                  text: 'Bank transfer',
+                  isSquare: false,
+                  size: touchedIndex == 3 ? 18 : 16,
+                  textColor:
+                      touchedIndex == 3 ? Colors.black87 : Colors.black54,
+                ),
+              ],
+            ),
+          ]),
+        ));
+  }
+
+  List<PieChartSectionData> showSections() {
+    return List.generate(4, (i) {
+      final isTouched = i == touchedIndex;
+      final fontSize = isTouched ? 25.0 : 16.0;
+      final radius = isTouched ? 60.0 : 50.0;
+      switch (i) {
+        case 0:
+          return PieChartSectionData(
+            color: const Color.fromRGBO(9, 82, 86, 1),
+            value: 40,
+            title: '40%',
+            radius: radius,
+            titleStyle: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          );
+        case 1:
+          return PieChartSectionData(
+            color: const Color.fromRGBO(187, 159, 6, 1),
+            value: 30,
+            title: '30%',
+            radius: radius,
+            titleStyle: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          );
+        case 2:
+          return PieChartSectionData(
+            color: const Color.fromRGBO(8, 127, 140, 1),
+            value: 15,
+            title: '15%',
+            radius: radius,
+            titleStyle: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          );
+        case 3:
+          return PieChartSectionData(
+            color: Colors.pink,
+            value: 15,
+            title: '15%',
+            radius: radius,
+            titleStyle: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          );
+        default:
+          throw Error();
+      }
+    });
+  }
+}

@@ -1,7 +1,10 @@
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shinda_app/components/line_chart_card.dart';
+import 'package:shinda_app/components/pie_chart_card.dart';
 import 'package:shinda_app/components/side_dashboard_widget.dart';
 import 'package:shinda_app/responsive/responsive_layout.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
@@ -66,8 +69,20 @@ class _DashboardWidgetState extends State<DashboardWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 24),
-                LineChartCard(
-                  salesData: _salesData!,
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: PieChartCard(salesData: _salesData!),
+                    ),
+                    const SizedBox(width: 16.0),
+                    Expanded(
+                      flex: 5,
+                      child: LineChartCard(
+                        salesData: _salesData!,
+                      ),
+                    ),
+                  ],
                 ),
                 if (Responsive.isDesktop(context))
                   const SizedBox(
