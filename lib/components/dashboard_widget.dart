@@ -18,7 +18,7 @@ class DashboardWidget extends StatefulWidget {
 class _DashboardWidgetState extends State<DashboardWidget> {
   bool _isLoading = false;
   List? _salesData;
-  
+
   @override
   void initState() {
     super.initState();
@@ -59,23 +59,25 @@ class _DashboardWidgetState extends State<DashboardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 24.0,
-          ),
-          const SizedBox(height: 16),
-          LineChartCard(salesData: _salesData!,),
-          if (Responsive.isDesktop(context))
-            const SizedBox(
-              height: 16,
+    return _isLoading
+        ? const SizedBox()
+        : SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 24),
+                LineChartCard(
+                  salesData: _salesData!,
+                ),
+                if (Responsive.isDesktop(context))
+                  const SizedBox(
+                    height: 16,
+                  ),
+                if (Responsive.isTablet(context) ||
+                    Responsive.isMobile(context))
+                  const SideDashboardWidget(),
+              ],
             ),
-          if (Responsive.isTablet(context) || Responsive.isMobile(context))
-            const SideDashboardWidget(),
-        ],
-      ),
-    );
+          );
   }
 }
