@@ -14,6 +14,7 @@ class LineChartCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final data = LineData(data: salesData);
+    data.getSpots();
     log("Sales data---------");
     log(salesData.toString());
     log(salesData.length.toString());
@@ -156,7 +157,7 @@ class LineChartCard extends StatelessWidget {
                         );
                       },
                     ),
-                    spots: data.spots,
+                    spots: data.getSpots(),
                   )
                 ],
                 minX: 0.5,
@@ -176,15 +177,16 @@ class LineData {
   LineData({required this.data});
   final List data;
 
-  final spots = const [
-    FlSpot(1.0, 21.04),
-    FlSpot(2.0, 36.23),
-    FlSpot(3.0, 39.82),
-    FlSpot(4.0, 44.49),
-    FlSpot(5.0, 19.82),
-    FlSpot(6.0, 23.50),
-    FlSpot(7.0, 29.57),
-  ];
+  List<FlSpot> spots = const [];
+  // final spots = const [
+  //   FlSpot(1.0, 21.04),
+  //   FlSpot(2.0, 36.23),
+  //   FlSpot(3.0, 39.82),
+  //   FlSpot(4.0, 44.49),
+  //   FlSpot(5.0, 19.82),
+  //   FlSpot(6.0, 23.50),
+  //   FlSpot(7.0, 29.57),
+  // ];
 
   final leftTitle = {
     0: '0',
@@ -204,4 +206,24 @@ class LineData {
     6: 'Sat',
     7: 'Sun',
   };
+
+  List<FlSpot> getSpots() {
+    List<FlSpot> spotsData = [];
+
+    for (var element in data) {
+      int day = DateTime.parse(element['day']).weekday;
+      double amount = element['sum'] / 1000;
+
+      log("Spots-----------");
+      log(bottomTitle[day]!);
+      log(amount.toString());
+
+      spots = spots + [FlSpot(day.toDouble(), amount)];
+
+      spotsData.add(FlSpot(day.toDouble(), amount));
+
+      // spots.add(FlSpot(day.toDouble(), amount));
+    }
+    return spotsData;
+  }
 }
