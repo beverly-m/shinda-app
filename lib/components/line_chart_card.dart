@@ -9,18 +9,32 @@ class LineChartCard extends StatelessWidget {
   const LineChartCard({super.key, required this.salesData});
   final List salesData;
   List<String> get weekDays =>
-      const ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  /// Find the first date of the week which contains the provided date.
+  String findFirstDateOfTheWeek(DateTime dateTime) {
+    DateTime firstDate =
+        dateTime.subtract(Duration(days: dateTime.weekday - 1));
+
+    return "${firstDate.day}/${firstDate.month}/${firstDate.year}";
+  }
+
+  /// Find last date of the week which contains provided date.
+  String findLastDateOfTheWeek(DateTime dateTime) {
+    DateTime lastDate =
+        dateTime.add(Duration(days: DateTime.daysPerWeek - dateTime.weekday));
+    return "${lastDate.day}/${lastDate.month}/${lastDate.year}";
+  }
 
   @override
   Widget build(BuildContext context) {
     final data = LineData(data: salesData);
     data.getSpots();
-    log("Sales data---------");
-    log(salesData.toString());
-    log(salesData.length.toString());
-    // int day = DateTime.timestamp().weekday;
-    // log("Day");
-    // log('${DateTime.timestamp()}, ${weekDays[day - 1]}');
+
+    // Find first date and last date of THIS WEEK
+    DateTime today = DateTime.now();
+    log(findFirstDateOfTheWeek(today));
+    log(findLastDateOfTheWeek(today).toString());
 
     return CustomCard(
       child: Column(
@@ -28,14 +42,27 @@ class LineChartCard extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "Sales Overview",
-              style: subtitle1.copyWith(fontSize: 18),
+            child: Row(
+              children: [
+                Text(
+                  "Weekly Sales Overview",
+                  style: subtitle1.copyWith(fontSize: 18),
+                ),
+                const Expanded(child: SizedBox()),
+                Chip(
+                  label: Text(
+                    '${findFirstDateOfTheWeek(today)} - ${findLastDateOfTheWeek(today).toString()}',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  side: BorderSide.none,
+                  backgroundColor: primary,
+                )
+              ],
             ),
           ),
           const SizedBox(height: 20),
           AspectRatio(
-            aspectRatio: 16 / 6,
+            aspectRatio: 16 / 5,
             child: LineChart(
               LineChartData(
                 lineTouchData: LineTouchData(
@@ -178,15 +205,6 @@ class LineData {
   final List data;
 
   List<FlSpot> spots = const [];
-  // final spots = const [
-  //   FlSpot(1.0, 21.04),
-  //   FlSpot(2.0, 36.23),
-  //   FlSpot(3.0, 39.82),
-  //   FlSpot(4.0, 44.49),
-  //   FlSpot(5.0, 19.82),
-  //   FlSpot(6.0, 23.50),
-  //   FlSpot(7.0, 29.57),
-  // ];
 
   final leftTitle = {
     0: '0',
@@ -197,7 +215,7 @@ class LineData {
     100: '100K'
   };
 
-  final bottomTitle = {
+  final Map<int, String> bottomTitle = {
     1: 'Mon',
     2: 'Tue',
     3: 'Wed',
@@ -209,20 +227,15 @@ class LineData {
 
   List<FlSpot> getSpots() {
     List<FlSpot> spotsData = [];
+    int startIndex = (DateTime.timestamp().weekday);
 
     for (var element in data) {
       int day = DateTime.parse(element['day']).weekday;
-      double amount = element['sum'] / 1000;
-
-      log("Spots-----------");
-      log(bottomTitle[day]!);
-      log(amount.toString());
-
-      spots = spots + [FlSpot(day.toDouble(), amount)];
-
-      spotsData.add(FlSpot(day.toDouble(), amount));
-
-      // spots.add(FlSpot(day.toDouble(), amount));
+      if (day <= startIndex) {
+        double amount = element['sum'] / 1000;
+        spots = spots + [FlSpot(day.toDouble(), amount)];
+        spotsData.add(FlSpot(day.toDouble(), amount));
+      }
     }
     return spotsData;
   }
