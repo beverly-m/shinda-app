@@ -1,14 +1,25 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:shinda_app/components/custom_card.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 
 class LineChartCard extends StatelessWidget {
-  const LineChartCard({super.key});
+  const LineChartCard({super.key, required this.salesData});
+  final List salesData;
+  List<String> get weekDays =>
+      const ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   @override
   Widget build(BuildContext context) {
-    final data = LineData();
+    final data = LineData(data: salesData);
+    log("Sales data---------");
+    log(salesData.toString());
+    log(salesData.length.toString());
+    // int day = DateTime.timestamp().weekday;
+    // log("Day");
+    // log('${DateTime.timestamp()}, ${weekDays[day - 1]}');
 
     return CustomCard(
       child: Column(
@@ -26,10 +37,60 @@ class LineChartCard extends StatelessWidget {
             aspectRatio: 16 / 6,
             child: LineChart(
               LineChartData(
-                lineTouchData: const LineTouchData(
+                lineTouchData: LineTouchData(
                   handleBuiltInTouches: true,
+                  touchTooltipData: LineTouchTooltipData(
+                    tooltipBgColor: Colors.white,
+                    tooltipBorder: const BorderSide(color: primary),
+                    getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
+                      return touchedBarSpots.map((barSpot) {
+                        final flSpot = barSpot;
+
+                        TextAlign textAlign;
+                        switch (flSpot.x.toInt()) {
+                          case 1:
+                            textAlign = TextAlign.left;
+                            break;
+                          case 7:
+                            textAlign = TextAlign.right;
+                            break;
+                          default:
+                            textAlign = TextAlign.center;
+                        }
+
+                        return LineTooltipItem(
+                          '${weekDays[flSpot.x.toInt() - 1]} \n',
+                          const TextStyle(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          children: [
+                            TextSpan(
+                              text:
+                                  "RWF ${(flSpot.y * 1000).toStringAsFixed(2)}",
+                              style: const TextStyle(
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.normal),
+                            ),
+                          ],
+                          textAlign: textAlign,
+                        );
+                      }).toList();
+                    },
+                  ),
                 ),
-                gridData: const FlGridData(show: false),
+                gridData: FlGridData(
+                  show: true,
+                  drawVerticalLine: false,
+                  horizontalInterval: 10,
+                  getDrawingHorizontalLine: (value) {
+                    return const FlLine(
+                      color: Colors.black12,
+                      strokeWidth: 0.5,
+                      dashArray: [4, 2],
+                    );
+                  },
+                ),
                 titlesData: FlTitlesData(
                   rightTitles: const AxisTitles(
                     sideTitles: SideTitles(showTitles: false),
@@ -41,7 +102,8 @@ class LineChartCard extends StatelessWidget {
                     sideTitles: SideTitles(
                       showTitles: true,
                       getTitlesWidget: (double value, TitleMeta meta) {
-                        return data.bottomTitle[value.toInt()] != null
+                        return data.bottomTitle[value.toInt()] != null &&
+                                value != 7.5
                             ? SideTitleWidget(
                                 axisSide: meta.axisSide,
                                 child: Text(
@@ -51,6 +113,7 @@ class LineChartCard extends StatelessWidget {
                               )
                             : const SizedBox();
                       },
+                      interval: 1,
                     ),
                   ),
                   leftTitles: AxisTitles(
@@ -64,31 +127,42 @@ class LineChartCard extends StatelessWidget {
                       },
                       showTitles: true,
                       interval: 1,
-                      reservedSize: 40,
+                      reservedSize: 42,
                     ),
                   ),
                 ),
-                borderData: FlBorderData(show: false),
+                borderData: FlBorderData(
+                    show: true, border: Border.all(color: Colors.black12)),
                 lineBarsData: [
                   LineChartBarData(
                     color: primary,
-                    barWidth: 2.5,
+                    barWidth: 2,
+                    isCurved: true,
                     belowBarData: BarAreaData(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [primary.withOpacity(0.5), Colors.transparent],
+                        colors: [primary.withOpacity(0.5), surface3],
                       ),
                       show: true,
                     ),
-                    dotData: const FlDotData(show: false),
+                    dotData: FlDotData(
+                      getDotPainter: (spot, percent, barData, index) {
+                        return FlDotCirclePainter(
+                          radius: 2,
+                          color: surface1,
+                          strokeWidth: 2,
+                          strokeColor: primary,
+                        );
+                      },
+                    ),
                     spots: data.spots,
                   )
                 ],
-                minX: 0,
-                maxX: 65,
-                maxY: 105,
-                minY: -5,
+                minX: 0.5,
+                maxX: 7.5,
+                maxY: 100,
+                minY: 0,
               ),
             ),
           ),
@@ -99,60 +173,18 @@ class LineChartCard extends StatelessWidget {
 }
 
 class LineData {
+  LineData({required this.data});
+  final List data;
+
   final spots = const [
-    FlSpot(0.0, 21.04),
-    FlSpot(10.0, 36.23),
-    FlSpot(20.0, 39.82),
-    FlSpot(30.0, 44.49),
-    FlSpot(40.0, 19.82),
-    FlSpot(50.0, 23.50),
-    FlSpot(60.0, 29.57),
+    FlSpot(1.0, 21.04),
+    FlSpot(2.0, 36.23),
+    FlSpot(3.0, 39.82),
+    FlSpot(4.0, 44.49),
+    FlSpot(5.0, 19.82),
+    FlSpot(6.0, 23.50),
+    FlSpot(7.0, 29.57),
   ];
-  // final spots = const [
-  //   FlSpot(1.68, 21.04),
-  //   FlSpot(2.84, 26.23),
-  //   FlSpot(5.19, 19.82),
-  //   FlSpot(6.01, 24.49),
-  //   FlSpot(7.81, 19.82),
-  //   FlSpot(9.49, 23.50),
-  //   FlSpot(12.26, 19.57),
-  //   FlSpot(15.63, 20.90),
-  //   FlSpot(20.39, 39.20),
-  //   FlSpot(23.69, 75.62),
-  //   FlSpot(26.21, 46.58),
-  //   FlSpot(29.87, 42.97),
-  //   FlSpot(32.49, 46.54),
-  //   FlSpot(35.09, 40.72),
-  //   FlSpot(38.74, 43.18),
-  //   FlSpot(41.47, 59.91),
-  //   FlSpot(43.12, 53.18),
-  //   FlSpot(46.30, 90.10),
-  //   FlSpot(47.88, 81.59),
-  //   FlSpot(51.71, 75.53),
-  //   FlSpot(54.21, 78.95),
-  //   FlSpot(55.23, 86.94),
-  //   FlSpot(57.40, 78.98),
-  //   FlSpot(60.49, 74.38),
-  //   FlSpot(64.30, 48.34),
-  //   FlSpot(67.17, 70.74),
-  //   FlSpot(70.35, 75.43),
-  //   FlSpot(73.39, 69.88),
-  //   FlSpot(75.87, 80.04),
-  //   FlSpot(77.32, 74.38),
-  //   FlSpot(81.43, 68.43),
-  //   FlSpot(86.12, 69.45),
-  //   FlSpot(90.06, 78.60),
-  //   FlSpot(94.68, 46.05),
-  //   FlSpot(98.35, 42.80),
-  //   FlSpot(101.25, 53.05),
-  //   FlSpot(103.07, 46.06),
-  //   FlSpot(106.65, 42.31),
-  //   FlSpot(108.20, 32.64),
-  //   FlSpot(110.40, 45.14),
-  //   FlSpot(114.24, 53.27),
-  //   FlSpot(116.60, 42.13),
-  //   FlSpot(118.52, 57.60),
-  // ];
 
   final leftTitle = {
     0: '0',
@@ -162,35 +194,14 @@ class LineData {
     80: '80K',
     100: '100K'
   };
-  // final leftTitle = {
-  //   0: '0',
-  //   20: '2K',
-  //   40: '4K',
-  //   60: '6K',
-  //   80: '8K',
-  //   100: '10K'
-  // };
+
   final bottomTitle = {
-    0: 'Sun',
-    10: 'Mon',
-    20: 'Tue',
-    30: 'Wed',
-    40: 'Thu',
-    50: 'Fri',
-    60: 'Sat',
+    1: 'Mon',
+    2: 'Tue',
+    3: 'Wed',
+    4: 'Thu',
+    5: 'Fri',
+    6: 'Sat',
+    7: 'Sun',
   };
-  // final bottomTitle = {
-  //   0: 'Jan',
-  //   10: 'Feb',
-  //   20: 'Mar',
-  //   30: 'Apr',
-  //   40: 'May',
-  //   50: 'Jun',
-  //   60: 'Jul',
-  //   70: 'Aug',
-  //   80: 'Sep',
-  //   90: 'Oct',
-  //   100: 'Nov',
-  //   110: 'Dec',
-  // };
 }
