@@ -6,13 +6,15 @@ import 'package:shinda_app/components/custom_card.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 
 class ExpiringProductsCard extends StatefulWidget {
-  const ExpiringProductsCard({super.key});
+  const ExpiringProductsCard({super.key, required this.expiredProductsData});
+  final List expiredProductsData;
 
   @override
   State<ExpiringProductsCard> createState() => _ExpiringProductsCardState();
 }
 
 class _ExpiringProductsCardState extends State<ExpiringProductsCard> {
+  bool _isLoading = true;
   List<PlutoColumn> dataColumns = [
     PlutoColumn(
       title: 'Product',
@@ -29,64 +31,92 @@ class _ExpiringProductsCardState extends State<ExpiringProductsCard> {
   List<PlutoRow> dataRows = [];
 
   @override
+  void initState() {
+    super.initState();
+    _getData();
+  }
+
+  void _getData() {
+    setState(() {
+      _isLoading = true;
+    });
+    for (var element in widget.expiredProductsData) {
+      dataRows.add(
+        PlutoRow(
+          cells: {
+            'product': PlutoCell(value: element["product"]['name']),
+            'expiry': PlutoCell(value: element["expiration_date"]),
+          },
+        ),
+      );
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return CustomCard(
-        child: SizedBox(
-      height: 280,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
-            child: Text(
-              "Products expiring",
-              style: subtitle1.copyWith(fontSize: 18),
-            ),
-          ),
-          const SizedBox(
-            height: 8.0,
-          ),
-          Expanded(
-            flex: 4,
-            child: PlutoGrid(
-              columns: dataColumns,
-              rows: dataRows,
-              noRowsWidget: const Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.date_range_outlined,
-                      size: 24,
-                      color: surface3,
-                    ),
-                    SizedBox(
-                      height: 16.0,
-                    ),
-                    Text("No products yet"),
-                  ],
+    return _isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : CustomCard(
+            child: SizedBox(
+            height: 280,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 4.0, vertical: 8.0),
+                  child: Text(
+                    "Products expiring",
+                    style: subtitle1.copyWith(fontSize: 18),
+                  ),
                 ),
-              ),
-              onLoaded: (PlutoGridOnLoadedEvent event) {
-                event.stateManager
-                    .setSelectingMode(PlutoGridSelectingMode.none);
-              },
-              onChanged: (PlutoGridOnChangedEvent event) {
-                log(event.toString());
-              },
-              configuration: PlutoGridConfiguration(
-                style: PlutoGridStyleConfig(
-                  gridBorderRadius: BorderRadius.circular(8.0),
-                  gridBackgroundColor: surface1,
-                  gridBorderColor: surface3,
+                const SizedBox(
+                  height: 8.0,
                 ),
-                columnSize: const PlutoGridColumnSizeConfig(
-                    autoSizeMode: PlutoAutoSizeMode.equal),
-              ),
+                Expanded(
+                  flex: 4,
+                  child: PlutoGrid(
+                    columns: dataColumns,
+                    rows: dataRows,
+                    noRowsWidget: const Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.date_range_outlined,
+                            size: 24,
+                            color: surface3,
+                          ),
+                          SizedBox(
+                            height: 16.0,
+                          ),
+                          Text("No products yet"),
+                        ],
+                      ),
+                    ),
+                    onLoaded: (PlutoGridOnLoadedEvent event) {
+                      event.stateManager
+                          .setSelectingMode(PlutoGridSelectingMode.none);
+                    },
+                    onChanged: (PlutoGridOnChangedEvent event) {
+                      log(event.toString());
+                    },
+                    configuration: PlutoGridConfiguration(
+                      style: PlutoGridStyleConfig(
+                        gridBorderRadius: BorderRadius.circular(8.0),
+                        gridBackgroundColor: surface1,
+                        gridBorderColor: surface3,
+                      ),
+                      columnSize: const PlutoGridColumnSizeConfig(
+                          autoSizeMode: PlutoAutoSizeMode.equal),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
-    ));
+          ));
   }
 }

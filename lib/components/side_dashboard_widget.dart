@@ -1,26 +1,78 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:shinda_app/components/expiring_products_card.dart';
 import 'package:shinda_app/components/products_stock_card.dart';
+import 'package:shinda_app/constants/text_syles.dart';
+import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
+import 'package:shinda_app/services/workspace/workspace_service.dart';
 
 class SideDashboardWidget extends StatefulWidget {
-  const SideDashboardWidget({super.key});
+  const SideDashboardWidget({super.key, required this.workspaceId});
+  final String workspaceId;
 
   @override
   State<SideDashboardWidget> createState() => _SideDashboardWidgetState();
 }
 
 class _SideDashboardWidgetState extends State<SideDashboardWidget> {
+  List? _expiredProductsData;
+  List? _lowInStockProductsData;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    getProductsMetadata();
+  }
+
+  void getProductsMetadata() async {
+    final Map<String, dynamic> dashboardMetadata;
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      dashboardMetadata = await WorkspaceService()
+          .getDashboardMeta(workspaceId: widget.workspaceId);
+
+      setState(() {
+        _expiredProductsData = dashboardMetadata["expiredProductsData"];
+
+        _lowInStockProductsData = dashboardMetadata["productsLowInStockData"];
+
+        _isLoading = false;
+      });
+    } on GenericWorkspaceException {
+      log("Error occurred");
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (e) {
+      log(e.toString());
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      children: [
-        SizedBox(
-          height: 24.0,
-        ),
-        ExpiringProductsCard(),
-        SizedBox(height: 16.0),
-        ProductsStockCard(),
-      ],
-    );
+    return _isLoading
+        ? const Center(
+            child: CircularProgressIndicator(
+            strokeWidth: 2.0,
+            color: primary,
+            valueColor: AlwaysStoppedAnimation(surface3),
+          ))
+        : Column(
+            children: [
+              const SizedBox(height: 24.0),
+              ExpiringProductsCard(expiredProductsData: _expiredProductsData!),
+              const SizedBox(height: 16.0),
+              ProductsStockCard(
+                  lowInStockProductsData: _lowInStockProductsData!),
+            ],
+          );
   }
 }

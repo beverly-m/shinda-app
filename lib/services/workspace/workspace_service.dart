@@ -518,6 +518,7 @@ class WorkspaceService implements WorkspaceProvider {
         ''')
           .eq('workspace_id', workspaceId)
           .lte('expiration_date', weekAway)
+          .order('expiration_date', ascending: true)
           .then((value) {
             dashboardMeta['expiredProducts'] = value.length;
 

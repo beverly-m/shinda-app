@@ -201,9 +201,10 @@ class _DashboardViewState extends State<DashboardView> {
                             width: 16,
                           ),
                         if (isDesktop)
-                          const Expanded(
+                          Expanded(
                             flex: 3,
-                            child: SideDashboardWidget(),
+                            child: SideDashboardWidget(
+                                workspaceId: _currentWorkspace!),
                           ),
                       ],
                     )

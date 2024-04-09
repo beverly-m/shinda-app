@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pluto_grid/pluto_grid.dart';
@@ -7,7 +5,9 @@ import 'package:shinda_app/components/custom_card.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 
 class ProductsStockCard extends StatefulWidget {
-  const ProductsStockCard({super.key});
+  const ProductsStockCard({super.key, required this.lowInStockProductsData});
+
+  final List lowInStockProductsData;
 
   @override
   State<ProductsStockCard> createState() => _ProductsStockCardState();

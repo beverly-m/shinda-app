@@ -115,7 +115,7 @@ class _OutstandingPaymentsCardState extends State<OutstandingPaymentsCard> {
                     noRowsWidget: const Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [ 
+                        children: [
                           Icon(
                             Icons.table_chart_outlined,
                             size: 32,
@@ -141,7 +141,6 @@ class _OutstandingPaymentsCardState extends State<OutstandingPaymentsCard> {
                         gridBorderRadius: BorderRadius.circular(8.0),
                         gridBackgroundColor: surface1,
                         gridBorderColor: surface3,
-                        rowColor: surface1,
                       ),
                       columnSize: const PlutoGridColumnSizeConfig(
                           autoSizeMode: PlutoAutoSizeMode.equal),
