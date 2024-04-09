@@ -460,25 +460,27 @@ class WorkspaceService implements WorkspaceProvider {
       });
 
       // NUM OF PRODUCTS LOW IN STOCK & PRODUCTS LOW IN STOCK
-      await supabase
-          .from('stock')
-          .select()
-          .eq('workspace_id', workspaceId)
-          .then((value) {
-        for (var element in value) {
-          // check if quantity is less than or equal to reorder level
-          if (element['reorder_level'] >= element['quantity_available']) {
-            // get number of products low in stock
-            dashboardMeta['productsLowInStock'] =
-                dashboardMeta['productsLowInStock'] + 1;
+      await supabase.from("stock").select('''
+        product:product_id (product_id, name, price),
+        stock_id,
+        quantity,
+        reorder_level,
+        quantity_available
+        ''').eq('workspace_id', workspaceId).then((value) {
+            for (var element in value) {
+              // check if quantity is less than or equal to reorder level
+              if (element['reorder_level'] >= element['quantity_available']) {
+                // get number of products low in stock
+                dashboardMeta['productsLowInStock'] =
+                    dashboardMeta['productsLowInStock'] + 1;
 
-            dashboardMeta['productsLowInStockData'].add(element);
-          }
-        }
+                dashboardMeta['productsLowInStockData'].add(element);
+              }
+            }
 
-        log('Number of products ${dashboardMeta['productsLowInStock']}');
-        log('Products ${dashboardMeta['productsLowInStockData']}');
-      });
+            log('Number of products ${dashboardMeta['productsLowInStock']}');
+            log('Products ${dashboardMeta['productsLowInStockData']}');
+          });
 
       // NUM OF OUTSTANDING PAYMENTS & OUTSTANDING PAYMENTS
       await supabase
@@ -494,33 +496,38 @@ class WorkspaceService implements WorkspaceProvider {
           .eq('workspace_id', workspaceId)
           .filter('date_paid', 'is', 'null')
           .then((value) {
-        // get number of outstanding payments
-        dashboardMeta['outstandingPayments'] = value.length;
+            // get number of outstanding payments
+            dashboardMeta['outstandingPayments'] = value.length;
 
-        // get outstanding payments
-        dashboardMeta['outstandingPaymentsData'] = value;
+            // get outstanding payments
+            dashboardMeta['outstandingPaymentsData'] = value;
 
-        log('Number of outstanding payments ${dashboardMeta['outstandingPayments']}');
+            log('Number of outstanding payments ${dashboardMeta['outstandingPayments']}');
 
-        log('Outstanding payments ${dashboardMeta['outstandingPaymentsData']}');
-      });
+            log('Outstanding payments ${dashboardMeta['outstandingPaymentsData']}');
+          });
 
       // NUM OF PRODUCTS EXPIRING/EXPIRED & PRODUCTS EXPIRING/EXPIRED
       await supabase
           .from('stock')
-          .select()
+          .select('''
+        product:product_id (product_id, name),
+        stock_id,
+        quantity,
+        expiration_date
+        ''')
           .eq('workspace_id', workspaceId)
           .lte('expiration_date', weekAway)
           .then((value) {
-        dashboardMeta['expiredProducts'] = value.length;
+            dashboardMeta['expiredProducts'] = value.length;
 
-        if (value.isNotEmpty) {
-          dashboardMeta['expiredProductsData'] = value;
-        }
+            if (value.isNotEmpty) {
+              dashboardMeta['expiredProductsData'] = value;
+            }
 
-        log("Expired products: ${dashboardMeta['expiredProductsData']}");
-        log("Number of expired products: ${dashboardMeta['expiredProducts']}");
-      });
+            log("Expired products: ${dashboardMeta['expiredProductsData']}");
+            log("Number of expired products: ${dashboardMeta['expiredProducts']}");
+          });
 
       // MOST SOLD PRODUCTS
       await supabase

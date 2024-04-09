@@ -115,7 +115,7 @@ class _OutstandingPaymentsCardState extends State<OutstandingPaymentsCard> {
                     noRowsWidget: const Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
+                        children: [ 
                           Icon(
                             Icons.table_chart_outlined,
                             size: 32,

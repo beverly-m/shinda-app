@@ -30,6 +30,8 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     "bank": 0
   };
   List<Map<String, dynamic>>? _debtorsData;
+  List<Map<String, dynamic>>? _expiredProductsData;
+  List<Map<String, dynamic>>? _lowInStockProductsData;
 
   @override
   void initState() {
