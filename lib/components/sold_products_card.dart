@@ -1,19 +1,17 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:shinda_app/components/custom_card.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 
-class ExpiringProductsCard extends StatefulWidget {
-  const ExpiringProductsCard({super.key, required this.expiredProductsData});
-  final List expiredProductsData;
+class SoldProductsCard extends StatefulWidget {
+  const SoldProductsCard({super.key, required this.soldProductsData});
+  final List soldProductsData;
 
   @override
-  State<ExpiringProductsCard> createState() => _ExpiringProductsCardState();
+  State<SoldProductsCard> createState() => _SoldProductsCardState();
 }
 
-class _ExpiringProductsCardState extends State<ExpiringProductsCard> {
+class _SoldProductsCardState extends State<SoldProductsCard> {
   bool _isLoading = true;
   List<PlutoColumn> dataColumns = [
     PlutoColumn(
@@ -22,8 +20,8 @@ class _ExpiringProductsCardState extends State<ExpiringProductsCard> {
       type: PlutoColumnType.text(),
     ),
     PlutoColumn(
-      title: 'Expiry',
-      field: 'expiry',
+      title: 'Sold',
+      field: 'sold',
       type: PlutoColumnType.date(),
     ),
   ];
@@ -40,12 +38,12 @@ class _ExpiringProductsCardState extends State<ExpiringProductsCard> {
     setState(() {
       _isLoading = true;
     });
-    for (var element in widget.expiredProductsData) {
+    for (var element in widget.soldProductsData) {
       dataRows.add(
         PlutoRow(
           cells: {
-            'product': PlutoCell(value: element["product"]['name']),
-            'expiry': PlutoCell(value: element["expiration_date"]),
+            'product': PlutoCell(value: element[1]),
+            'sold': PlutoCell(value: element[0]),
           },
         ),
       );
@@ -101,9 +99,7 @@ class _ExpiringProductsCardState extends State<ExpiringProductsCard> {
                       event.stateManager
                           .setSelectingMode(PlutoGridSelectingMode.none);
                     },
-                    onChanged: (PlutoGridOnChangedEvent event) {
-                      log(event.toString());
-                    },
+                    onChanged: (PlutoGridOnChangedEvent event) {},
                     configuration: PlutoGridConfiguration(
                       style: PlutoGridStyleConfig(
                         gridBorderRadius: BorderRadius.circular(8.0),

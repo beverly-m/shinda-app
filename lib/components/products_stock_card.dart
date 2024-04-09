@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:pluto_grid/pluto_grid.dart';
 import 'package:shinda_app/components/custom_card.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 
@@ -14,60 +12,68 @@ class ProductsStockCard extends StatefulWidget {
 }
 
 class _ProductsStockCardState extends State<ProductsStockCard> {
-  List<PlutoColumn> dataColumns = [
-    PlutoColumn(
-      title: 'Product',
-      field: 'product',
-      type: PlutoColumnType.text(),
-    ),
-    PlutoColumn(
-      title: 'Expiry',
-      field: 'expiry',
-      type: PlutoColumnType.date(),
-    ),
-  ];
+  bool _isLoading = true;
+  List<ChartLine> data = [];
 
-  List<PlutoRow> dataRows = [];
+  @override
+  void initState() {
+    super.initState();
+    _getData();
+  }
 
-  // Widget _title(String title) {
-  //   return Padding(
-  //     padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
-  //     child: Text(
-  //       title,
-  //       style: subtitle1,
-  //     ),
-  //   );
-  // }
+  void _getData() {
+    setState(() {
+      _isLoading = true;
+    });
+    for (var element in widget.lowInStockProductsData) {
+      data.add(ChartLine(
+          title: element["product"]["name"],
+          number: element["quantity_available"],
+          total: element["quantity"],
+          rate: element["quantity_available"] / element["quantity"]));
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return CustomCard(
-      child: SizedBox(
-        height: 280,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
-            child: Text(
-              "Products low on stock",
-              style: subtitle1.copyWith(fontSize: 18),
+    return _isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : CustomCard(
+            child: SizedBox(
+              height: 200,
+              width: double.infinity,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 4.0, vertical: 8.0),
+                      child: Text(
+                        "Products low on stock",
+                        style: subtitle1.copyWith(fontSize: 18),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 8.0,
+                    ),
+                    SizedBox(
+                      height: 150,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: data,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ]),
             ),
-          ),
-          const SizedBox(
-            height: 8.0,
-          ),
-          const Padding(
-            padding: EdgeInsets.only(left: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ChartLine(title: 'Fat', number: 1800, total: 1800, rate: 1),
-                ChartLine(title: 'Protein', number: 600, total: 1800, rate: 0.4)
-              ],
-            ),
-          ),
-        ]),
-      ),
-    );
+          );
   }
 }
 
@@ -92,13 +98,14 @@ class ChartLine extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       final lineWidget = constraints.maxWidth * rate;
       return Padding(
-        padding: const EdgeInsets.only(bottom: 8.0),
+        padding: const EdgeInsets.only(bottom: 12.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               constraints: BoxConstraints(minWidth: lineWidget),
-              child: IntrinsicWidth(
+              child: SizedBox(
+                width: double.infinity,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -108,25 +115,28 @@ class ChartLine extends StatelessWidget {
                         fontSize: 16,
                       ),
                     ),
-                    const SizedBox(width: 16.0),
+                    const Expanded(child: SizedBox()),
                     Text(
-                      "${number.toString()} left",
+                      "${number.toString()} of ${total.toString()} left",
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: FontWeight.bold,
+                        color: Colors.black54,
                       ),
                     ),
                   ],
                 ),
               ),
             ),
+            const SizedBox(height: 4.0),
             Stack(children: [
               Container(
                 height: 8,
-                width: total,
+                width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8.0),
-                  color: surface3,
+                  border: Border.all(color: surface3, width: 0.5),
+                  color: Colors.white,
                 ),
               ),
               Container(

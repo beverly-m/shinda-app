@@ -84,7 +84,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
                 Row(
                   children: [
                     Expanded(

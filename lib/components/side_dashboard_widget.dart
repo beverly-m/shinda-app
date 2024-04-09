@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:shinda_app/components/expiring_products_card.dart';
 import 'package:shinda_app/components/products_stock_card.dart';
+import 'package:shinda_app/components/sold_products_card.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
@@ -18,6 +19,7 @@ class SideDashboardWidget extends StatefulWidget {
 class _SideDashboardWidgetState extends State<SideDashboardWidget> {
   List? _expiredProductsData;
   List? _lowInStockProductsData;
+  List? _mostSoldProductsData;
   bool _isLoading = false;
 
   @override
@@ -40,6 +42,8 @@ class _SideDashboardWidgetState extends State<SideDashboardWidget> {
         _expiredProductsData = dashboardMetadata["expiredProductsData"];
 
         _lowInStockProductsData = dashboardMetadata["productsLowInStockData"];
+
+        _mostSoldProductsData = dashboardMetadata["'mostSoldProductsData'"];
 
         _isLoading = false;
       });
@@ -67,7 +71,9 @@ class _SideDashboardWidgetState extends State<SideDashboardWidget> {
           ))
         : Column(
             children: [
-              const SizedBox(height: 24.0),
+              const SizedBox(height: 16.0),
+              SoldProductsCard(soldProductsData: _mostSoldProductsData!),
+              const SizedBox(height: 16.0),
               ExpiringProductsCard(expiredProductsData: _expiredProductsData!),
               const SizedBox(height: 16.0),
               ProductsStockCard(
