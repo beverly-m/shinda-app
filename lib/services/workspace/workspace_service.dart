@@ -483,7 +483,14 @@ class WorkspaceService implements WorkspaceProvider {
       // NUM OF OUTSTANDING PAYMENTS & OUTSTANDING PAYMENTS
       await supabase
           .from('debtor')
-          .select()
+          .select('''
+              debtor_id,
+              client_name,
+              amount_owed,
+              phone_number,
+              address,
+              transaction:transaction_id (transaction_id)
+          ''')
           .eq('workspace_id', workspaceId)
           .filter('date_paid', 'is', 'null')
           .then((value) {

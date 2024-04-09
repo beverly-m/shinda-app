@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shinda_app/components/outstanding_payments_card.dart';
 import 'package:shinda_app/components/line_chart_card.dart';
 import 'package:shinda_app/components/pie_chart_card.dart';
 import 'package:shinda_app/components/side_dashboard_widget.dart';
@@ -28,6 +29,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     "card": 0,
     "bank": 0
   };
+  List<Map<String, dynamic>>? _debtorsData;
 
   @override
   void initState() {
@@ -56,6 +58,8 @@ class _DashboardWidgetState extends State<DashboardWidget> {
         _paymentModeData["cash"] = dashboardMetadata!["cash"];
         _paymentModeData["card"] = dashboardMetadata!["card"];
         _paymentModeData["bank"] = dashboardMetadata!["bank"];
+
+        _debtorsData = dashboardMetadata!["outstandingPaymentsData"];
 
         _isLoading = false;
       });
@@ -100,6 +104,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                   const SizedBox(
                     height: 16,
                   ),
+                OutstandingPaymentsCard(data: _debtorsData!),
                 if (Responsive.isTablet(context) ||
                     Responsive.isMobile(context))
                   const SideDashboardWidget(),
