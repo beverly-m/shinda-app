@@ -33,8 +33,6 @@ class LineChartCard extends StatelessWidget {
 
     // Find first date and last date of THIS WEEK
     DateTime today = DateTime.now();
-    log(findFirstDateOfTheWeek(today));
-    log(findLastDateOfTheWeek(today).toString());
 
     return CustomCard(
       child: Column(

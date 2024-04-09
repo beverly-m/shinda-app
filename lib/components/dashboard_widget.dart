@@ -21,6 +21,13 @@ class DashboardWidget extends StatefulWidget {
 class _DashboardWidgetState extends State<DashboardWidget> {
   bool _isLoading = false;
   List? _salesData;
+  final Map<String, dynamic> _paymentModeData = {
+    "income": 0,
+    "momo": 0,
+    "cash": 0,
+    "card": 0,
+    "bank": 0
+  };
 
   @override
   void initState() {
@@ -30,7 +37,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
 
   void getDashboardMetadata() async {
     final Map<String, dynamic> dashboardMeta;
-    Map<String, dynamic>? _dashboardMetadata;
+    Map<String, dynamic>? dashboardMetadata;
 
     setState(() {
       _isLoading = true;
@@ -41,10 +48,15 @@ class _DashboardWidgetState extends State<DashboardWidget> {
           .getDashboardMeta(workspaceId: widget.workspaceId);
 
       setState(() {
-        _dashboardMetadata = dashboardMeta;
-        log('dashboardMeta');
-        log(_dashboardMetadata!.toString());
-        _salesData = _dashboardMetadata!['salesData'];
+        dashboardMetadata = dashboardMeta;
+        _salesData = dashboardMetadata!['salesData'];
+
+        _paymentModeData["income"] = dashboardMetadata!["income"];
+        _paymentModeData["momo"] = dashboardMetadata!["momo"];
+        _paymentModeData["cash"] = dashboardMetadata!["cash"];
+        _paymentModeData["card"] = dashboardMetadata!["card"];
+        _paymentModeData["bank"] = dashboardMetadata!["bank"];
+
         _isLoading = false;
       });
     } on GenericWorkspaceException {
@@ -73,7 +85,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                   children: [
                     Expanded(
                       flex: 3,
-                      child: PieChartCard(salesData: _salesData!),
+                      child: PieChartCard(salesData: _paymentModeData),
                     ),
                     const SizedBox(width: 16.0),
                     Expanded(

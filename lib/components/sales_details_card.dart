@@ -40,10 +40,8 @@ class _SalesDetailsCardState extends State<SalesDetailsCard> {
 
       setState(() {
         _dashboardMetadata = dashboardMeta;
-        log('dashboardMeta');
-        log(_dashboardMetadata!.toString());
         _salesDetails = SalesDetails(
-          totalIncome: _dashboardMetadata!['income'] ?? 0,
+          totalIncome: _dashboardMetadata!['income'],
           transactions: _dashboardMetadata!['transactions'],
           outstandingPayments: _dashboardMetadata!['outstandingPayments'],
           productsLowInStock: _dashboardMetadata!['productsLowInStock'],
@@ -66,7 +64,6 @@ class _SalesDetailsCardState extends State<SalesDetailsCard> {
 
   @override
   Widget build(BuildContext context) {
-
     return _isLoading
         ? const CircularProgressIndicator()
         : GridView.builder(

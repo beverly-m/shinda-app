@@ -393,7 +393,7 @@ class WorkspaceService implements WorkspaceProvider {
       'outstandingPaymentsData': [],
       'expireProductsData': [],
       'productsLowInStockData': [],
-      'mostSoldProductsData': [],
+      'mostSoldProductsData': {},
       'salesData': [],
     };
 
@@ -518,7 +518,12 @@ class WorkspaceService implements WorkspaceProvider {
       // MOST SOLD PRODUCTS
       await supabase
           .from('transaction_item')
-          .select('''product_id, quantity, created_at''')
+          .select('''
+            product_id, 
+            quantity, 
+            created_at, 
+            product:product_id (product_id, name)
+            ''')
           .lt('created_at', tomorrow)
           .gte('created_at', today)
           .then((value) {
@@ -527,19 +532,22 @@ class WorkspaceService implements WorkspaceProvider {
               // check if product is already recorded
               if (products.contains(element['product_id'])) {
                 // increment the quantity
-                dashboardMeta['mostSoldProductsData'][element['product_id']] =
-                    dashboardMeta['mostSoldProductsData']
-                            [element['product_id']] +
-                        element['quantity'];
+                dashboardMeta['mostSoldProductsData'][element['product_id']]
+                    [0] = dashboardMeta['mostSoldProductsData']
+                        [element['product_id']][0] +
+                    element['quantity'];
               } else {
                 // add the product to the list
-                dashboardMeta['mostSoldProductsData']
-                    .add({element['product_id']: element['quantity']});
+                dashboardMeta['mostSoldProductsData'].addAll({
+                  element['product_id']: [
+                    element['quantity'],
+                    element['product']['name']
+                  ]
+                });
 
                 products.add(element['product_id']);
               }
             }
-
             log("Most sold: ${dashboardMeta['mostSoldProductsData']}");
           });
 
