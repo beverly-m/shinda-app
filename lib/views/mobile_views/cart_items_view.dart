@@ -271,306 +271,321 @@ class _CartItemsViewState extends State<CartItemsView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Shopping Cart"),
+        scrolledUnderElevation: 0.0,
+        title: const Text(
+          "Shopping Cart",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
-      body: SingleChildScrollView(
-          child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Consumer<CartProvider>(
-          builder: (context, provider, widget) {
-            return provider.cart.isEmpty
-                ? SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.8,
-                    child: const Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Center(
-                          child: Icon(
-                            Icons.shopping_cart_checkout_outlined,
-                            size: 200,
-                            color: surface3,
-                          ),
-                        ),
-                        SizedBox(height: 24.0),
-                        Center(
-                          child: Text(
-                            "Cart empty",
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : SizedBox(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: provider.cart.length,
-                          itemBuilder: (context, index) {
-                            return Card(
-                              elevation: 0,
-                              color: surface1,
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(color: surface3),
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      width: 48.0,
-                                      height: 48.0,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                        color: surface1,
-                                      ),
-                                      child: const Icon(
-                                        Icons.shopping_bag_outlined,
-                                        color: Colors.black12,
-                                        size: 24.0,
-                                      ),
-                                    ),
-                                    Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          provider.cart[index].productName,
-                                          style: body1,
-                                        ),
-                                        const Flexible(child: SizedBox()),
-                                        Text(
-                                          "RWF ${provider.cart[index].productPrice}",
-                                          style:
-                                              body2.copyWith(color: neutral4),
-                                        ),
-                                      ],
-                                    ),
-                                    const Expanded(child: SizedBox()),
-                                    ValueListenableBuilder<int>(
-                                      valueListenable:
-                                          provider.cart[index].quantity,
-                                      builder: (context, value, child) {
-                                        return PlusMinusButtons(
-                                          addQuantity: () {
-                                            cart.addQuantity(
-                                                provider.cart[index].productId);
-                                            setState(() {
-                                              cart.addTotalPrice(double.parse(
-                                                  provider
-                                                      .cart[index].productPrice
-                                                      .toString()));
-                                            });
-                                            // });
-                                          },
-                                          deleteQuantity: () {
-                                            cart.deleteQuantity(
-                                                provider.cart[index].productId);
-                                          },
-                                          text: value.toString(),
-                                        );
-                                      },
-                                    ),
-                                    IconButton(
-                                      onPressed: () {
-                                        dbHelper!.deleteCartItem(
-                                            provider.cart[index].productId);
-                                        provider.removeItem(
-                                            provider.cart[index].productId);
-                                        provider.removeCounter();
-                                      },
-                                      icon: const Icon(Icons.delete_outline),
-                                    )
-                                  ],
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Consumer<CartProvider>(
+                builder: (context, provider, widget) {
+                  return provider.cart.isEmpty
+                      ? SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          child: const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Center(
+                                child: Icon(
+                                  Icons.shopping_cart_checkout_outlined,
+                                  size: 200,
+                                  color: surface3,
                                 ),
                               ),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 24.0),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            DropdownMenu<PaymentModeLabel>(
-                              menuStyle: MenuStyle(
-                                shape: MaterialStatePropertyAll(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
+                              SizedBox(height: 24.0),
+                              Center(
+                                child: Text(
+                                  "Cart empty",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: provider.cart.length,
+                                itemBuilder: (context, index) {
+                                  return Card(
+                                    elevation: 0,
+                                    color: surface1,
+                                    shape: RoundedRectangleBorder(
+                                      side: const BorderSide(color: surface3),
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Container(
+                                            width: 48.0,
+                                            height: 48.0,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                              color: surface1,
+                                            ),
+                                            child: const Icon(
+                                              Icons.shopping_bag_outlined,
+                                              color: Colors.black12,
+                                              size: 24.0,
+                                            ),
+                                          ),
+                                          Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                provider
+                                                    .cart[index].productName,
+                                                style: body1,
+                                              ),
+                                              const Flexible(child: SizedBox()),
+                                              Text(
+                                                "RWF ${provider.cart[index].productPrice}",
+                                                style: body2.copyWith(
+                                                    color: neutral4),
+                                              ),
+                                            ],
+                                          ),
+                                          const Expanded(child: SizedBox()),
+                                          ValueListenableBuilder<int>(
+                                            valueListenable:
+                                                provider.cart[index].quantity,
+                                            builder: (context, value, child) {
+                                              return PlusMinusButtons(
+                                                addQuantity: () {
+                                                  cart.addQuantity(provider
+                                                      .cart[index].productId);
+                                                  setState(() {
+                                                    cart.addTotalPrice(
+                                                        double.parse(provider
+                                                            .cart[index]
+                                                            .productPrice
+                                                            .toString()));
+                                                  });
+                                                  // });
+                                                },
+                                                deleteQuantity: () {
+                                                  cart.deleteQuantity(provider
+                                                      .cart[index].productId);
+                                                },
+                                                text: value.toString(),
+                                              );
+                                            },
+                                          ),
+                                          IconButton(
+                                            onPressed: () {
+                                              dbHelper!.deleteCartItem(provider
+                                                  .cart[index].productId);
+                                              provider.removeItem(provider
+                                                  .cart[index].productId);
+                                              provider.removeCounter();
+                                            },
+                                            icon: const Icon(
+                                                Icons.delete_outline),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              const SizedBox(height: 24.0),
+                              DropdownMenu<PaymentModeLabel>(
+                                expandedInsets:
+                                    const EdgeInsets.symmetric(horizontal: 0.0),
+                                width: MediaQuery.of(context).size.width * 0.95,
+                                menuStyle: MenuStyle(
+                                  shape: MaterialStatePropertyAll(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              controller: _paymentModeController,
-                              requestFocusOnTap: true,
-                              label: const Text(
-                                'Payment Mode',
-                                style: body1,
-                              ),
-                              onSelected: (PaymentModeLabel? paymentMode) {
-                                setState(() {
-                                  selectedPaymentMode = paymentMode;
-                                });
-                              },
-                              dropdownMenuEntries: PaymentModeLabel.values
-                                  .map<DropdownMenuEntry<PaymentModeLabel>>(
-                                      (PaymentModeLabel paymentMode) {
-                                return DropdownMenuEntry<PaymentModeLabel>(
-                                  value: paymentMode,
-                                  label: paymentMode.label,
-                                  enabled: paymentMode.label != 'Grey',
-                                  style: MenuItemButton.styleFrom(
-                                      textStyle: body1),
-                                );
-                              }).toList(),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 48.0),
-                        const Flexible(
-                          child: SizedBox(),
-                        ),
-                        Consumer<CartProvider>(
-                          builder:
-                              (BuildContext context, value, Widget? child) {
-                            final ValueNotifier<double?> totalPrice =
-                                ValueNotifier(null);
-                            for (var element in value.cart) {
-                              totalPrice.value = (element.productPrice *
-                                      element.quantity.value) +
-                                  (totalPrice.value ?? 0);
-                            }
-                            return Column(
-                              children: [
-                                ValueListenableBuilder<double?>(
-                                    valueListenable: totalPrice,
-                                    builder: (context, val, child) {
-                                      return ReusableWidget(
-                                        title: 'Sub Total',
-                                        value: r'RWF ' +
-                                            (val?.toStringAsFixed(2) ?? '0.00'),
-                                      );
-                                    }),
-                                const ReusableWidget(
-                                  title: 'Tax',
-                                  value: 'RWF 0.00',
+                                controller: _paymentModeController,
+                                requestFocusOnTap: true,
+                                label: const Text(
+                                  'Payment Mode',
+                                  style: body1,
                                 ),
-                                ValueListenableBuilder<double?>(
-                                    valueListenable: totalPrice,
-                                    builder: (context, val, child) {
-                                      return ReusableWidget(
-                                        title: 'Total',
-                                        value: r'RWF ' +
-                                            (val?.toStringAsFixed(2) ?? '0.00'),
-                                        style: priceText,
-                                      );
-                                    }),
-                              ],
-                            );
-                          },
-                        ),
-                        const SizedBox(
-                          height: 24.0,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            OutlinedButton(
-                              onPressed: () async {
-                                double? totalPrice;
-
-                                for (var element in provider.cart) {
-                                  totalPrice = (element.productPrice *
-                                          element.quantity.value) +
-                                      (totalPrice ?? 0);
-                                }
-
-                                try {
-                                  await _showAddCreditPurchaseDialog(
-                                    context: context,
-                                    workspaceId: _currentWorkspace!,
-                                    subTotal: totalPrice!,
-                                    grandTotal: totalPrice,
-                                    isPaid: false,
-                                    products: provider.cart,
-                                    cart: provider,
+                                onSelected: (PaymentModeLabel? paymentMode) {
+                                  setState(() {
+                                    selectedPaymentMode = paymentMode;
+                                  });
+                                },
+                                dropdownMenuEntries: PaymentModeLabel.values
+                                    .map<DropdownMenuEntry<PaymentModeLabel>>(
+                                        (PaymentModeLabel paymentMode) {
+                                  return DropdownMenuEntry<PaymentModeLabel>(
+                                    value: paymentMode,
+                                    label: paymentMode.label,
+                                    enabled: paymentMode.label != 'Grey',
+                                    style: MenuItemButton.styleFrom(
+                                        textStyle: body1),
                                   );
-                                } catch (e) {
-                                  log(e.toString());
-                                }
-                              },
-                              style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 24.0,
-                                  vertical: 8.0,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
+                                }).toList(),
                               ),
-                              child: const Text(
-                                "Credit Purchase",
-                                style: secondaryButtonStyle,
+                              const SizedBox(height: 48.0),
+                              const Expanded(
+                                child: SizedBox(),
                               ),
-                            ),
-                            const SizedBox(
-                              width: 24.0,
-                            ),
-                            FilledButton(
-                              onPressed: () async {
-                                try {
-                                  double? totalPrice;
-
-                                  for (var element in provider.cart) {
-                                    totalPrice = (element.productPrice *
+                              Consumer<CartProvider>(
+                                builder: (BuildContext context, value,
+                                    Widget? child) {
+                                  final ValueNotifier<double?> totalPrice =
+                                      ValueNotifier(null);
+                                  for (var element in value.cart) {
+                                    totalPrice.value = (element.productPrice *
                                             element.quantity.value) +
-                                        (totalPrice ?? 0);
+                                        (totalPrice.value ?? 0);
                                   }
-                                  await WorkspaceService().addTransaction(
-                                    workspaceId: _currentWorkspace!,
-                                    subTotal: totalPrice!,
-                                    paymentMode: _paymentModeController.text,
-                                    grandTotal: totalPrice,
-                                    isPaid: true,
-                                    products: provider.cart,
+                                  return Column(
+                                    children: [
+                                      ValueListenableBuilder<double?>(
+                                          valueListenable: totalPrice,
+                                          builder: (context, val, child) {
+                                            return ReusableWidget(
+                                              title: 'Sub Total',
+                                              value: r'RWF ' +
+                                                  (val?.toStringAsFixed(2) ??
+                                                      '0.00'),
+                                            );
+                                          }),
+                                      const ReusableWidget(
+                                        title: 'Tax',
+                                        value: 'RWF 0.00',
+                                      ),
+                                      ValueListenableBuilder<double?>(
+                                          valueListenable: totalPrice,
+                                          builder: (context, val, child) {
+                                            return ReusableWidget(
+                                              title: 'Total',
+                                              value: r'RWF ' +
+                                                  (val?.toStringAsFixed(2) ??
+                                                      '0.00'),
+                                              style: priceText,
+                                            );
+                                          }),
+                                    ],
                                   );
-
-                                  provider.clearCart();
-
-                                  if (!mounted) {
-                                    return;
-                                  } else {
-                                    Navigator.of(context).pop();
-                                    Navigator.of(context).pop();
-                                  }
-                                } catch (e) {
-                                  log(e.toString());
-                                }
-                              },
-                              style: FilledButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 24.0,
-                                  vertical: 8.0,
-                                ),
-                                backgroundColor: primary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
+                                },
                               ),
-                              child: const Text("Checkout"),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-          },
-        ),
-      )),
+                              const SizedBox(
+                                height: 24.0,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  OutlinedButton(
+                                    onPressed: () async {
+                                      double? totalPrice;
+
+                                      for (var element in provider.cart) {
+                                        totalPrice = (element.productPrice *
+                                                element.quantity.value) +
+                                            (totalPrice ?? 0);
+                                      }
+
+                                      try {
+                                        await _showAddCreditPurchaseDialog(
+                                          context: context,
+                                          workspaceId: _currentWorkspace!,
+                                          subTotal: totalPrice!,
+                                          grandTotal: totalPrice,
+                                          isPaid: false,
+                                          products: provider.cart,
+                                          cart: provider,
+                                        );
+                                      } catch (e) {
+                                        log(e.toString());
+                                      }
+                                    },
+                                    style: OutlinedButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 24.0,
+                                        vertical: 8.0,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      "Credit Purchase",
+                                      style: secondaryButtonStyle,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 24.0,
+                                  ),
+                                  FilledButton(
+                                    onPressed: () async {
+                                      try {
+                                        double? totalPrice;
+
+                                        for (var element in provider.cart) {
+                                          totalPrice = (element.productPrice *
+                                                  element.quantity.value) +
+                                              (totalPrice ?? 0);
+                                        }
+                                        await WorkspaceService().addTransaction(
+                                          workspaceId: _currentWorkspace!,
+                                          subTotal: totalPrice!,
+                                          paymentMode:
+                                              _paymentModeController.text,
+                                          grandTotal: totalPrice,
+                                          isPaid: true,
+                                          products: provider.cart,
+                                        );
+
+                                        provider.clearCart();
+
+                                        if (!context.mounted) {
+                                          return;
+                                        } else {
+                                          Navigator.of(context).pop();
+                                          Navigator.of(context).pop();
+                                        }
+                                      } catch (e) {
+                                        log(e.toString());
+                                      }
+                                    },
+                                    style: FilledButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 24.0,
+                                        vertical: 8.0,
+                                      ),
+                                      backgroundColor: primary,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                      ),
+                                    ),
+                                    child: const Text("Checkout"),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                },
+              ),
+            )),
     );
   }
 }
