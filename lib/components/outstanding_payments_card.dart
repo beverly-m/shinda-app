@@ -99,13 +99,11 @@ class _OutstandingPaymentsCardState extends State<OutstandingPaymentsCard> {
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
-                      Expanded(
-                        child: Text(
-                          "Outstanding payments/Debtors",
-                          overflow: TextOverflow.ellipsis,
-                          softWrap: false,
-                          style: subtitle1.copyWith(fontSize: 18),
-                        ),
+                      Text(
+                        "Outstanding payments/Debtors",
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: false,
+                        style: subtitle1.copyWith(fontSize: 18),
                       ),
                     ],
                   ),

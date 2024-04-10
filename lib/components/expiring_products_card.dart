@@ -65,10 +65,10 @@ class _ExpiringProductsCardState extends State<ExpiringProductsCard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 4.0, vertical: 8.0),
-                  child: Expanded(
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 4.0, vertical: 8.0),
                     child: Text(
                       "Products expiring",
                       overflow: TextOverflow.ellipsis,

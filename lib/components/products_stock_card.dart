@@ -48,10 +48,10 @@ class _ProductsStockCardState extends State<ProductsStockCard> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 4.0, vertical: 8.0),
-                      child: Expanded(
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 4.0, vertical: 8.0),
                         child: Text(
                           "Products low on stock",
                           overflow: TextOverflow.ellipsis,

@@ -3,10 +3,13 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:shinda_app/components/custom_card.dart';
 import 'package:shinda_app/components/outstanding_payments_card.dart';
 import 'package:shinda_app/components/line_chart_card.dart';
 import 'package:shinda_app/components/pie_chart_card.dart';
 import 'package:shinda_app/components/side_dashboard_widget.dart';
+import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/responsive/responsive_layout.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
@@ -84,26 +87,75 @@ class _DashboardWidgetState extends State<DashboardWidget> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 16),
+                SizedBox(height: Responsive.isMobile(context) ? 8.0 : 16.0),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
                       flex: 3,
-                      child: PieChartCard(salesData: _paymentModeData),
+                      child: Responsive.isDesktop(context)
+                          ? PieChartCard(
+                              salesData: _paymentModeData,
+                            )
+                          : AspectRatio(
+                              aspectRatio:
+                                  Responsive.isTablet(context) ? 1.1 : 0.8,
+                              child: PieChartCard(
+                                salesData: _paymentModeData,
+                              ),
+                            ),
                     ),
-                    const SizedBox(width: 16.0),
-                    Expanded(
-                      flex: 5,
-                      child: LineChartCard(
-                        salesData: _salesData!,
+                    SizedBox(width: Responsive.isMobile(context) ? 8.0 : 16.0),
+                    if (Responsive.isDesktop(context))
+                      Expanded(
+                        flex: 5,
+                        child: LineChartCard(
+                          salesData: _salesData!,
+                        ),
                       ),
-                    ),
+                    if (Responsive.isTablet(context) ||
+                        Responsive.isMobile(context))
+                      Expanded(
+                        flex: 3,
+                        child: AspectRatio(
+                          aspectRatio: Responsive.isTablet(context) ? 1.1 : 0.8,
+                          child: CustomCard(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.point_of_sale_outlined,
+                                  size: 30,
+                                  color: primary,
+                                ),
+                                const SizedBox(height: 16.0),
+                                Text(
+                                  'RWF ${_paymentModeData["income"].toStringAsFixed(2)}',
+                                  style: GoogleFonts.eczar(
+                                    textStyle: TextStyle(
+                                        fontSize: Responsive.isMobile(context)
+                                            ? 20.0
+                                            : 24.0),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 4.0),
+                                const Text(
+                                  "Total Income",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: neutral4),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
-                if (Responsive.isDesktop(context))
-                  const SizedBox(
-                    height: 16,
-                  ),
+                const SizedBox(
+                  height: 16,
+                ),
                 OutstandingPaymentsCard(data: _debtorsData!),
                 if (Responsive.isTablet(context) ||
                     Responsive.isMobile(context))

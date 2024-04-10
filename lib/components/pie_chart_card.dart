@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shinda_app/components/custom_card.dart';
 import 'package:shinda_app/components/indicator.dart';
 import 'package:shinda_app/constants/text_syles.dart';
+import 'package:shinda_app/responsive/responsive_layout.dart';
 
 class PieChartCard extends StatefulWidget {
   const PieChartCard({super.key, required this.salesData});
@@ -39,7 +40,11 @@ class _PieChartCardState extends State<PieChartCard> {
           ),
           const SizedBox(height: 20.0),
           AspectRatio(
-            aspectRatio: 1.8,
+            aspectRatio: Responsive.isDesktop(context)
+                ? 1.8
+                : Responsive.isTablet(context)
+                    ? 2.7
+                    : 1.9,
             child: PieChart(
               PieChartData(
                 pieTouchData: PieTouchData(
@@ -58,17 +63,20 @@ class _PieChartCardState extends State<PieChartCard> {
                 ),
                 borderData: FlBorderData(show: false),
                 sectionsSpace: 0,
-                centerSpaceRadius: 40,
+                centerSpaceRadius: Responsive.isMobile(context) ? 30 : 40,
                 sections: showSections(),
               ),
             ),
           ),
-          const SizedBox(height: 16.0),
+          Responsive.isDesktop(context)
+              ? const SizedBox(height: 6.0)
+              : const Expanded(child: SizedBox()),
           GridView.count(
             crossAxisCount: 2,
+            mainAxisSpacing: 4.0,
             shrinkWrap: true,
             padding: const EdgeInsets.all(16.0),
-            childAspectRatio: 5,
+            childAspectRatio: Responsive.isTablet(context) ? 8 : 5,
             children: const [
               Indicator(
                 color: Color.fromRGBO(9, 82, 86, 1),
@@ -115,8 +123,20 @@ class _PieChartCardState extends State<PieChartCard> {
   List<PieChartSectionData> showSections() {
     return List.generate(5, (i) {
       final isTouched = i == touchedIndex;
-      final fontSize = isTouched ? 25.0 : 16.0;
-      final radius = isTouched ? 50.0 : 40.0;
+      final fontSize = isTouched
+          ? Responsive.isMobile(context)
+              ? 18.0
+              : 25.0
+          : Responsive.isMobile(context)
+              ? 14.0
+              : 16.0;
+      final radius = isTouched
+          ? Responsive.isMobile(context)
+              ? 40.0
+              : 50.0
+          : Responsive.isMobile(context)
+              ? 30.0
+              : 40.0;
       switch (i) {
         case 0:
           return PieChartSectionData(

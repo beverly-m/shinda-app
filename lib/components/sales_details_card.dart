@@ -40,6 +40,7 @@ class _SalesDetailsCardState extends State<SalesDetailsCard> {
 
       setState(() {
         _dashboardMetadata = dashboardMeta;
+        
         _salesDetails = SalesDetails(
           totalIncome: _dashboardMetadata!['income'],
           transactions: _dashboardMetadata!['transactions'],
@@ -68,7 +69,7 @@ class _SalesDetailsCardState extends State<SalesDetailsCard> {
         ? const CircularProgressIndicator()
         : GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: Responsive.isMobile(context) ? 2 : 5,
+              crossAxisCount: Responsive.isMobile(context) ? 2 : Responsive.isTablet(context) ? 4 : 5,
               crossAxisSpacing: Responsive.isMobile(context) ? 8.0 : 16.0,
               mainAxisSpacing: Responsive.isMobile(context) ? 8.0 : 16.0,
             ),
@@ -77,10 +78,10 @@ class _SalesDetailsCardState extends State<SalesDetailsCard> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  _salesDetails!.salesData()[index].icon,
+                  _salesDetails!.salesData(context)[index].icon,
                   const SizedBox(height: 16.0),
                   Text(
-                    _salesDetails!.salesData()[index].value,
+                    _salesDetails!.salesData(context)[index].value,
                     style: GoogleFonts.eczar(
                       textStyle: TextStyle(
                           fontSize: Responsive.isMobile(context) ? 20.0 : 24.0),
@@ -89,14 +90,14 @@ class _SalesDetailsCardState extends State<SalesDetailsCard> {
                   ),
                   const SizedBox(height: 4.0),
                   Text(
-                    _salesDetails!.salesData()[index].title,
+                    _salesDetails!.salesData(context)[index].title,
                     textAlign: TextAlign.center,
                     style: const TextStyle(color: neutral4),
                   ),
                 ],
               ),
             ),
-            itemCount: _salesDetails!.salesData().length,
+            itemCount: _salesDetails!.salesData(context).length,
             shrinkWrap: true,
             physics: const ScrollPhysics(),
           );

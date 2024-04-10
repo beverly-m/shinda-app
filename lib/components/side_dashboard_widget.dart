@@ -49,11 +49,13 @@ class _SideDashboardWidgetState extends State<SideDashboardWidget> {
       });
     } on GenericWorkspaceException {
       log("Error occurred");
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
     } catch (e) {
       log(e.toString());
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
