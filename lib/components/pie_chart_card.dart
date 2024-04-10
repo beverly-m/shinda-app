@@ -63,7 +63,7 @@ class _PieChartCardState extends State<PieChartCard> {
                 ),
                 borderData: FlBorderData(show: false),
                 sectionsSpace: 0,
-                centerSpaceRadius: Responsive.isMobile(context) ? 30 : 40,
+                centerSpaceRadius: 40,
                 sections: showSections(),
               ),
             ),
@@ -76,7 +76,10 @@ class _PieChartCardState extends State<PieChartCard> {
             mainAxisSpacing: 4.0,
             shrinkWrap: true,
             padding: const EdgeInsets.all(16.0),
-            childAspectRatio: Responsive.isTablet(context) ? 8 : 5,
+            childAspectRatio:
+                Responsive.isTablet(context) || Responsive.isMobile(context)
+                    ? 8
+                    : 5,
             children: const [
               Indicator(
                 color: Color.fromRGBO(9, 82, 86, 1),
@@ -123,20 +126,8 @@ class _PieChartCardState extends State<PieChartCard> {
   List<PieChartSectionData> showSections() {
     return List.generate(5, (i) {
       final isTouched = i == touchedIndex;
-      final fontSize = isTouched
-          ? Responsive.isMobile(context)
-              ? 18.0
-              : 25.0
-          : Responsive.isMobile(context)
-              ? 14.0
-              : 16.0;
-      final radius = isTouched
-          ? Responsive.isMobile(context)
-              ? 40.0
-              : 50.0
-          : Responsive.isMobile(context)
-              ? 30.0
-              : 40.0;
+      final fontSize = isTouched ? 25.0 : 16.0;
+      final radius = isTouched ? 50.0 : 40.0;
       switch (i) {
         case 0:
           return PieChartSectionData(
