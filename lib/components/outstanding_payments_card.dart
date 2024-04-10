@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:shinda_app/components/custom_card.dart';
 import 'package:shinda_app/constants/text_syles.dart';
+import 'package:shinda_app/responsive/responsive_layout.dart';
 
 class OutstandingPaymentsCard extends StatefulWidget {
   const OutstandingPaymentsCard({super.key, required this.data});
@@ -20,6 +21,7 @@ class _OutstandingPaymentsCardState extends State<OutstandingPaymentsCard> {
   late final PlutoGridStateManager stateManager;
 
   final List<PlutoRow> debtorDataRows = [];
+  final List<PlutoRow> debtorDataRowsMobile = [];
 
   List<PlutoColumn> debtorDataColumns = [
     PlutoColumn(
@@ -52,6 +54,22 @@ class _OutstandingPaymentsCardState extends State<OutstandingPaymentsCard> {
       type: PlutoColumnType.text(),
     ),
   ];
+  List<PlutoColumn> debtorDataColumnsMobile = [
+    PlutoColumn(
+      title: 'Client name',
+      field: 'client_name',
+      type: PlutoColumnType.text(),
+    ),
+    PlutoColumn(
+      title: 'Amount owed',
+      field: 'amount_owed',
+      type: PlutoColumnType.currency(
+        name: 'RWF',
+        symbol: 'RWF',
+        decimalDigits: 2,
+      ),
+    ),
+  ];
 
   @override
   void initState() {
@@ -74,6 +92,14 @@ class _OutstandingPaymentsCardState extends State<OutstandingPaymentsCard> {
                 PlutoCell(value: element['transaction']['transaction_id']),
             'phone_number': PlutoCell(value: element['phone_number']),
             'address': PlutoCell(value: element['address']),
+          },
+        ),
+      );
+      debtorDataRowsMobile.add(
+        PlutoRow(
+          cells: {
+            'client_name': PlutoCell(value: element['client_name']),
+            'amount_owed': PlutoCell(value: element['amount_owed']),
           },
         ),
       );
@@ -112,8 +138,12 @@ class _OutstandingPaymentsCardState extends State<OutstandingPaymentsCard> {
                 SizedBox(
                   height: 200,
                   child: PlutoGrid(
-                    columns: debtorDataColumns,
-                    rows: debtorDataRows,
+                    columns: Responsive.isMobile(context)
+                        ? debtorDataColumnsMobile
+                        : debtorDataColumns,
+                    rows: Responsive.isMobile(context)
+                        ? debtorDataRowsMobile
+                        : debtorDataRows,
                     noRowsWidget: const Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,

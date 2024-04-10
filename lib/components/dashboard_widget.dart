@@ -156,10 +156,20 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                 const SizedBox(
                   height: 16,
                 ),
-                OutstandingPaymentsCard(data: _debtorsData!),
+                if (Responsive.isTablet(context) ||
+                    Responsive.isMobile(context))
+                  LineChartCard(
+                    salesData: _salesData!,
+                  ),
                 if (Responsive.isTablet(context) ||
                     Responsive.isMobile(context))
                   SideDashboardWidget(workspaceId: widget.workspaceId),
+                if (Responsive.isTablet(context) ||
+                    Responsive.isMobile(context))
+                  const SizedBox(
+                    height: 16,
+                  ),
+                OutstandingPaymentsCard(data: _debtorsData!),
               ],
             ),
           );

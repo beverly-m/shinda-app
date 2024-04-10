@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:shinda_app/components/custom_card.dart';
 import 'package:shinda_app/constants/text_syles.dart';
+import 'package:shinda_app/responsive/responsive_layout.dart';
 
 class LineChartCard extends StatelessWidget {
   const LineChartCard({super.key, required this.salesData});
@@ -62,7 +63,7 @@ class LineChartCard extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           AspectRatio(
-            aspectRatio: 16 / 9,
+            aspectRatio: Responsive.isDesktop(context) ? 16 / 9 : 16 / 6,
             child: LineChart(
               LineChartData(
                 lineTouchData: LineTouchData(
