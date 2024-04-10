@@ -40,9 +40,13 @@ class LineChartCard extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                Text(
-                  "Weekly Sales Overview",
-                  style: subtitle1.copyWith(fontSize: 18),
+                Expanded(
+                  child: Text(
+                    "Weekly Sales Overview",
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                    style: subtitle1.copyWith(fontSize: 18),
+                  ),
                 ),
                 const Expanded(child: SizedBox()),
                 Chip(

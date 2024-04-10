@@ -26,10 +26,6 @@ void main() {
       create: (context) => CartProvider(),
       child: MaterialApp(
         title: 'Shinda',
-        // theme: ThemeData(
-        //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        //   useMaterial3: true,
-        // ),
         theme: _buildTheme(Brightness.light),
         home: const InitApp(),
         routes: {

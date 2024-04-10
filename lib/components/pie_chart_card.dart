@@ -18,90 +18,97 @@ class _PieChartCardState extends State<PieChartCard> {
   @override
   Widget build(BuildContext context) {
     return CustomCard(
-      child: Column(children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Text(
-                "Daily Income by Mode of Payment",
-                textAlign: TextAlign.left,
-                style: subtitle1.copyWith(fontSize: 18),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: Text(
+                    "Daily Income by Mode of Payment",
+                    textAlign: TextAlign.left,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                    style: subtitle1.copyWith(fontSize: 18),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20.0),
+          AspectRatio(
+            aspectRatio: 1.8,
+            child: PieChart(
+              PieChartData(
+                pieTouchData: PieTouchData(
+                  touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                    setState(() {
+                      if (!event.isInterestedForInteractions ||
+                          pieTouchResponse == null ||
+                          pieTouchResponse.touchedSection == null) {
+                        touchedIndex = -1;
+                        return;
+                      }
+                      touchedIndex =
+                          pieTouchResponse.touchedSection!.touchedSectionIndex;
+                    });
+                  },
+                ),
+                borderData: FlBorderData(show: false),
+                sectionsSpace: 0,
+                centerSpaceRadius: 40,
+                sections: showSections(),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            padding: const EdgeInsets.all(16.0),
+            childAspectRatio: 5,
+            children: const [
+              Indicator(
+                color: Color.fromRGBO(9, 82, 86, 1),
+                text: 'Cash',
+                isSquare: false,
+                size: 16,
+                textColor: Colors.black87,
+              ),
+              Indicator(
+                color: Color.fromRGBO(187, 159, 6, 1),
+                text: 'Mobile money',
+                isSquare: false,
+                size: 16,
+                textColor: Colors.black87,
+              ),
+              Indicator(
+                color: Color.fromRGBO(8, 127, 140, 1),
+                text: 'Card',
+                isSquare: false,
+                size: 16,
+                textColor: Colors.black87,
+              ),
+              Indicator(
+                color: Colors.pink,
+                text: 'Bank transfer',
+                isSquare: false,
+                size: 16,
+                textColor: Colors.black87,
+              ),
+              Indicator(
+                color: surface3,
+                text: 'No Data',
+                isSquare: false,
+                size: 16,
+                textColor: Colors.black87,
               ),
             ],
           ),
-        ),
-        const SizedBox(height: 20.0),
-        AspectRatio(
-          aspectRatio: 1.8,
-          child: PieChart(
-            PieChartData(
-              pieTouchData: PieTouchData(
-                touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                  setState(() {
-                    if (!event.isInterestedForInteractions ||
-                        pieTouchResponse == null ||
-                        pieTouchResponse.touchedSection == null) {
-                      touchedIndex = -1;
-                      return;
-                    }
-                    touchedIndex =
-                        pieTouchResponse.touchedSection!.touchedSectionIndex;
-                  });
-                },
-              ),
-              borderData: FlBorderData(show: false),
-              sectionsSpace: 0,
-              centerSpaceRadius: 40,
-              sections: showSections(),
-            ),
-          ),
-        ),
-        const SizedBox(height: 16.0),
-        GridView.count(
-          crossAxisCount: 2,
-          shrinkWrap: true,
-          padding: const EdgeInsets.all(16.0),
-          childAspectRatio: 5,
-          children: const [
-            Indicator(
-              color: Color.fromRGBO(9, 82, 86, 1),
-              text: 'Cash',
-              isSquare: false,
-              size: 16,
-              textColor: Colors.black87,
-            ),
-            Indicator(
-              color: Color.fromRGBO(187, 159, 6, 1),
-              text: 'Mobile money',
-              isSquare: false,
-              size: 16,
-              textColor: Colors.black87,
-            ),
-            Indicator(
-              color: Color.fromRGBO(8, 127, 140, 1),
-              text: 'Card',
-              isSquare: false,
-              size: 16,
-              textColor: Colors.black87,
-            ),
-            Indicator(
-              color: Colors.pink,
-              text: 'Bank transfer',
-              isSquare: false,
-              size: 16,
-              textColor: Colors.black87,
-            ),
-            Indicator(
-              color: surface3,
-              text: 'No Data',
-              isSquare: false,
-              size: 16,
-              textColor: Colors.black87,
-            ),
-          ],
-        ),
-      ]),
+        ],
+      ),
     );
   }
 

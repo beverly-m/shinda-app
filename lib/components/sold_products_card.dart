@@ -65,9 +65,13 @@ class _SoldProductsCardState extends State<SoldProductsCard> {
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 4.0, vertical: 8.0),
-                  child: Text(
-                    "Products sold",
-                    style: subtitle1.copyWith(fontSize: 18),
+                  child: Expanded(
+                    child: Text(
+                      "Products sold",
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                      style: subtitle1.copyWith(fontSize: 18),
+                    ),
                   ),
                 ),
                 const SizedBox(

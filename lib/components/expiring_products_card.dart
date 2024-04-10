@@ -68,9 +68,13 @@ class _ExpiringProductsCardState extends State<ExpiringProductsCard> {
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 4.0, vertical: 8.0),
-                  child: Text(
-                    "Products expiring",
-                    style: subtitle1.copyWith(fontSize: 18),
+                  child: Expanded(
+                    child: Text(
+                      "Products expiring",
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                      style: subtitle1.copyWith(fontSize: 18),
+                    ),
                   ),
                 ),
                 const SizedBox(

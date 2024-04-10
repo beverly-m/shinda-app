@@ -51,9 +51,13 @@ class _ProductsStockCardState extends State<ProductsStockCard> {
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 4.0, vertical: 8.0),
-                      child: Text(
-                        "Products low on stock",
-                        style: subtitle1.copyWith(fontSize: 18),
+                      child: Expanded(
+                        child: Text(
+                          "Products low on stock",
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: false,
+                          style: subtitle1.copyWith(fontSize: 18),
+                        ),
                       ),
                     ),
                     const SizedBox(
@@ -109,10 +113,14 @@ class ChartLine extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 16,
+                    Expanded(
+                      child: Text(
+                        title,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: false,
+                        style: const TextStyle(
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                     const Expanded(child: SizedBox()),
