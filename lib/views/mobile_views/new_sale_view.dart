@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/responsive/responsive_layout.dart';
@@ -21,7 +20,6 @@ class NewSaleView extends StatefulWidget {
 class _NewSaleViewState extends State<NewSaleView> {
   bool _isLoading = false;
   List<Map<String, dynamic>>? _productsData;
-  String? _currentWorkspace;
 
   @override
   void initState() {
@@ -44,7 +42,6 @@ class _NewSaleViewState extends State<NewSaleView> {
 
       setState(() {
         _productsData = products;
-        _currentWorkspace = currentWorkspace;
       });
 
       if (_productsData != null) {
@@ -130,7 +127,6 @@ class _NewSaleViewState extends State<NewSaleView> {
                       child: AspectRatio(
                         aspectRatio: 1,
                         child: Container(
-                          // width: 200.0,
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,7 +134,6 @@ class _NewSaleViewState extends State<NewSaleView> {
                               Expanded(
                                 child: Container(
                                   width: double.infinity,
-                                  // height: 122.0,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8.0),
                                     color: surface1,
