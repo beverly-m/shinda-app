@@ -43,7 +43,7 @@ class _ProductsStockCardState extends State<ProductsStockCard> {
         ? const Center(child: CircularProgressIndicator())
         : CustomCard(
             child: SizedBox(
-              height: 200,
+              height: 180,
               width: double.infinity,
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +60,7 @@ class _ProductsStockCardState extends State<ProductsStockCard> {
                       height: 8.0,
                     ),
                     SizedBox(
-                      height: 150,
+                      height: 120,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: SingleChildScrollView(

@@ -5,7 +5,7 @@ import 'package:shinda_app/constants/text_syles.dart';
 
 class SoldProductsCard extends StatefulWidget {
   const SoldProductsCard({super.key, required this.soldProductsData});
-  final List soldProductsData;
+  final Map soldProductsData;
 
   @override
   State<SoldProductsCard> createState() => _SoldProductsCardState();
@@ -20,9 +20,10 @@ class _SoldProductsCardState extends State<SoldProductsCard> {
       type: PlutoColumnType.text(),
     ),
     PlutoColumn(
-      title: 'Sold',
+      title: 'Quantity sold',
       field: 'sold',
-      type: PlutoColumnType.date(),
+      type: PlutoColumnType.number(),
+      sort: PlutoColumnSort.descending,
     ),
   ];
 
@@ -38,16 +39,14 @@ class _SoldProductsCardState extends State<SoldProductsCard> {
     setState(() {
       _isLoading = true;
     });
-    for (var element in widget.soldProductsData) {
-      dataRows.add(
-        PlutoRow(
-          cells: {
-            'product': PlutoCell(value: element[1]),
-            'sold': PlutoCell(value: element[0]),
-          },
-        ),
-      );
-    }
+
+    widget.soldProductsData.forEach((key, value) {
+      dataRows.add(PlutoRow(cells: {
+        'product': PlutoCell(value: value[1]),
+        'sold': PlutoCell(value: value[0]),
+      }));
+    });
+
     setState(() {
       _isLoading = false;
     });
@@ -67,7 +66,7 @@ class _SoldProductsCardState extends State<SoldProductsCard> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 4.0, vertical: 8.0),
                   child: Text(
-                    "Products expiring",
+                    "Products sold",
                     style: subtitle1.copyWith(fontSize: 18),
                   ),
                 ),

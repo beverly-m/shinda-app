@@ -19,7 +19,7 @@ class SideDashboardWidget extends StatefulWidget {
 class _SideDashboardWidgetState extends State<SideDashboardWidget> {
   List? _expiredProductsData;
   List? _lowInStockProductsData;
-  List? _mostSoldProductsData;
+  Map? _mostSoldProductsData;
   bool _isLoading = false;
 
   @override
@@ -43,7 +43,7 @@ class _SideDashboardWidgetState extends State<SideDashboardWidget> {
 
         _lowInStockProductsData = dashboardMetadata["productsLowInStockData"];
 
-        _mostSoldProductsData = dashboardMetadata["'mostSoldProductsData'"];
+        _mostSoldProductsData = dashboardMetadata["mostSoldProductsData"];
 
         _isLoading = false;
       });
@@ -74,10 +74,10 @@ class _SideDashboardWidgetState extends State<SideDashboardWidget> {
               const SizedBox(height: 16.0),
               SoldProductsCard(soldProductsData: _mostSoldProductsData!),
               const SizedBox(height: 16.0),
-              ExpiringProductsCard(expiredProductsData: _expiredProductsData!),
-              const SizedBox(height: 16.0),
               ProductsStockCard(
                   lowInStockProductsData: _lowInStockProductsData!),
+              const SizedBox(height: 16.0),
+              ExpiringProductsCard(expiredProductsData: _expiredProductsData!),
             ],
           );
   }
