@@ -49,21 +49,41 @@ class LineChartCard extends StatelessWidget {
                     style: subtitle1.copyWith(fontSize: 18),
                   ),
                 ),
-                const Expanded(child: SizedBox()),
-                Chip(
-                  label: Text(
-                    '${findFirstDateOfTheWeek(today)} - ${findLastDateOfTheWeek(today).toString()}',
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  side: BorderSide.none,
-                  backgroundColor: primary,
-                )
+                if (Responsive.isDesktop(context) ||
+                    Responsive.isTablet(context))
+                  const Expanded(child: SizedBox()),
+                if (Responsive.isDesktop(context) ||
+                    Responsive.isTablet(context))
+                  Chip(
+                    label: Text(
+                      '${findFirstDateOfTheWeek(today)} - ${findLastDateOfTheWeek(today).toString()}',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    side: BorderSide.none,
+                    backgroundColor: primary,
+                  )
               ],
             ),
           ),
+          if (Responsive.isMobile(context))
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Chip(
+                label: Text(
+                  '${findFirstDateOfTheWeek(today)} - ${findLastDateOfTheWeek(today).toString()}',
+                  style: const TextStyle(color: Colors.white),
+                ),
+                side: BorderSide.none,
+                backgroundColor: primary,
+              ),
+            ),
           const SizedBox(height: 20),
           AspectRatio(
-            aspectRatio: Responsive.isDesktop(context) ? 16 / 9 : 16 / 6,
+            aspectRatio: Responsive.isDesktop(context)
+                ? 16 / 9
+                : Responsive.isTablet(context)
+                    ? 16 / 6
+                    : 16 / 9,
             child: LineChart(
               LineChartData(
                 lineTouchData: LineTouchData(
