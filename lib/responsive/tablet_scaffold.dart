@@ -5,10 +5,12 @@ import 'package:shinda_app/components/drawer_item.dart';
 import 'package:shinda_app/constants/drawer_items.dart';
 import 'package:shinda_app/constants/drawer_views.dart';
 import 'package:shinda_app/constants/routes.dart';
+import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/auth/auth_exceptions.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
 import 'package:shinda_app/views/dashboard/home_view.dart';
+import 'package:shinda_app/views/dashboard/new_transaction_view.dart';
 
 class TabletScaffold extends StatefulWidget {
   const TabletScaffold({super.key});
@@ -27,6 +29,37 @@ class _TabletScaffoldState extends State<TabletScaffold> {
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0.0,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: FilledButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        const NewTransactionView(),
+                  ),
+                );
+              },
+              style: FilledButton.styleFrom(
+                backgroundColor: primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              child: const Row(
+                children: [
+                  Icon(Icons.add),
+                  SizedBox(width: 4.0),
+                  Text(
+                    "New Sale",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
       ),
       drawer: Drawer(
         child: ListView(
