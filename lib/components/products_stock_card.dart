@@ -88,7 +88,7 @@ class ChartLine extends StatelessWidget {
     required this.title,
     required this.number,
     required this.total,
-  })  : assert(rate > 0),
+  })  : assert(rate >= 0),
         assert(rate <= 1),
         super(key: key);
 

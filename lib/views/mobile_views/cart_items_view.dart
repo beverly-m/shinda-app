@@ -6,7 +6,9 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/enums/dropdown_menu.dart';
+import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
+import 'package:shinda_app/utilities/get_workspace.dart';
 import 'package:shinda_app/utilities/helpers/db_helper.dart';
 import 'package:shinda_app/utilities/models/cart_model.dart';
 import 'package:shinda_app/utilities/providers/cart_provider.dart';
@@ -55,6 +57,7 @@ class _CartItemsViewState extends State<CartItemsView> {
     _address = TextEditingController();
 
     context.read<CartProvider>().getData();
+    _getWorkspaceId();
   }
 
   @override
@@ -70,6 +73,31 @@ class _CartItemsViewState extends State<CartItemsView> {
     _phoneNumber.dispose();
     _paymentModeController.dispose();
     super.dispose();
+  }
+
+  void _getWorkspaceId() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final currentWorkspace = await getCurrentWorkspaceId();
+
+      setState(() {
+        _currentWorkspace = currentWorkspace;
+        _isLoading = false;
+      });
+    } on GenericWorkspaceException {
+      log("Error occurred");
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (e) {
+      log(e.toString());
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   Future<void> _showAddCreditPurchaseDialog({
@@ -96,7 +124,7 @@ class _CartItemsViewState extends State<CartItemsView> {
           title: const Text("Credit Purchase Details"),
           contentPadding: const EdgeInsets.all(24.0),
           content: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.4,
+            width: MediaQuery.of(context).size.width * 0.8,
             child: Form(
               key: _formKey,
               child: Column(
