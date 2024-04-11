@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:shinda_app/components/buttons.dart';
+import 'package:shinda_app/components/client_details_listtile.dart';
 import 'package:shinda_app/components/product_details_listtile.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/enums/dropdown_menu.dart';
@@ -239,45 +240,44 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
                                 style: dashboardSubtitle,
                               ),
                               const SizedBox(height: 8.0),
-                              ListTile(
-                                contentPadding:
-                                    const EdgeInsets.symmetric(vertical: 4.0),
-                                leading: Container(
-                                  width: 48.0,
-                                  height: 48.0,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    color: surface1,
-                                  ),
-                                  child: const Icon(
-                                    Icons.person_outline,
-                                    color: Colors.black12,
-                                    size: 24.0,
-                                  ),
-                                ),
-                                title: Text(debtor!['client_name']),
-                                subtitle: Text.rich(
-                                  TextSpan(
-                                    text: debtor['phone_number'],
-                                    children: [
-                                      debtor['address'] != null
-                                          ? TextSpan(
-                                              text: ' | ${debtor['address']}')
-                                          : const TextSpan()
-                                    ],
-                                  ),
-                                ),
-                                trailing: OutlinedAppButton(
-                                  onPressed: () {
-                                    _showUpdateTransactionDialog(
-                                        transactionId: debtor['transaction']
-                                            ['transaction_id']);
-                                  },
-                                  labelText: "Mark As Paid",
-                                ),
+                              ClientDetailsListTile(
+                                clientName: debtor!['client_name'],
+                                phoneNumber: debtor['phone_number'],
+                                address: debtor['address'],
+                                onPressed: () {
+                                  _showUpdateTransactionDialog(
+                                      transactionId: debtor['transaction']
+                                          ['transaction_id']);
+                                },
                               ),
                             ],
                           ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 16.0,
+                        ),
+                        const Divider(
+                          height: 0.5,
+                          thickness: 0.5,
+                          color: surface3,
+                        ),
+                        const SizedBox(
+                          height: 16.0,
+                        ),
+                        const Text(
+                          "Edit transaction",
+                          style: dashboardSubtitle,
+                        ),
+                        const SizedBox(height: 16.0),
+                        OutlinedAppButton(
+                            onPressed: () {
+                              _showDeleteTransactionDialog(transactionId: '');
+                            },
+                            labelText: 'Delete Transaction'),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -285,15 +285,11 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
             actions: [
               Row(
                 children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                      "Close",
-                      style: body1.copyWith(color: primary),
-                    ),
-                  ),
+                  TextAppButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      labelText: 'Close'),
                 ],
               ),
             ],
@@ -384,6 +380,9 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
           );
         });
   }
+
+  Future<void> _showDeleteTransactionDialog(
+      {required String transactionId}) async {}
 
   Future<void> _updateTransaction({
     required String transactionId,
