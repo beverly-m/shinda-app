@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:shinda_app/components/buttons.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/enums/dropdown_menu.dart';
+import 'package:shinda_app/services/auth/auth_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
 import 'package:shinda_app/utilities/get_workspace.dart';
+import 'package:shinda_app/utilities/show_error_dialog.dart';
 
 class TransactionDetailsView extends StatefulWidget {
   const TransactionDetailsView(
@@ -25,6 +27,7 @@ class _TransactionDetailsViewState extends State<TransactionDetailsView> {
   Map<String, dynamic>? _debtor;
   late final TextEditingController _paymentModeController;
   PaymentModeLabel? selectedPaymentMode = PaymentModeLabel.cash;
+  String? _currentWorkspaceId;
 
   @override
   void initState() {
@@ -67,6 +70,7 @@ class _TransactionDetailsViewState extends State<TransactionDetailsView> {
 
       setState(() {
         _transactionItemsData = items;
+        _currentWorkspaceId = currentWorkspace;
         _isLoading = false;
       });
     } on GenericWorkspaceException {
@@ -87,7 +91,10 @@ class _TransactionDetailsViewState extends State<TransactionDetailsView> {
               borderSide: BorderSide.none,
               borderRadius: BorderRadius.circular(8.0),
             ),
-            title: const Text("Update Transaction"),
+            title: const Text(
+              "Update Transaction",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             contentPadding: const EdgeInsets.all(24.0),
             content: SizedBox(
               height: 120,
@@ -190,11 +197,47 @@ class _TransactionDetailsViewState extends State<TransactionDetailsView> {
     }
   }
 
+  Future<bool> _showDeleteTransactionDialog(BuildContext context) async {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: surface1,
+          title: const Text(
+            'Delete transaction',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: const Text(
+            "Are you sure you want to delete this transaction? This will delete every record associated with it.",
+            style: body1,
+          ),
+          actions: [
+            TextAppButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+                labelText: 'Cancel'),
+            FilledAppButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              labelText: 'Delete transaction',
+            ),
+          ],
+        );
+      },
+    ).then((value) => value ?? false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Transaction Details"),
+        title: const Text(
+          "Transaction Details",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
       body: _isLoading
           ? const Center(
@@ -341,6 +384,62 @@ class _TransactionDetailsViewState extends State<TransactionDetailsView> {
                           ),
                         ],
                       ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 16.0,
+                        ),
+                        const Divider(
+                          height: 0.5,
+                          thickness: 0.5,
+                          color: surface3,
+                        ),
+                        const SizedBox(
+                          height: 16.0,
+                        ),
+                        const Text(
+                          "Edit transaction",
+                          style: dashboardSubtitle,
+                        ),
+                        const SizedBox(height: 16.0),
+                        OutlinedAppButton(
+                          onPressed: () async {
+                            final isDelete =
+                                await _showDeleteTransactionDialog(context);
+
+                            if (isDelete) {
+                              try {
+                                await WorkspaceService().deleteTransaction(
+                                  transactionId: widget.id,
+                                  workspaceId: _currentWorkspaceId!,
+                                );
+
+                                if (context.mounted) {
+                                  Navigator.of(context).pop();
+                                }
+                              } on GenericAuthException {
+                                if (context.mounted) {
+                                  await showErrorDialog(
+                                    context,
+                                    "An error occurred. Try again.",
+                                  );
+                                }
+                              } catch (_) {
+                                log(_.toString());
+                                if (context.mounted) {
+                                  await showErrorDialog(
+                                    context,
+                                    "An error occurred. Try again.",
+                                  );
+                                }
+                              }
+                            }
+                          },
+                          labelText: 'Delete Transaction',
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
