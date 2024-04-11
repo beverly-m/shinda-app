@@ -288,8 +288,8 @@ class _NewTransactionViewState extends State<NewTransactionView> {
     try {
       final currentWorkspace = await getCurrentWorkspaceId();
 
-      final List<Map<String, dynamic>> products =
-          await WorkspaceService().getProducts(workspaceId: currentWorkspace!);
+      final List<Map<String, dynamic>> products = await WorkspaceService()
+          .getPOSProducts(workspaceId: currentWorkspace!);
 
       setState(() {
         _productsData = products;
@@ -566,25 +566,36 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                             itemCount: _productsData!.length,
                                             shrinkWrap: true,
                                             itemBuilder: (context, index) {
-                                              return AspectRatio(
-                                                aspectRatio: 0.9,
-                                                child: ProductCard(
-                                                    productName:
-                                                        _productsData![index]
-                                                            ["product"]['name'],
-                                                    productPrice:
-                                                        _productsData![index]
-                                                                ["product"]
-                                                            ['price'],
-                                                    quantityInStock:
-                                                        _productsData![index][
-                                                            'quantity_available'],
-                                                    onPressed: () async {
-                                                      await cart.saveData(
-                                                          data: _productsData![
-                                                              index]);
-                                                    }),
-                                              );
+                                              return _productsData![index][
+                                                          'quantity_available'] <
+                                                      0
+                                                  ? null
+                                                  : AspectRatio(
+                                                      aspectRatio: 0.9,
+                                                      child: ProductCard(
+                                                          productName:
+                                                              _productsData![
+                                                                          index]
+                                                                      [
+                                                                      "product"]
+                                                                  ['name'],
+                                                          productPrice:
+                                                              _productsData![
+                                                                          index]
+                                                                      [
+                                                                      "product"]
+                                                                  ['price'],
+                                                          quantityInStock:
+                                                              _productsData![
+                                                                      index][
+                                                                  'quantity_available'],
+                                                          onPressed: () async {
+                                                            await cart.saveData(
+                                                                data:
+                                                                    _productsData![
+                                                                        index]);
+                                                          }),
+                                                    );
                                             },
                                           ),
                                         ),

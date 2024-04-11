@@ -38,8 +38,8 @@ class _NewSaleViewState extends State<NewSaleView> {
     try {
       final currentWorkspace = await getCurrentWorkspaceId();
 
-      final List<Map<String, dynamic>> products =
-          await WorkspaceService().getProducts(workspaceId: currentWorkspace!);
+      final List<Map<String, dynamic>> products = await WorkspaceService()
+          .getPOSProducts(workspaceId: currentWorkspace!);
 
       setState(() {
         _productsData = products;

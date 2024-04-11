@@ -105,7 +105,9 @@ class WorkspaceService implements WorkspaceProvider {
   Future<List<Map<String, dynamic>>> getProducts(
       {required String workspaceId}) async {
     try {
-      final productsData = await supabase.from("stock").select('''
+      final productsData = await supabase
+          .from("stock")
+          .select('''
         product:product_id (product_id, name, description, price),
         stock_id,
         quantity,
@@ -116,10 +118,55 @@ class WorkspaceService implements WorkspaceProvider {
         quantity_defective,
         created_at,
         updated_at
-        ''').eq(
-        "workspace_id",
-        workspaceId,
-      );
+        ''')
+          .eq(
+            "workspace_id",
+            workspaceId,
+          )
+          .order(
+            'name',
+            referencedTable: 'product',
+            ascending: true,
+          );
+
+      return productsData;
+    } on PostgrestException catch (e) {
+      log(e.code ?? "Error occurred");
+      log(e.message);
+      throw GenericWorkspaceException();
+    } catch (e) {
+      throw GenericWorkspaceException();
+    }
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getPOSProducts(
+      {required String workspaceId}) async {
+    try {
+      final productsData = await supabase
+          .from("stock")
+          .select('''
+        product:product_id (product_id, name, description, price),
+        stock_id,
+        quantity,
+        expiration_date,
+        reorder_level,
+        quantity_sold,
+        quantity_available,
+        quantity_defective,
+        created_at,
+        updated_at
+        ''')
+          .eq(
+            "workspace_id",
+            workspaceId,
+          )
+          .gt('quantity_available', 0)
+          .order(
+            'name',
+            referencedTable: 'product',
+            ascending: true,
+          );
 
       return productsData;
     } on PostgrestException catch (e) {
