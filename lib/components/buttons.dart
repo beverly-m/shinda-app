@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shinda_app/constants/text_syles.dart';
+import 'package:shinda_app/responsive/responsive_layout.dart';
 
 class OutlinedAppButton extends StatelessWidget {
   final void Function() onPressed;
@@ -48,6 +49,63 @@ class FilledAppButton extends StatelessWidget {
       child: Text(
         labelText,
         style: primaryButtonStyle,
+      ),
+    );
+  }
+}
+
+class PlusMinusButtons extends StatelessWidget {
+  final VoidCallback deleteQuantity;
+  final VoidCallback addQuantity;
+  final String text;
+  const PlusMinusButtons(
+      {Key? key,
+      required this.addQuantity,
+      required this.deleteQuantity,
+      required this.text})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: neutral3),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      padding: Responsive.isMobile(context)
+          ? const EdgeInsets.symmetric(vertical: 4.0)
+          : const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          IconButton(
+            visualDensity: VisualDensity.compact,
+            onPressed: addQuantity,
+            icon: const Icon(Icons.add),
+          ),
+          SizedBox(width: Responsive.isMobile(context) ? 0.0 : 12.0),
+          Container(
+            width: Responsive.isMobile(context) ? 32.0 : 56.0,
+            height: 40.0,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              border: Responsive.isMobile(context)
+                  ? const Border()
+                  : Border.all(color: neutral4),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Text(
+              text,
+              style: subtitle2,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          SizedBox(width: Responsive.isMobile(context) ? 0.0 : 12.0),
+          IconButton(
+            onPressed: deleteQuantity,
+            visualDensity: VisualDensity.compact,
+            icon: const Icon(Icons.remove),
+          ),
+        ],
       ),
     );
   }

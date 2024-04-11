@@ -1,10 +1,10 @@
 import 'dart:developer';
 
-import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 import 'package:shinda_app/components/buttons.dart';
+import 'package:shinda_app/components/cart_item_card.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/enums/dropdown_menu.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
@@ -340,90 +340,34 @@ class _CartItemsViewState extends State<CartItemsView> {
                                 shrinkWrap: true,
                                 itemCount: provider.cart.length,
                                 itemBuilder: (context, index) {
-                                  return Card(
-                                    elevation: 0,
-                                    color: surface1,
-                                    shape: RoundedRectangleBorder(
-                                      side: const BorderSide(color: surface3),
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Container(
-                                            width: 48.0,
-                                            height: 48.0,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                              color: surface1,
-                                            ),
-                                            child: const Icon(
-                                              Icons.shopping_bag_outlined,
-                                              color: Colors.black12,
-                                              size: 24.0,
-                                            ),
-                                          ),
-                                          Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                provider
-                                                    .cart[index].productName,
-                                                style: body1,
-                                              ),
-                                              const Flexible(child: SizedBox()),
-                                              Text(
-                                                "RWF ${provider.cart[index].productPrice}",
-                                                style: body2.copyWith(
-                                                    color: neutral4),
-                                              ),
-                                            ],
-                                          ),
-                                          const Expanded(child: SizedBox()),
-                                          ValueListenableBuilder<int>(
-                                            valueListenable:
-                                                provider.cart[index].quantity,
-                                            builder: (context, value, child) {
-                                              return PlusMinusButtons(
-                                                addQuantity: () {
-                                                  cart.addQuantity(provider
-                                                      .cart[index].productId);
-                                                  setState(() {
-                                                    cart.addTotalPrice(
-                                                        double.parse(provider
-                                                            .cart[index]
-                                                            .productPrice
-                                                            .toString()));
-                                                  });
-                                                  // });
-                                                },
-                                                deleteQuantity: () {
-                                                  cart.deleteQuantity(provider
-                                                      .cart[index].productId);
-                                                },
-                                                text: value.toString(),
-                                              );
-                                            },
-                                          ),
-                                          IconButton(
-                                            onPressed: () {
-                                              dbHelper!.deleteCartItem(provider
-                                                  .cart[index].productId);
-                                              provider.removeItem(provider
-                                                  .cart[index].productId);
-                                              provider.removeCounter();
-                                            },
-                                            icon: const Icon(
-                                                Icons.delete_outline),
-                                          )
-                                        ],
-                                      ),
-                                    ),
+                                  return CartItemCard(
+                                    productName:
+                                        provider.cart[index].productName,
+                                    productPrice:
+                                        "RWF ${provider.cart[index].productPrice}",
+                                    valueListenable:
+                                        provider.cart[index].quantity,
+                                    addQuantity: () {
+                                      cart.addQuantity(
+                                          provider.cart[index].productId);
+                                      setState(() {
+                                        cart.addTotalPrice(double.parse(provider
+                                            .cart[index].productPrice
+                                            .toString()));
+                                      });
+                                      // });
+                                    },
+                                    deleteQuantity: () {
+                                      cart.deleteQuantity(
+                                          provider.cart[index].productId);
+                                    },
+                                    onPressedDeleteButton: () {
+                                      dbHelper!.deleteCartItem(
+                                          provider.cart[index].productId);
+                                      provider.removeItem(
+                                          provider.cart[index].productId);
+                                      provider.removeCounter();
+                                    },
                                   );
                                 },
                               ),
