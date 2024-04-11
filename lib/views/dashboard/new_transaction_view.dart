@@ -469,7 +469,6 @@ class _NewTransactionViewState extends State<NewTransactionView> {
         await WorkspaceService().addTransaction(
           workspaceId: workspaceId,
           subTotal: subTotal,
-          // paymentMode: _paymentModeController.text,
           grandTotal: grandTotal,
           isPaid: false,
           products: products,

@@ -36,7 +36,7 @@ class CartProvider with ChangeNotifier {
           productName: data["product"]["name"],
           initialPrice: data["product"]['price'],
           productPrice: data["product"]['price'],
-          quantityAvailable: data['quantity'],
+          quantityAvailable: data['quantity_available'],
           quantity: ValueNotifier<int>(1),
         ),
       );
