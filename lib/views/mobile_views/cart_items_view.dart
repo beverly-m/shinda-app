@@ -24,12 +24,6 @@ class CartItemsView extends StatefulWidget {
 
 class _CartItemsViewState extends State<CartItemsView> {
   DBHelper? dbHelper = DBHelper();
-  late final TextEditingController _productName;
-  late final TextEditingController _description;
-  late final TextEditingController _price;
-  late final TextEditingController _quantity;
-  late final TextEditingController _expirationDate;
-  late final TextEditingController _reorderLevel;
   late final TextEditingController _paymentModeController;
   late final TextEditingController _clientName;
   late final TextEditingController _phoneNumber;
@@ -44,12 +38,6 @@ class _CartItemsViewState extends State<CartItemsView> {
   @override
   void initState() {
     super.initState();
-    _productName = TextEditingController();
-    _description = TextEditingController();
-    _price = TextEditingController();
-    _quantity = TextEditingController();
-    _expirationDate = TextEditingController();
-    _reorderLevel = TextEditingController();
     _paymentModeController = TextEditingController();
     _clientName = TextEditingController();
     _phoneNumber = TextEditingController();
@@ -61,12 +49,6 @@ class _CartItemsViewState extends State<CartItemsView> {
 
   @override
   void dispose() {
-    _productName.dispose();
-    _description.dispose();
-    _price.dispose();
-    _quantity.dispose();
-    _expirationDate.dispose();
-    _reorderLevel.dispose();
     _address.dispose();
     _clientName.dispose();
     _phoneNumber.dispose();
