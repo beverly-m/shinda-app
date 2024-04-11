@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:shinda_app/components/buttons.dart';
+import 'package:shinda_app/components/product_details_listtile.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/enums/dropdown_menu.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
@@ -150,7 +151,10 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
               borderRadius: BorderRadius.circular(8.0),
             ),
             scrollable: true,
-            title: const Text("Transaction Details"),
+            title: const Text(
+              "Transaction Details",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             contentPadding: const EdgeInsets.all(48.0),
             content: SizedBox(
               width: MediaQuery.of(context).size.width * 0.5,
@@ -168,54 +172,10 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
                         shrinkWrap: true,
                         itemCount: items.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return ListTile(
-                            contentPadding:
-                                const EdgeInsets.symmetric(vertical: 4.0),
-                            leading: Container(
-                              width: 48.0,
-                              height: 48.0,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0),
-                                color: surface1,
-                              ),
-                              child: const Icon(
-                                Icons.shopping_bag_outlined,
-                                color: Colors.black12,
-                                size: 24.0,
-                              ),
-                            ),
-                            title: Text.rich(TextSpan(
-                              text: items[index]['product']['name'],
-                              children: [
-                                TextSpan(
-                                    text:
-                                        ' x${items[index]['quantity'].toString()}'),
-                              ],
-                            )),
-                            subtitle: Text.rich(
-                              TextSpan(
-                                text: 'RWF ',
-                                children: [
-                                  TextSpan(
-                                    text: items[index]['price_per_item']
-                                        .toStringAsFixed(2),
-                                  )
-                                ],
-                              ),
-                            ),
-                            trailing: Text.rich(
-                              TextSpan(
-                                text: 'RWF ',
-                                children: [
-                                  TextSpan(
-                                    text: (items[index]['price_per_item'] *
-                                            items[index]['quantity'])
-                                        .toStringAsFixed(2),
-                                  )
-                                ],
-                              ),
-                              style: subtitle2,
-                            ),
+                          return ProductDetailsListTile(
+                            productName: items[index]['product']['name'],
+                            quantity: items[index]['quantity'],
+                            pricePerItem: items[index]['price_per_item'],
                           );
                         }),
                     const SizedBox(height: 24.0),

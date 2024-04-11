@@ -302,16 +302,20 @@ class WorkspaceService implements WorkspaceProvider {
   Future<List<Map<String, dynamic>>> getTransactions(
       {required String workspaceId}) async {
     try {
-      final transactionsData = await supabase.from("transaction").select('''
+      final transactionsData = await supabase
+          .from("transaction")
+          .select('''
         transaction_id,
         grand_total,
         payment_mode,
         is_paid,
         created_at
-        ''').eq(
-        "workspace_id",
-        workspaceId,
-      );
+        ''')
+          .eq(
+            "workspace_id",
+            workspaceId,
+          )
+          .order('created_at');
       return transactionsData;
     } on PostgrestException catch (e) {
       log(e.code ?? "Error occurred");
@@ -620,6 +624,29 @@ class WorkspaceService implements WorkspaceProvider {
       });
 
       return dashboardMeta;
+    } on PostgrestException catch (e) {
+      log(e.code ?? "Error occurred");
+      log(e.message);
+      throw GenericWorkspaceException();
+    } catch (e) {
+      log(e.toString());
+      throw GenericWorkspaceException();
+    }
+  }
+
+  @override
+  Future<void> deleteTransaction(
+      {required String transactionId, required String workspaceId}) async {
+    try {
+      List<Map<String, dynamic>> deletedTransaction =
+          await supabase.from('transaction').delete().match({
+        'transaction_id': transactionId,
+        'workspace_id': workspaceId,
+      }).select();
+
+      log("Deleted transaction");
+      log(deletedTransaction.toString());
+      log(deletedTransaction.length.toString());
     } on PostgrestException catch (e) {
       log(e.code ?? "Error occurred");
       log(e.message);

@@ -59,6 +59,11 @@ abstract class WorkspaceProvider {
     required String paymentMode,
   });
 
+  Future<void> deleteTransaction({
+    required String transactionId,
+    required String workspaceId,
+  });
+
   Future<List<Map<String, dynamic>>> getTransactionItems({
     required String workspaceId,
     required String transactionId,
