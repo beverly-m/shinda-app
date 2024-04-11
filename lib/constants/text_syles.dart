@@ -7,6 +7,12 @@ const TextStyle secondaryButtonStyle = TextStyle(
   color: primary,
 );
 
+const TextStyle primaryButtonStyle = TextStyle(
+  fontSize: 16,
+  fontWeight: FontWeight.w600,
+  color: Colors.white,
+);
+
 const TextStyle body1 = TextStyle(
   fontSize: 16,
   fontWeight: FontWeight.w500,

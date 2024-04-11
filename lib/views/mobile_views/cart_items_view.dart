@@ -4,6 +4,7 @@ import 'package:currency_text_input_formatter/currency_text_input_formatter.dart
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
+import 'package:shinda_app/components/buttons.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/enums/dropdown_menu.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
@@ -34,8 +35,6 @@ class _CartItemsViewState extends State<CartItemsView> {
   late final TextEditingController _phoneNumber;
   late final TextEditingController _address;
   PaymentModeLabel? selectedPaymentMode;
-  final CurrencyTextInputFormatter _formatter =
-      CurrencyTextInputFormatter(symbol: "RWF ", turnOffGrouping: true);
   String? _currentWorkspace;
   final GlobalKey<FormState> _formKey = GlobalKey();
   String _phoneNumberWithCode = "";
@@ -104,7 +103,6 @@ class _CartItemsViewState extends State<CartItemsView> {
     required BuildContext context,
     required String workspaceId,
     required double subTotal,
-    // required String paymentMode,
     required double grandTotal,
     required bool isPaid,
     required List<Cart> products,
@@ -204,7 +202,6 @@ class _CartItemsViewState extends State<CartItemsView> {
                 _addDebtor(
                   workspaceId: workspaceId,
                   subTotal: subTotal,
-                  // paymentMode: paymentMode,
                   grandTotal: grandTotal,
                   isPaid: isPaid,
                   products: products,
@@ -232,7 +229,6 @@ class _CartItemsViewState extends State<CartItemsView> {
   void _addDebtor({
     required String workspaceId,
     required double subTotal,
-    // String? paymentMode,
     required double grandTotal,
     required bool isPaid,
     required List<Cart> products,
@@ -259,7 +255,6 @@ class _CartItemsViewState extends State<CartItemsView> {
         await WorkspaceService().addTransaction(
           workspaceId: workspaceId,
           subTotal: subTotal,
-          // paymentMode: _paymentModeController.text,
           grandTotal: grandTotal,
           isPaid: false,
           products: products,
@@ -519,51 +514,9 @@ class _CartItemsViewState extends State<CartItemsView> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  OutlinedButton(
-                                    onPressed: () async {
-                                      double? totalPrice;
-
-                                      for (var element in provider.cart) {
-                                        totalPrice = (element.productPrice *
-                                                element.quantity.value) +
-                                            (totalPrice ?? 0);
-                                      }
-
-                                      try {
-                                        await _showAddCreditPurchaseDialog(
-                                          context: context,
-                                          workspaceId: _currentWorkspace!,
-                                          subTotal: totalPrice!,
-                                          grandTotal: totalPrice,
-                                          isPaid: false,
-                                          products: provider.cart,
-                                          cart: provider,
-                                        );
-                                      } catch (e) {
-                                        log(e.toString());
-                                      }
-                                    },
-                                    style: OutlinedButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 24.0,
-                                        vertical: 8.0,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                      ),
-                                    ),
-                                    child: const Text(
-                                      "Credit Purchase",
-                                      style: secondaryButtonStyle,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 24.0,
-                                  ),
-                                  FilledButton(
-                                    onPressed: () async {
-                                      try {
+                                  Expanded(
+                                    child: OutlinedAppButton(
+                                      onPressed: () async {
                                         double? totalPrice;
 
                                         for (var element in provider.cart) {
@@ -571,40 +524,63 @@ class _CartItemsViewState extends State<CartItemsView> {
                                                   element.quantity.value) +
                                               (totalPrice ?? 0);
                                         }
-                                        await WorkspaceService().addTransaction(
-                                          workspaceId: _currentWorkspace!,
-                                          subTotal: totalPrice!,
-                                          paymentMode:
-                                              _paymentModeController.text,
-                                          grandTotal: totalPrice,
-                                          isPaid: true,
-                                          products: provider.cart,
-                                        );
 
-                                        provider.clearCart();
-
-                                        if (!context.mounted) {
-                                          return;
-                                        } else {
-                                          Navigator.of(context).pop();
-                                          Navigator.of(context).pop();
+                                        try {
+                                          await _showAddCreditPurchaseDialog(
+                                            context: context,
+                                            workspaceId: _currentWorkspace!,
+                                            subTotal: totalPrice!,
+                                            grandTotal: totalPrice,
+                                            isPaid: false,
+                                            products: provider.cart,
+                                            cart: provider,
+                                          );
+                                        } catch (e) {
+                                          log(e.toString());
                                         }
-                                      } catch (e) {
-                                        log(e.toString());
-                                      }
-                                    },
-                                    style: FilledButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 24.0,
-                                        vertical: 8.0,
-                                      ),
-                                      backgroundColor: primary,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                      ),
+                                      },
+                                      labelText: 'Credit Purchase',
                                     ),
-                                    child: const Text("Checkout"),
+                                  ),
+                                  const SizedBox(
+                                    width: 16.0,
+                                  ),
+                                  Expanded(
+                                    child: FilledAppButton(
+                                      onPressed: () async {
+                                        try {
+                                          double? totalPrice;
+
+                                          for (var element in provider.cart) {
+                                            totalPrice = (element.productPrice *
+                                                    element.quantity.value) +
+                                                (totalPrice ?? 0);
+                                          }
+                                          await WorkspaceService()
+                                              .addTransaction(
+                                            workspaceId: _currentWorkspace!,
+                                            subTotal: totalPrice!,
+                                            paymentMode:
+                                                _paymentModeController.text,
+                                            grandTotal: totalPrice,
+                                            isPaid: true,
+                                            products: provider.cart,
+                                          );
+
+                                          provider.clearCart();
+
+                                          if (!context.mounted) {
+                                            return;
+                                          } else {
+                                            Navigator.of(context).pop();
+                                            Navigator.of(context).pop();
+                                          }
+                                        } catch (e) {
+                                          log(e.toString());
+                                        }
+                                      },
+                                      labelText: 'Checkout',
+                                    ),
                                   ),
                                 ],
                               ),
