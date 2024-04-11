@@ -8,9 +8,11 @@ import 'package:shinda_app/components/client_details_listtile.dart';
 import 'package:shinda_app/components/product_details_listtile.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/enums/dropdown_menu.dart';
+import 'package:shinda_app/services/auth/auth_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
 import 'package:shinda_app/utilities/get_workspace.dart';
+import 'package:shinda_app/utilities/show_error_dialog.dart';
 
 class TransactionDataGrid extends StatefulWidget {
   const TransactionDataGrid({super.key, required this.data});
@@ -31,6 +33,7 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
 
   late final TextEditingController _paymentModeController;
   PaymentModeLabel? selectedPaymentMode = PaymentModeLabel.cash;
+  String? _currentWorkspaceId;
 
   List<PlutoColumn> transactionDataColumns = [
     PlutoColumn(
@@ -99,6 +102,7 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
 
       setState(() {
         _transactionsData = transactions;
+        _currentWorkspaceId = currentWorkspace;
       });
 
       transactionDataRows.clear();
@@ -135,6 +139,7 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
     required List<Map<String, dynamic>> items,
     Map<String, dynamic>? debtor,
     required bool isPaid,
+    required String transactionId,
   }) async {
     double totalPrice = 0;
     for (var element in items) {
@@ -272,10 +277,41 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
                         ),
                         const SizedBox(height: 16.0),
                         OutlinedAppButton(
-                            onPressed: () {
-                              _showDeleteTransactionDialog(transactionId: '');
-                            },
-                            labelText: 'Delete Transaction'),
+                          onPressed: () async {
+                            final isDelete =
+                                await _showDeleteTransactionDialog(context);
+
+                            if (isDelete) {
+                              try {
+                                await WorkspaceService().deleteTransaction(
+                                  transactionId: transactionId,
+                                  workspaceId: _currentWorkspaceId!,
+                                );
+
+                                _getData();
+
+                                if (context.mounted) {
+                                  Navigator.of(context).pop();
+                                }
+                              } on GenericAuthException {
+                                if (context.mounted) {
+                                  await showErrorDialog(
+                                    context,
+                                    "An error occurred. Try again.",
+                                  );
+                                }
+                              } catch (_) {
+                                if (context.mounted) {
+                                  await showErrorDialog(
+                                    context,
+                                    "An error occurred. Try again.",
+                                  );
+                                }
+                              }
+                            }
+                          },
+                          labelText: 'Delete Transaction',
+                        ),
                       ],
                     ),
                   ],
@@ -381,8 +417,38 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
         });
   }
 
-  Future<void> _showDeleteTransactionDialog(
-      {required String transactionId}) async {}
+  Future<bool> _showDeleteTransactionDialog(BuildContext context) async {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: surface1,
+          title: const Text(
+            'Delete transaction',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: const Text(
+            "Are you sure you want to delete this transaction? This will delete every record associated with it.",
+            style: body1,
+          ),
+          actions: [
+            TextAppButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+                labelText: 'Cancel'),
+            FilledAppButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              labelText: 'Delete transaction',
+            ),
+          ],
+        );
+      },
+    ).then((value) => value ?? false);
+  }
 
   Future<void> _updateTransaction({
     required String transactionId,
@@ -520,6 +586,7 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
                     items: _transactionItemsData!,
                     isPaid: isPaid,
                     debtor: _debtorData,
+                    transactionId: transactionId,
                   );
                 }
               },
