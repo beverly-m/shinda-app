@@ -110,3 +110,28 @@ class PlusMinusButtons extends StatelessWidget {
     );
   }
 }
+
+class TextAppButton extends StatelessWidget {
+  const TextAppButton({
+    super.key,
+    required this.onPressed,
+    required this.labelText,
+  });
+  final void Function() onPressed;
+  final String labelText;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: onPressed,
+      style: TextButton.styleFrom(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 36.0),
+      ),
+      child: Text(
+        labelText,
+        style: secondaryButtonStyle,
+      ),
+    );
+  }
+}

@@ -213,7 +213,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
             ),
           ),
           actions: [
-            TextButton(
+            TextAppButton(
               onPressed: () {
                 _productName.clear();
                 _description.clear();
@@ -223,25 +223,11 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                 _expirationDate.clear();
                 Navigator.of(context).pop();
               },
-              child: const Text(
-                "Cancel",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Color.fromRGBO(0, 121, 107, 1),
-                ),
-              ),
+              labelText: 'Cancel',
             ),
-            FilledButton(
+            FilledAppButton(
               onPressed: _addProduct,
-              style: const ButtonStyle(
-                  backgroundColor:
-                      MaterialStatePropertyAll(Color.fromRGBO(0, 121, 107, 1))),
-              child: const Text(
-                "Add product",
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
+              labelText: 'Add product',
             ),
           ],
         );
