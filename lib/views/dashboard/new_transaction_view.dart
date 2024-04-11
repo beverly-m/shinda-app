@@ -6,6 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 import 'package:shinda_app/components/buttons.dart';
+import 'package:shinda_app/components/cart_item_card.dart';
+import 'package:shinda_app/components/product_card.dart';
+import 'package:shinda_app/components/textfields.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/enums/dropdown_menu.dart';
 import 'package:shinda_app/responsive/responsive_layout.dart';
@@ -105,7 +108,10 @@ class _NewTransactionViewState extends State<NewTransactionView> {
             borderRadius: BorderRadius.circular(8.0),
           ),
           scrollable: true,
-          title: const Text("New product"),
+          title: const Text(
+            "New product",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           contentPadding: const EdgeInsets.all(48.0),
           content: SizedBox(
             width: MediaQuery.of(context).size.width * 0.6,
@@ -113,15 +119,10 @@ class _NewTransactionViewState extends State<NewTransactionView> {
               key: _formKey,
               child: Column(
                 children: [
-                  TextFormField(
-                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
-                    decoration: const InputDecoration(
-                      hoverColor: Color.fromRGBO(0, 121, 107, 1),
-                      focusColor: Color.fromRGBO(0, 121, 107, 1),
-                      labelText: "Name",
-                      hintText: "Enter the product name",
-                    ),
+                  NormalTextFormField(
                     controller: _productName,
+                    hintText: 'Enter the product name',
+                    labelText: 'Name',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Product name required';
@@ -131,72 +132,66 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16.0),
-                  TextFormField(
-                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
-                    decoration: const InputDecoration(
-                        hoverColor: Color.fromRGBO(0, 121, 107, 1),
-                        focusColor: Color.fromRGBO(0, 121, 107, 1),
-                        labelText: "Description (optional)",
-                        hintText: "Enter description"),
+                  const SizedBox(height: 24.0),
+                  NormalTextFormField(
                     controller: _description,
+                    hintText: 'Enter description',
+                    labelText: 'Description (optional)',
                     maxLines: 3,
                   ),
-                  const SizedBox(height: 16.0),
-                  TextFormField(
-                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[_formatter],
-                    decoration: const InputDecoration(
-                        hoverColor: Color.fromRGBO(0, 121, 107, 1),
-                        focusColor: Color.fromRGBO(0, 121, 107, 1),
-                        labelText: "Selling Price"),
-                    controller: _price,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Price required';
-                      }
-                      return null;
-                    },
+                  const SizedBox(height: 24.0),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: NormalTextFormField(
+                          controller: _price,
+                          hintText: '0.00',
+                          labelText: 'Selling Price',
+                          keyboardType: TextInputType.number,
+                          inputFormatters: <TextInputFormatter>[_formatter],
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Price required';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 24.0),
+                      Expanded(
+                        child: NormalTextFormField(
+                          controller: _quantity,
+                          hintText: '0',
+                          labelText: 'Quantity',
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Quantity required';
+                            } else if (value == "0") {
+                              return "Quantity must be more than 0";
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 16.0),
-                  TextFormField(
-                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(
-                        hoverColor: Color.fromRGBO(0, 121, 107, 1),
-                        focusColor: Color.fromRGBO(0, 121, 107, 1),
-                        labelText: "Quantity"),
-                    controller: _quantity,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Quantity required';
-                      } else if (value == "0") {
-                        return "Quantity must be more than 0";
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(width: 16.0),
-                  TextFormField(
-                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(
-                        hoverColor: Color.fromRGBO(0, 121, 107, 1),
-                        focusColor: Color.fromRGBO(0, 121, 107, 1),
-                        labelText: "Reorder quantity level"),
+                  const SizedBox(height: 24.0),
+                  NormalTextFormField(
                     controller: _reorderLevel,
+                    hintText: '0',
+                    labelText: 'Reorder quantity level',
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   ),
-                  const SizedBox(height: 16.0),
-                  TextFormField(
-                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
-                    decoration: const InputDecoration(
-                        hoverColor: Color.fromRGBO(0, 121, 107, 1),
-                        focusColor: Color.fromRGBO(0, 121, 107, 1),
-                        labelText: "Expiration date (optional)"),
+                  const SizedBox(height: 24.0),
+                  NormalTextFormField(
                     controller: _expirationDate,
+                    hintText: '0000-00-00 00:00:00.000',
+                    labelText: 'Expiration date (optional)',
                     readOnly: true,
                     onTap: () async {
                       FocusScope.of(context).requestFocus(FocusNode());
@@ -255,10 +250,6 @@ class _NewTransactionViewState extends State<NewTransactionView> {
   }
 
   void _addProduct() async {
-    setState(() {
-      _isLoading = true;
-    });
-
     final isValid = _formKey.currentState?.validate();
 
     if (isValid != null && isValid) {
@@ -291,22 +282,12 @@ class _NewTransactionViewState extends State<NewTransactionView> {
         );
 
         _getProductData();
-
-        setState(() {
-          _isLoading = false;
-        });
       } on GenericWorkspaceException {
-        setState(() {
-          _isLoading = false;
-        });
-        if (context.mounted) {
+        if (mounted) {
           showErrorDialog(context, "Failed to add product. Try again");
         }
       } catch (e) {
-        setState(() {
-          _isLoading = false;
-        });
-        if (context.mounted) {
+        if (mounted) {
           showErrorDialog(context, e.toString());
         }
       }
@@ -349,7 +330,6 @@ class _NewTransactionViewState extends State<NewTransactionView> {
     required BuildContext context,
     required String workspaceId,
     required double subTotal,
-    // required String paymentMode,
     required double grandTotal,
     required bool isPaid,
     required List<Cart> products,
@@ -449,7 +429,6 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                 _addDebtor(
                   workspaceId: workspaceId,
                   subTotal: subTotal,
-                  // paymentMode: paymentMode,
                   grandTotal: grandTotal,
                   isPaid: isPaid,
                   products: products,
@@ -564,6 +543,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Expanded(
+                                flex: 5,
                                 child: SingleChildScrollView(
                                   child: SizedBox(
                                     height: MediaQuery.of(context).size.height *
@@ -578,13 +558,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                               "Products",
                                               style: dashboardSubtitle,
                                             ),
-                                            Expanded(
-                                              child: SizedBox(
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                              ),
-                                            ),
+                                            const Expanded(child: SizedBox()),
                                             OutlinedAppButton(
                                               onPressed: () async {
                                                 await _showAddProductDialog(
@@ -598,115 +572,32 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                         Expanded(
                                           child: GridView.builder(
                                             gridDelegate:
-                                                const SliverGridDelegateWithMaxCrossAxisExtent(
-                                              maxCrossAxisExtent: 216.0,
+                                                const SliverGridDelegateWithFixedCrossAxisCount(
                                               crossAxisSpacing: 16.0,
                                               mainAxisSpacing: 16.0,
-                                              childAspectRatio: 0.65,
+                                              crossAxisCount: 3,
                                             ),
                                             itemCount: _productsData!.length,
                                             shrinkWrap: true,
                                             itemBuilder: (context, index) {
-                                              return Card(
-                                                elevation: 0.0,
-                                                surfaceTintColor: Colors.white,
-                                                shape: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                  borderSide: const BorderSide(
-                                                      color: surface3),
-                                                ),
-                                                child: Container(
-                                                  width: 200.0,
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Container(
-                                                        width: double.infinity,
-                                                        height: 122.0,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      8.0),
-                                                          color: surface1,
-                                                        ),
-                                                        child: const Icon(
-                                                          Icons
-                                                              .shopping_bag_outlined,
-                                                          color: Colors.black12,
-                                                          size: 32.0,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                          height: 16.0),
-                                                      Text(
+                                              return AspectRatio(
+                                                aspectRatio: 0.9,
+                                                child: ProductCard(
+                                                    productName:
                                                         _productsData![index]
                                                             ["product"]['name'],
-                                                        style: body1.copyWith(
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis),
-                                                        maxLines: 1,
-                                                      ),
-                                                      const SizedBox(
-                                                          height: 4.0),
-                                                      Text(
-                                                        "RWF ${_productsData![index]["product"]['price'].toStringAsFixed(2)}",
-                                                        style: priceText2,
-                                                      ),
-                                                      const SizedBox(
-                                                          height: 8.0),
-                                                      Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .baseline,
-                                                        textBaseline:
-                                                            TextBaseline
-                                                                .alphabetic,
-                                                        children: [
-                                                          Text(
-                                                            "${_productsData![index]['quantity_available'].toString()} in stock",
-                                                            style: labelText,
-                                                          ),
-                                                          const Expanded(
-                                                              child:
-                                                                  SizedBox()),
-                                                          IconButton(
-                                                            style: IconButton
-                                                                .styleFrom(
-                                                              shape: RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              8.0)),
-                                                              side: const BorderSide(
-                                                                  color:
-                                                                      primary),
-                                                            ),
-                                                            onPressed:
-                                                                () async {
-                                                              await cart.saveData(
-                                                                  data: _productsData![
-                                                                      index]);
-                                                            },
-                                                            icon: const Icon(
-                                                              Icons.add,
-                                                              size: 24.0,
-                                                              color: primary,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
+                                                    productPrice:
+                                                        _productsData![index]
+                                                                ["product"]
+                                                            ['price'],
+                                                    quantityInStock:
+                                                        _productsData![index][
+                                                            'quantity_available'],
+                                                    onPressed: () async {
+                                                      await cart.saveData(
+                                                          data: _productsData![
+                                                              index]);
+                                                    }),
                                               );
                                             },
                                           ),
@@ -716,15 +607,14 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 48.0),
+                              const SizedBox(width: 24.0),
                               Expanded(
+                                flex: 4,
                                 child: Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.2,
                                   height:
                                       MediaQuery.of(context).size.height * 0.8,
                                   decoration: BoxDecoration(
-                                    border: Border.all(color: surface1),
+                                    border: Border.all(color: surface3),
                                     borderRadius: BorderRadius.circular(8.0),
                                   ),
                                   child: Padding(
@@ -788,10 +678,6 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                             ],
                                                           )
                                                         : SizedBox(
-                                                            // height: MediaQuery.of(
-                                                            //         context)
-                                                            //     .size
-                                                            //     .height,
                                                             child:
                                                                 SingleChildScrollView(
                                                               child: Column(
@@ -800,100 +686,45 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                         .min,
                                                                 children: [
                                                                   SizedBox(
-                                                                    height:
-                                                                        300.0,
-                                                                    child: ListView
-                                                                        .builder(
-                                                                      shrinkWrap:
-                                                                          true,
-                                                                      itemCount: provider
-                                                                          .cart
-                                                                          .length,
-                                                                      itemBuilder:
-                                                                          (context,
-                                                                              index) {
-                                                                        return Card(
-                                                                          elevation:
-                                                                              0,
-                                                                          color:
-                                                                              surface1,
-                                                                          shape:
-                                                                              RoundedRectangleBorder(
-                                                                            side:
-                                                                                const BorderSide(color: surface3),
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(8.0),
-                                                                          ),
-                                                                          child:
-                                                                              Padding(
-                                                                            padding:
-                                                                                const EdgeInsets.all(8.0),
-                                                                            child:
-                                                                                Row(
-                                                                              mainAxisSize: MainAxisSize.min,
-                                                                              children: [
-                                                                                Container(
-                                                                                  width: 48.0,
-                                                                                  height: 48.0,
-                                                                                  decoration: BoxDecoration(
-                                                                                    borderRadius: BorderRadius.circular(8.0),
-                                                                                    color: surface1,
-                                                                                  ),
-                                                                                  child: const Icon(
-                                                                                    Icons.shopping_bag_outlined,
-                                                                                    color: Colors.black12,
-                                                                                    size: 24.0,
-                                                                                  ),
-                                                                                ),
-                                                                                Column(
-                                                                                  mainAxisSize: MainAxisSize.min,
-                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                  children: [
-                                                                                    Text(
-                                                                                      provider.cart[index].productName,
-                                                                                      style: body1,
-                                                                                    ),
-                                                                                    const Flexible(child: SizedBox()),
-                                                                                    Text(
-                                                                                      "RWF ${provider.cart[index].productPrice}",
-                                                                                      style: body2.copyWith(color: neutral4),
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                                const Expanded(child: SizedBox()),
-                                                                                ValueListenableBuilder<int>(
-                                                                                  valueListenable: provider.cart[index].quantity,
-                                                                                  builder: (context, value, child) {
-                                                                                    return PlusMinusButtons(
-                                                                                      addQuantity: () {
-                                                                                        cart.addQuantity(provider.cart[index].productId);
-                                                                                        setState(() {
-                                                                                          cart.addTotalPrice(double.parse(provider.cart[index].productPrice.toString()));
-                                                                                        });
-                                                                                        // });
-                                                                                      },
-                                                                                      deleteQuantity: () {
-                                                                                        cart.deleteQuantity(provider.cart[index].productId);
-                                                                                      },
-                                                                                      text: value.toString(),
-                                                                                    );
-                                                                                  },
-                                                                                ),
-                                                                                IconButton(
-                                                                                  onPressed: () {
-                                                                                    dbHelper!.deleteCartItem(provider.cart[index].productId);
-                                                                                    provider.removeItem(provider.cart[index].productId);
-                                                                                    provider.removeCounter();
-                                                                                  },
-                                                                                  icon: const Icon(Icons.delete_outline),
-                                                                                )
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                        );
-                                                                      },
-                                                                    ),
-                                                                  ),
+                                                                      height:
+                                                                          300.0,
+                                                                      child: ListView
+                                                                          .builder(
+                                                                        shrinkWrap:
+                                                                            true,
+                                                                        itemCount: provider
+                                                                            .cart
+                                                                            .length,
+                                                                        itemBuilder:
+                                                                            (context,
+                                                                                index) {
+                                                                          return CartItemCard(
+                                                                            productName:
+                                                                                provider.cart[index].productName,
+                                                                            productPrice:
+                                                                                "RWF ${provider.cart[index].productPrice}",
+                                                                            valueListenable:
+                                                                                provider.cart[index].quantity,
+                                                                            addQuantity:
+                                                                                () {
+                                                                              cart.addQuantity(provider.cart[index].productId);
+                                                                              setState(() {
+                                                                                cart.addTotalPrice(double.parse(provider.cart[index].productPrice.toString()));
+                                                                              });
+                                                                            },
+                                                                            deleteQuantity:
+                                                                                () {
+                                                                              cart.deleteQuantity(provider.cart[index].productId);
+                                                                            },
+                                                                            onPressedDeleteButton:
+                                                                                () {
+                                                                              dbHelper!.deleteCartItem(provider.cart[index].productId);
+                                                                              provider.removeItem(provider.cart[index].productId);
+                                                                              provider.removeCounter();
+                                                                            },
+                                                                          );
+                                                                        },
+                                                                      )),
                                                                   const SizedBox(
                                                                       height:
                                                                           24.0),
@@ -904,6 +735,10 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                     children: [
                                                                       DropdownMenu<
                                                                           PaymentModeLabel>(
+                                                                        expandedInsets: const EdgeInsets
+                                                                            .symmetric(
+                                                                            horizontal:
+                                                                                0.0),
                                                                         menuStyle:
                                                                             MenuStyle(
                                                                           shape:
@@ -913,9 +748,8 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                             ),
                                                                           ),
                                                                         ),
-                                                                        // initialSelection:
-                                                                        //     PaymentModeLabel
-                                                                        //         .cash,
+                                                                        initialSelection:
+                                                                            PaymentModeLabel.cash,
                                                                         controller:
                                                                             _paymentModeController,
                                                                         requestFocusOnTap:
@@ -1016,49 +850,11 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                   ),
                                                                   Row(
                                                                     children: [
-                                                                      OutlinedButton(
-                                                                        onPressed:
-                                                                            () async {
-                                                                          double?
-                                                                              totalPrice;
-
-                                                                          for (var element
-                                                                              in provider.cart) {
-                                                                            totalPrice =
-                                                                                (element.productPrice * element.quantity.value) + (totalPrice ?? 0);
-                                                                          }
-
-                                                                          try {
-                                                                            await _showAddCreditPurchaseDialog(
-                                                                              context: context,
-                                                                              workspaceId: _currentWorkspace!,
-                                                                              subTotal: totalPrice!,
-                                                                              // paymentMode:
-                                                                              //     _paymentModeController.text,
-                                                                              grandTotal: totalPrice,
-                                                                              isPaid: false,
-                                                                              products: provider.cart,
-                                                                              cart: provider,
-                                                                            );
-                                                                          } catch (e) {
-                                                                            log(e.toString());
-                                                                          }
-                                                                        },
+                                                                      Expanded(
                                                                         child:
-                                                                            const Text(
-                                                                          "Credit Purchase",
-                                                                          style:
-                                                                              secondaryButtonStyle,
-                                                                        ),
-                                                                      ),
-                                                                      const SizedBox(
-                                                                        width:
-                                                                            24.0,
-                                                                      ),
-                                                                      FilledButton(
-                                                                        onPressed:
-                                                                            () async {
-                                                                          try {
+                                                                            OutlinedAppButton(
+                                                                          onPressed:
+                                                                              () async {
                                                                             double?
                                                                                 totalPrice;
 
@@ -1066,27 +862,59 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                                 in provider.cart) {
                                                                               totalPrice = (element.productPrice * element.quantity.value) + (totalPrice ?? 0);
                                                                             }
-                                                                            await WorkspaceService().addTransaction(
-                                                                              workspaceId: _currentWorkspace!,
-                                                                              subTotal: totalPrice!,
-                                                                              paymentMode: _paymentModeController.text,
-                                                                              grandTotal: totalPrice,
-                                                                              isPaid: true,
-                                                                              products: provider.cart,
-                                                                            );
 
-                                                                            provider.clearCart();
+                                                                            try {
+                                                                              await _showAddCreditPurchaseDialog(
+                                                                                context: context,
+                                                                                workspaceId: _currentWorkspace!,
+                                                                                subTotal: totalPrice!,
+                                                                                grandTotal: totalPrice,
+                                                                                isPaid: false,
+                                                                                products: provider.cart,
+                                                                                cart: provider,
+                                                                              );
+                                                                            } catch (e) {
+                                                                              log(e.toString());
+                                                                            }
+                                                                          },
+                                                                          labelText:
+                                                                              'Credit Purchase',
+                                                                        ),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            16.0,
+                                                                      ),
+                                                                      Expanded(
+                                                                        child:
+                                                                            FilledAppButton(
+                                                                          onPressed:
+                                                                              () async {
+                                                                            try {
+                                                                              double? totalPrice;
 
-                                                                            _getProductData();
-                                                                          } catch (e) {
-                                                                            log(e.toString());
-                                                                          }
-                                                                        },
-                                                                        style: const ButtonStyle(
-                                                                            backgroundColor:
-                                                                                MaterialStatePropertyAll(primary)),
-                                                                        child: const Text(
-                                                                            "Checkout"),
+                                                                              for (var element in provider.cart) {
+                                                                                totalPrice = (element.productPrice * element.quantity.value) + (totalPrice ?? 0);
+                                                                              }
+                                                                              await WorkspaceService().addTransaction(
+                                                                                workspaceId: _currentWorkspace!,
+                                                                                subTotal: totalPrice!,
+                                                                                paymentMode: _paymentModeController.text,
+                                                                                grandTotal: totalPrice,
+                                                                                isPaid: true,
+                                                                                products: provider.cart,
+                                                                              );
+
+                                                                              provider.clearCart();
+
+                                                                              _getProductData();
+                                                                            } catch (e) {
+                                                                              log(e.toString());
+                                                                            }
+                                                                          },
+                                                                          labelText:
+                                                                              'Checkout',
+                                                                        ),
                                                                       ),
                                                                     ],
                                                                   ),
@@ -1148,68 +976,12 @@ class _NewTransactionViewState extends State<NewTransactionView> {
   }
 }
 
-// class PlusMinusButtons extends StatelessWidget {
-//   final VoidCallback deleteQuantity;
-//   final VoidCallback addQuantity;
-//   final String text;
-//   const PlusMinusButtons(
-//       {Key? key,
-//       required this.addQuantity,
-//       required this.deleteQuantity,
-//       required this.text})
-//       : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       decoration: BoxDecoration(
-//         border: Border.all(color: neutral3),
-//         borderRadius: BorderRadius.circular(8.0),
-//       ),
-//       padding: Responsive.isMobile(context)
-//           ? const EdgeInsets.symmetric(vertical: 4.0)
-//           : const EdgeInsets.all(8.0),
-//       child: Row(
-//         children: [
-//           IconButton(
-//             visualDensity: VisualDensity.compact,
-//             onPressed: addQuantity,
-//             icon: const Icon(Icons.add),
-//           ),
-//           SizedBox(width: Responsive.isMobile(context) ? 0.0 : 12.0),
-//           Container(
-//             width: Responsive.isMobile(context) ? 32.0 : 56.0,
-//             height: 40.0,
-//             alignment: Alignment.center,
-//             decoration: BoxDecoration(
-//               border: Responsive.isMobile(context)
-//                   ? const Border()
-//                   : Border.all(color: neutral4),
-//               borderRadius: BorderRadius.circular(8.0),
-//             ),
-//             child: Text(
-//               text,
-//               style: subtitle2,
-//               textAlign: TextAlign.center,
-//             ),
-//           ),
-//           SizedBox(width: Responsive.isMobile(context) ? 0.0 : 12.0),
-//           IconButton(
-//             onPressed: deleteQuantity,
-//             visualDensity: VisualDensity.compact,
-//             icon: const Icon(Icons.remove),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
 class ReusableWidget extends StatelessWidget {
   final String title, value;
   final TextStyle style;
   const ReusableWidget({
-    Key? key,
+    super.key,
+    // Key? key,
     required this.title,
     required this.value,
     this.style = body1,

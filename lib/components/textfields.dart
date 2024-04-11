@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 
 class NormalTextFormField extends StatelessWidget {
@@ -10,7 +11,10 @@ class NormalTextFormField extends StatelessWidget {
     this.autocorrect,
     required this.hintText,
     required this.labelText,
-    required this.validator,
+    this.validator,
+    this.maxLines = 1,
+    this.inputFormatters,
+    this.readOnly = false, this.onTap,
   });
 
   final TextEditingController controller;
@@ -19,17 +23,25 @@ class NormalTextFormField extends StatelessWidget {
   final TextInputType? keyboardType;
   final bool? enableSuggestions;
   final bool? autocorrect;
-  final String? Function(String?) validator;
+  final String? Function(String?)? validator;
+  final int maxLines;
+  final List<TextInputFormatter>? inputFormatters;
+  final bool readOnly;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+      maxLines: maxLines,
       textInputAction: TextInputAction.next,
       enableSuggestions: enableSuggestions ?? false,
       autocorrect: autocorrect ?? false,
+      inputFormatters: inputFormatters,
       keyboardType: keyboardType,
       cursorColor: primary,
+      readOnly: readOnly,
+      onTap: onTap,
       decoration: InputDecoration(
         floatingLabelBehavior: FloatingLabelBehavior.always,
         border: OutlineInputBorder(
