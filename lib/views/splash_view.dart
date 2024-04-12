@@ -16,6 +16,7 @@ class SplashView extends StatelessWidget {
       //     ],
       //   ),
       // ),
+      duration: 3500,
       splash: LottieBuilder.asset('Lottie/shopping_animation.json'),
       splashTransition: SplashTransition.fadeTransition,
       nextScreen: const InitApp(),
