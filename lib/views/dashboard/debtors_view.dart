@@ -87,65 +87,112 @@ class _DebtorsViewState extends State<DebtorsView> {
 
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: surface3),
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    if (!_debtorsData![index]['transaction']
-                                        ['is_paid'])
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 4.0,
-                                          horizontal: 4.0,
-                                        ),
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 8.0),
-                                          child: Chip(
-                                            side: BorderSide.none,
-                                            backgroundColor: Colors.red[100],
-                                            padding: const EdgeInsets.all(4.0),
-                                            label: Text(
-                                              "Payment pending",
-                                              style: TextStyle(
-                                                  color: Colors.red[900]),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ListTile(
-                                      isThreeLine: true,
-                                      title: Text(
-                                        _debtorsData![index]['client_name'],
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      subtitle: Text(
-                                          "${!_debtorsData![index]['transaction']['is_paid'] ? "Owing" : "Paid"}: RWF ${_debtorsData![index]['amount_owed'].toStringAsFixed(2)}"),
-                                      trailing: IconButton(
-                                        icon: const Icon(
-                                            Icons.chevron_right_outlined),
-                                        onPressed: () {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  DebtorDetailsView(
-                                                id: _debtorsData![index]
-                                                        ['transaction']
-                                                    ['transaction_id'],
-                                                isPaid: _debtorsData![index]
-                                                    ['transaction']['is_paid'],
-                                              ),
-                                            ),
-                                          );
-                                        },
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(8.0),
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          DebtorDetailsView(
+                                        id: _debtorsData![index]['transaction']
+                                            ['transaction_id'],
+                                        isPaid: _debtorsData![index]
+                                            ['transaction']['is_paid'],
                                       ),
                                     ),
-                                  ],
+                                  );
+                                },
+                                hoverColor: Colors.transparent,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: surface3),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      !_debtorsData![index]['transaction']
+                                              ['is_paid']
+                                          ? Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                vertical: 8.0,
+                                                horizontal: 4.0,
+                                              ).copyWith(bottom: 0.0),
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 8.0),
+                                                child: Chip(
+                                                  side: BorderSide.none,
+                                                  backgroundColor:
+                                                      Colors.red[100],
+                                                  padding:
+                                                      const EdgeInsets.all(4.0),
+                                                  label: Text(
+                                                    "Payment pending",
+                                                    style: TextStyle(
+                                                        color: Colors.red[900]),
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          : Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                vertical: 8.0,
+                                                horizontal: 4.0,
+                                              ).copyWith(bottom: 0.0),
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 8.0),
+                                                child: Chip(
+                                                  side: BorderSide.none,
+                                                  backgroundColor:
+                                                      Colors.green[100],
+                                                  padding:
+                                                      const EdgeInsets.all(4.0),
+                                                  label: Text(
+                                                    "Paid",
+                                                    style: TextStyle(
+                                                        color:
+                                                            Colors.green[900]),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                      ListTile(
+                                        isThreeLine: true,
+                                        title: Text(
+                                          _debtorsData![index]['client_name'],
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        subtitle: Text(
+                                            "${!_debtorsData![index]['transaction']['is_paid'] ? "Owing" : "Paid"}: RWF ${_debtorsData![index]['amount_owed'].toStringAsFixed(2)}"),
+                                        trailing: IconButton(
+                                          icon: const Icon(
+                                              Icons.chevron_right_outlined),
+                                          onPressed: () {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        DebtorDetailsView(
+                                                  id: _debtorsData![index]
+                                                          ['transaction']
+                                                      ['transaction_id'],
+                                                  isPaid: _debtorsData![index]
+                                                          ['transaction']
+                                                      ['is_paid'],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             );
