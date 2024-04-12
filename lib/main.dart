@@ -17,6 +17,7 @@ import 'package:shinda_app/views/dashboard/transactions_view.dart';
 import 'package:shinda_app/views/dashboard/settings_view.dart';
 import 'package:shinda_app/views/dashboard/users_view.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shinda_app/views/splash_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +28,7 @@ void main() {
       child: MaterialApp(
         title: 'Shinda',
         theme: _buildTheme(Brightness.light),
-        home: const InitApp(),
+        home: const SplashView(),
         routes: {
           loginRoute: (context) => const LoginView(),
           registerRoute: (context) => const RegisterView(),

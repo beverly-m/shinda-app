@@ -52,6 +52,44 @@ dependencies:
   sqlite3: ^2.4.0
   pluto_grid: ^8.0.0
   fl_chart: ^0.66.2
+  flutter_native_splash: ^2.4.0
+  animated_splash_screen: ^1.3.0
+  lottie: ^3.1.0
+
+flutter_native_splash:
+  color: "#ffffff"
+
+  # The image parameter allows you to specify an image used in the splash screen.  It must be a
+  # png file and should be sized for 4x pixel density.
+  #image: assets/splash.png
+
+  # From Android 12 onwards, the splash screen is handled differently than in previous versions.
+  # Please visit https://developer.android.com/guide/topics/ui/splash-screen
+  # Following are specific parameters for Android 12+.
+  android_12:
+    # The image parameter sets the splash screen icon image.  If this parameter is not specified,
+    # the app's launcher icon will be used instead.
+    # Please note that the splash screen will be clipped to a circle on the center of the screen.
+    # App icon with an icon background: This should be 960×960 pixels, and fit within a circle
+    # 640 pixels in diameter.
+    # App icon without an icon background: This should be 1152×1152 pixels, and fit within a circle
+    # 768 pixels in diameter.
+    #image: assets/android12splash.png
+
+    # Splash screen background color.
+    color: "#ffffff"
+
+    # App icon background color.
+    icon_background_color: "#111111"
+
+    # The branding property allows you to specify an image used as branding in the splash screen.
+    #branding: assets/dart.png
+
+  # The android, ios and web parameters can be used to disable generating a splash screen on a given
+  # platform.
+  android: true
+  ios: false
+  web: true
 
 dev_dependencies:
   flutter_test:
