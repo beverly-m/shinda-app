@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/services.dart';
 import 'package:shinda_app/components/buttons.dart';
+import 'package:shinda_app/components/textfields.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/responsive/responsive_layout.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
@@ -33,10 +34,14 @@ class _InventoryViewState extends State<InventoryView> {
   late final TextEditingController _quantity;
   late final TextEditingController _expirationDate;
   late final TextEditingController _reorderLevel;
+  late final TextEditingController _quantity2;
+  late final TextEditingController _expirationDate2;
 
   bool _isLoading = false;
 
   List<Map<String, dynamic>>? _productsData;
+
+  final GlobalKey<FormState> _formKey2 = GlobalKey();
 
   @override
   void initState() {
@@ -47,6 +52,8 @@ class _InventoryViewState extends State<InventoryView> {
     _price = TextEditingController();
     _quantity = TextEditingController();
     _expirationDate = TextEditingController();
+    _quantity2 = TextEditingController();
+    _expirationDate2 = TextEditingController();
     _reorderLevel = TextEditingController();
 
     _getProductData();
@@ -62,6 +69,188 @@ class _InventoryViewState extends State<InventoryView> {
     _reorderLevel.dispose();
 
     super.dispose();
+  }
+
+  void _openDetail({required Map<String, dynamic> productData}) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        final quantityAvailable = productData['quantity_available'];
+        final reorderLevel = productData['reorder_level'];
+
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: const Color.fromRGBO(241, 249, 249, 1),
+          shape: OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          scrollable: true,
+          title: const Text(
+            "Edit Inventory Item",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          contentPadding: const EdgeInsets.all(24.0),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: 300.0,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  ListTile(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      side: const BorderSide(color: surface3),
+                    ),
+                    leading: const Icon(
+                      Icons.circle,
+                      color: primary,
+                    ),
+                    title: Text.rich(
+                      TextSpan(
+                        text: productData['product']['name'],
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        children: [
+                          TextSpan(
+                              text: " | $quantityAvailable items left",
+                              style: const TextStyle(color: Colors.black54))
+                        ],
+                      ),
+                    ),
+                    subtitle: Text(
+                        "RWF ${productData['product']['price'].toStringAsFixed(2)}"),
+                    trailing: reorderLevel >= quantityAvailable ||
+                            quantityAvailable == 0
+                        ? Chip(
+                            label: Text(
+                              "Low in stock",
+                              style: subtitle2.copyWith(
+                                color: Colors.red[900],
+                              ),
+                            ),
+                            backgroundColor: Colors.red[100],
+                            side: BorderSide.none,
+                          )
+                        : null,
+                  ),
+                  const SizedBox(height: 24.0),
+                  Form(
+                    key: _formKey2,
+                    child: Column(
+                      children: [
+                        NormalTextFormField(
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          controller: _quantity2,
+                          hintText: '0',
+                          labelText: 'Add More Quantity',
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Quantity required';
+                            } else if (value == "0") {
+                              return "Quantity must be more than 0";
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 24.0),
+                        NormalTextFormField(
+                          controller: _expirationDate2,
+                          hintText: '0000-00-00 00:00:000',
+                          labelText: 'New expiration date (optional)',
+                          readOnly: true,
+                          onTap: () async {
+                            FocusScope.of(context).requestFocus(FocusNode());
+
+                            DateTime? date = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime(2040),
+                            );
+
+                            if (date != null) {
+                              _expirationDate2.text = date.toString();
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedAppButton(
+                        onPressed: () {
+                          _updateInventory(
+                            oldQuantity: productData['quantity'].toString(),
+                            stockId: productData['stock_id'].toString(),
+                            quantityAvailable: quantityAvailable.toString(),
+                          );
+                        },
+                        labelText: 'Update stock'),
+                  ),
+                  const SizedBox(width: 16.0),
+                  Expanded(
+                    child: TextAppButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        labelText: 'Cancel'),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _updateInventory({
+    required String oldQuantity,
+    required String stockId,
+    required String quantityAvailable,
+  }) async {
+    final isValid = _formKey2.currentState?.validate();
+
+    if (isValid != null && isValid) {
+      Navigator.of(context).pop();
+      final quantity2 = _quantity2.text.trim();
+      final expirationDate2 = _expirationDate2.text.trim();
+      final workspaceId = await getCurrentWorkspaceId();
+
+      _quantity2.clear();
+      _expirationDate2.clear();
+
+      try {
+        await WorkspaceService().updateProduct(
+          stockId: stockId,
+          workspaceId: workspaceId!,
+          quantity: quantity2,
+          oldQuantity: oldQuantity,
+          expirationDate: expirationDate2,
+          quantityAvailable: quantityAvailable,
+        );
+      } on GenericWorkspaceException {
+        if (mounted) {
+          showErrorDialog(context, "Failed to add product. Try again");
+        }
+      } catch (e) {
+        if (mounted) {
+          showErrorDialog(context, e.toString());
+        }
+      }
+    }
   }
 
   @override
@@ -133,46 +322,56 @@ class _InventoryViewState extends State<InventoryView> {
                               ),
                               child: AspectRatio(
                                 aspectRatio: 1,
-                                child: Container(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
-                                            color: surface1,
-                                          ),
-                                          child: const Icon(
-                                            Icons.shopping_bag_outlined,
-                                            color: Colors.black12,
-                                            size: 32.0,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  onTap: () {
+                                    log(_productsData![index]['stock_id']
+                                        .toString());
+                                    _openDetail(
+                                        productData: _productsData![index]);
+                                  },
+                                  hoverColor: Colors.transparent,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: Container(
+                                            width: double.infinity,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                              color: surface1,
+                                            ),
+                                            child: const Icon(
+                                              Icons.shopping_bag_outlined,
+                                              color: Colors.black12,
+                                              size: 32.0,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      const SizedBox(height: 16.0),
-                                      Text(
-                                        _productsData![index]["product"]
-                                            ['name'],
-                                        style: body1.copyWith(
-                                            overflow: TextOverflow.ellipsis),
-                                        maxLines: 1,
-                                      ),
-                                      const SizedBox(height: 4.0),
-                                      Text(
-                                        "RWF ${_productsData![index]["product"]['price'].toStringAsFixed(2)}",
-                                        style: priceText2,
-                                      ),
-                                      const SizedBox(height: 8.0),
-                                      Text(
-                                        "${_productsData![index]['quantity_available'].toString()} in stock",
-                                        style: labelText,
-                                      ),
-                                    ],
+                                        const SizedBox(height: 16.0),
+                                        Text(
+                                          _productsData![index]["product"]
+                                              ['name'],
+                                          style: body1.copyWith(
+                                              overflow: TextOverflow.ellipsis),
+                                          maxLines: 1,
+                                        ),
+                                        const SizedBox(height: 4.0),
+                                        Text(
+                                          "RWF ${_productsData![index]["product"]['price'].toStringAsFixed(2)}",
+                                          style: priceText2,
+                                        ),
+                                        const SizedBox(height: 8.0),
+                                        Text(
+                                          "${_productsData![index]['quantity_available'].toString()} in stock",
+                                          style: labelText,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
