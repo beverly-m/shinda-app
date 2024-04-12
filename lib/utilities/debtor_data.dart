@@ -94,7 +94,8 @@ class _DebtorDataGridState extends State<DebtorDataGrid> {
             'address': PlutoCell(value: element['address']),
             'date_paid': PlutoCell(value: element['date_paid']),
             'paid': PlutoCell(value: element['transaction']['is_paid']),
-            'transaction_id': PlutoCell(value: element['transaction']['transaction_id']),
+            'transaction_id':
+                PlutoCell(value: element['transaction']['transaction_id']),
             'details': PlutoCell(value: 'View Details'),
           },
         ),
@@ -306,6 +307,11 @@ class _DebtorDataGridState extends State<DebtorDataGrid> {
             width: MediaQuery.of(context).size.width * 0.9,
             height: MediaQuery.of(context).size.height,
             child: PlutoGrid(
+              rowColorCallback: (rowColorContext) {
+                return rowColorContext.row.cells['paid']?.value == false
+                    ? Colors.red[50]!
+                    : Colors.white;
+              },
               mode: PlutoGridMode.selectWithOneTap,
               columns: debtorDataColumns,
               rows: debtorDataRows,

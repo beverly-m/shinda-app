@@ -634,7 +634,7 @@ class _InventoryViewState extends State<InventoryView> {
                   const SizedBox(width: 16.0),
                   Expanded(
                       child: FilledAppButton(
-                          onPressed: _addProduct, labelText: 'Add product')),
+                          onPressed: _addProduct, labelText: 'Add product',)),
                 ],
               ),
             ),

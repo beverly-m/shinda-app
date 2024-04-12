@@ -248,26 +248,6 @@ class _InventoryDataGridState extends State<InventoryDataGrid> {
                             return null;
                           },
                         ),
-                        // TextFormField(
-                        //   cursorColoColor.fromARGB(255, 6, 8, 8) 1),
-                        //   keyboardType: TextInputType.number,
-                        //   inputFormatters: [
-                        //     FilteringTextInputFormatter.digitsOnly
-                        //   ],
-                        //   decoration: const InputDecoration(
-                        //       hoverColor: Color.fromRGBO(0, 121, 107, 1),
-                        //       focusColor: Color.fromRGBO(0, 121, 107, 1),
-                        //       labelText: "Quantity"),
-                        //   controller: _quantity,
-                        //   validator: (value) {
-                        //     if (value == null || value.isEmpty) {
-                        //       return 'Quantity required';
-                        //     } else if (value == "0") {
-                        //       return "Quantity must be more than 0";
-                        //     }
-                        //     return null;
-                        //   },
-                        // ),
                         const SizedBox(height: 24.0),
                         NormalTextFormField(
                           controller: _expirationDate,
@@ -289,29 +269,6 @@ class _InventoryDataGridState extends State<InventoryDataGrid> {
                             }
                           },
                         ),
-                        // TextFormField(
-                        //   cursorColor: const Color.fromRGBO(0, 121, 107, 1),
-                        //   decoration: const InputDecoration(
-                        //       hoverColor: Color.fromRGBO(0, 121, 107, 1),
-                        //       focusColor: Color.fromRGBO(0, 121, 107, 1),
-                        //       labelText: "Expiration date (optional)"),
-                        //   controller: _expirationDate,
-                        //   readOnly: true,
-                        //   onTap: () async {
-                        //     FocusScope.of(context).requestFocus(FocusNode());
-
-                        //     DateTime? date = await showDatePicker(
-                        //       context: context,
-                        //       initialDate: DateTime.now(),
-                        //       firstDate: DateTime.now(),
-                        //       lastDate: DateTime(2040),
-                        //     );
-
-                        //     if (date != null) {
-                        //       _expirationDate.text = date.toString();
-                        //     }
-                        //   },
-                        // ),
                       ],
                     ),
                   ),
@@ -407,6 +364,12 @@ class _InventoryDataGridState extends State<InventoryDataGrid> {
             width: MediaQuery.of(context).size.width * 0.9,
             height: MediaQuery.of(context).size.height,
             child: PlutoGrid(
+              rowColorCallback: (rowColorContext) {
+                return rowColorContext.row.cells['reorder_level']?.value >=
+                        rowColorContext.row.cells['available']?.value
+                    ? Colors.red[50]!
+                    : Colors.white;
+              },
               mode: PlutoGridMode.selectWithOneTap,
               columns: inventoryDataColumns,
               rows: inventoryDataRows,

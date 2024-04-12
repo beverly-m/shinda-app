@@ -188,7 +188,8 @@ class WorkspaceService implements WorkspaceProvider {
       String? expirationDate}) async {
     try {
       int newQuantity = int.parse(oldQuantity) + int.parse(quantity);
-      int newQuantityAvailable = int.parse(quantity) + int.parse(quantityAvailable);
+      int newQuantityAvailable =
+          int.parse(quantity) + int.parse(quantityAvailable);
 
       DateTime? expirationDateDateTime;
 
@@ -306,7 +307,9 @@ class WorkspaceService implements WorkspaceProvider {
   Future<List<Map<String, dynamic>>> getDebtors(
       {required String workspaceId}) async {
     try {
-      final debtorsData = await supabase.from("debtor").select('''
+      final debtorsData = await supabase
+          .from("debtor")
+          .select('''
         debtor_id,
         client_name,
         amount_owed,
@@ -314,10 +317,12 @@ class WorkspaceService implements WorkspaceProvider {
         address,
         date_paid,
         transaction:transaction_id (transaction_id, payment_mode, is_paid)
-    ''').eq(
-        "workspace_id",
-        workspaceId,
-      );
+    ''')
+          .eq(
+            "workspace_id",
+            workspaceId,
+          )
+          .order('created_at');
 
       for (var element in debtorsData) {
         log(element.toString());
