@@ -121,7 +121,7 @@ class _InventoryViewState extends State<InventoryView> {
                             crossAxisCount: 2,
                             crossAxisSpacing: 8.0,
                             mainAxisSpacing: 8.0,
-                            childAspectRatio: 0.7,
+                            // childAspectRatio: 0.7,
                           ),
                           itemBuilder: (BuildContext context, int index) {
                             return Card(
@@ -131,56 +131,55 @@ class _InventoryViewState extends State<InventoryView> {
                                 borderRadius: BorderRadius.circular(8.0),
                                 borderSide: const BorderSide(color: surface3),
                               ),
-                              child: Container(
-                                // width: 200.0,
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      width: double.infinity,
-                                      height: 122.0,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                        color: surface1,
+                              child: AspectRatio(
+                                aspectRatio: 1,
+                                child: Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(8.0),
+                                            color: surface1,
+                                          ),
+                                          child: const Icon(
+                                            Icons.shopping_bag_outlined,
+                                            color: Colors.black12,
+                                            size: 32.0,
+                                          ),
+                                        ),
                                       ),
-                                      child: const Icon(
-                                        Icons.shopping_bag_outlined,
-                                        color: Colors.black12,
-                                        size: 32.0,
+                                      const SizedBox(height: 16.0),
+                                      Text(
+                                        _productsData![index]["product"]
+                                            ['name'],
+                                        style: body1.copyWith(
+                                            overflow: TextOverflow.ellipsis),
+                                        maxLines: 1,
                                       ),
-                                    ),
-                                    const SizedBox(height: 16.0),
-                                    Text(
-                                      _productsData![index]["product"]['name'],
-                                      style: body1.copyWith(
-                                          overflow: TextOverflow.ellipsis),
-                                      maxLines: 1,
-                                    ),
-                                    const SizedBox(height: 4.0),
-                                    Text(
-                                      "RWF ${_productsData![index]["product"]['price'].toStringAsFixed(2)}",
-                                      style: priceText2,
-                                    ),
-                                    const SizedBox(height: 8.0),
-                                    Text(
-                                      "${_productsData![index]['quantity_available'].toString()} in stock",
-                                      style: labelText,
-                                    ),
-                                  ],
+                                      const SizedBox(height: 4.0),
+                                      Text(
+                                        "RWF ${_productsData![index]["product"]['price'].toStringAsFixed(2)}",
+                                        style: priceText2,
+                                      ),
+                                      const SizedBox(height: 8.0),
+                                      Text(
+                                        "${_productsData![index]['quantity_available'].toString()} in stock",
+                                        style: labelText,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             );
                           })
                       : SizedBox(
                           width: MediaQuery.of(context).size.width * 0.9,
-                          // child: PaginatedDataTable(
-                          //   columns: productDataColumns,
-                          //   source: _productsDataSource,
-                          //   rowsPerPage: 10,
-                          //   columnSpacing: 100,
-                          // ),
                           child: InventoryDataGrid(data: _productsData!),
                         )
                   : Center(
@@ -217,41 +216,6 @@ class _InventoryViewState extends State<InventoryView> {
                         ),
                       ),
                     ),
-              // _productsData != null
-              //     ? Container(
-              //         padding: const EdgeInsets.all(16.0),
-              //         child: ListView.builder(
-              //           itemBuilder: (context, index) {
-              //             return Container(
-              //               margin: const EdgeInsets.only(bottom: 16.0),
-              //               decoration: BoxDecoration(
-              //                 border: Border.all(
-              //                     color: const Color.fromARGB(
-              //                         100, 141, 166, 255),
-              //                     width: 2),
-              //                 borderRadius: BorderRadius.circular(8),
-              //               ),
-              //               child: SizedBox(
-              //                 width: 300.0,
-              //                 child: ListTile(
-              //                   title: Text(
-              //                       _productsData![index]["product"]['name']),
-              //                   subtitle: Text(_productsData![index]
-              //                           ['product']['price']
-              //                       .toString()),
-              //                   onTap: () {
-              //                     log(_productsData![index].toString());
-              //                   },
-              //                 ),
-              //               ),
-              //             );
-              //           },
-              //           itemCount: _productsData!.length,
-              //           scrollDirection: Axis.vertical,
-              //           shrinkWrap: true,
-              //         ),
-              //       )
-              //     : const SizedBox(),
             ],
           );
   }

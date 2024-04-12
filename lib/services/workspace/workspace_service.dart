@@ -179,6 +179,42 @@ class WorkspaceService implements WorkspaceProvider {
   }
 
   @override
+  Future<void> updateProduct(
+      {required String stockId,
+      required String workspaceId,
+      required String quantity,
+      required String oldQuantity,
+      required String quantityAvailable,
+      String? expirationDate}) async {
+    try {
+      int newQuantity = int.parse(oldQuantity) + int.parse(quantity);
+      int newQuantityAvailable = int.parse(quantity) + int.parse(quantityAvailable);
+
+      DateTime? expirationDateDateTime;
+
+      if (expirationDate != null && expirationDate.isNotEmpty) {
+        expirationDateDateTime = DateTime.parse(expirationDate);
+      }
+
+      await supabase.from('stock').update({
+        'quantity': newQuantity,
+        'quantity_available': newQuantityAvailable,
+        'expiration_date': expirationDateDateTime != null
+            ? '${expirationDateDateTime.year}-${expirationDateDateTime.month}-${expirationDateDateTime.day}'
+            : null,
+      }).match({'stock_id': stockId, 'workspace_id': workspaceId});
+    } on PostgrestException catch (e) {
+      log(e.message);
+      log(e.hint!);
+      log(e.details.toString());
+      throw GenericWorkspaceException();
+    } catch (e) {
+      log(e.toString());
+      throw GenericWorkspaceException();
+    }
+  }
+
+  @override
   Future<void> addDebtor({
     required String workspaceId,
     required String clientName,
