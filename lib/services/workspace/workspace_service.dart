@@ -631,6 +631,7 @@ class WorkspaceService implements WorkspaceProvider {
             created_at, 
             product:product_id (product_id, name)
             ''')
+          .eq('workspace_id', workspaceId)
           .lt('created_at', tomorrow)
           .gte('created_at', today)
           .then((value) {
@@ -659,7 +660,11 @@ class WorkspaceService implements WorkspaceProvider {
           });
 
       // SALES DATA FOR THE PAST 7 DAYS
-      await supabase.from('week_sales_view').select().then((value) {
+      await supabase
+          .from('week_sales_view')
+          .select()
+          .eq('workspace_id', workspaceId)
+          .then((value) {
         dashboardMeta['salesData'] = value;
         log("Sales overview: ${dashboardMeta['salesData']}");
       });

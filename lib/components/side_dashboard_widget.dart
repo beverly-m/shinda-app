@@ -79,7 +79,7 @@ class _SideDashboardWidgetState extends State<SideDashboardWidget> {
               ProductsStockCard(
                   lowInStockProductsData: _lowInStockProductsData!),
               const SizedBox(height: 16.0),
-              ExpiringProductsCard(expiredProductsData: _expiredProductsData!),
+              ExpiringProductsCard(expiredProductsData: _expiredProductsData),
             ],
           );
   }

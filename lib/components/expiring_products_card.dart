@@ -6,8 +6,8 @@ import 'package:shinda_app/components/custom_card.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 
 class ExpiringProductsCard extends StatefulWidget {
-  const ExpiringProductsCard({super.key, required this.expiredProductsData});
-  final List expiredProductsData;
+  const ExpiringProductsCard({super.key, this.expiredProductsData});
+  final List? expiredProductsData;
 
   @override
   State<ExpiringProductsCard> createState() => _ExpiringProductsCardState();
@@ -40,16 +40,20 @@ class _ExpiringProductsCardState extends State<ExpiringProductsCard> {
     setState(() {
       _isLoading = true;
     });
-    for (var element in widget.expiredProductsData) {
-      dataRows.add(
-        PlutoRow(
-          cells: {
-            'product': PlutoCell(value: element["product"]['name']),
-            'expiry': PlutoCell(value: element["expiration_date"]),
-          },
-        ),
-      );
+
+    if (widget.expiredProductsData != null) {
+      for (var element in widget.expiredProductsData!) {
+        dataRows.add(
+          PlutoRow(
+            cells: {
+              'product': PlutoCell(value: element["product"]['name']),
+              'expiry': PlutoCell(value: element["expiration_date"]),
+            },
+          ),
+        );
+      }
     }
+
     setState(() {
       _isLoading = false;
     });
