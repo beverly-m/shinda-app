@@ -397,20 +397,11 @@ class _InventoryViewState extends State<InventoryView> {
                               style: TextStyle(fontSize: 16),
                             ),
                             const SizedBox(height: 48.0),
-                            FilledButton(
-                              style: const ButtonStyle(
-                                backgroundColor: MaterialStatePropertyAll(
-                                  Color.fromRGBO(0, 121, 107, 1),
-                                ),
-                              ),
-                              onPressed: () async {
-                                await _showAddProductDialog(context);
-                              },
-                              child: const Text(
-                                "Add Product",
-                                style: TextStyle(fontSize: 16.0),
-                              ),
-                            ),
+                            FilledAppButton(
+                                onPressed: () async {
+                                  await _showAddProductDialog(context);
+                                },
+                                labelText: "Add Product",),
                           ],
                         ),
                       ),
@@ -634,7 +625,9 @@ class _InventoryViewState extends State<InventoryView> {
                   const SizedBox(width: 16.0),
                   Expanded(
                       child: FilledAppButton(
-                          onPressed: _addProduct, labelText: 'Add product',)),
+                    onPressed: _addProduct,
+                    labelText: 'Add product',
+                  )),
                 ],
               ),
             ),

@@ -1,11 +1,14 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:shinda_app/components/buttons.dart';
 import 'package:shinda_app/components/dashboard_widget.dart';
 import 'package:shinda_app/components/sales_details_card.dart';
 import 'package:shinda_app/components/side_dashboard_widget.dart';
+import 'package:shinda_app/components/textfields.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
+import 'package:shinda_app/services/auth/auth_user.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
 import 'package:shinda_app/utilities/get_workspace.dart';
@@ -28,6 +31,7 @@ class _DashboardViewState extends State<DashboardView> {
   List<Map<String, dynamic>>? _workspaceData;
 
   bool _isLoading = false;
+  AuthUser? _currentUser;
 
   String? _currentWorkspace;
   String? _currentWorkspaceName;
@@ -53,28 +57,39 @@ class _DashboardViewState extends State<DashboardView> {
     });
 
     try {
+      final currentUser = AuthService.supabase().currentUser;
+
       final List<Map<String, dynamic>> workspaces =
           await WorkspaceService().getWorkspaceData(
-        userId: AuthService.supabase().currentUser!.id,
+        userId: currentUser!.id,
       );
 
       final String? currentWorkspace = await getCurrentWorkspaceId();
       final String? currentWorkspaceName = await getCurrentWorkspaceName();
+      final String? workspaceMember = await getWorkspaceMember();
 
       setState(() {
         _workspaceData = workspaces;
+        _currentUser = currentUser;
       });
 
-      if (currentWorkspace != null && currentWorkspaceName != null) {
-        setState(() {
-          _currentWorkspace = currentWorkspace;
-          _currentWorkspaceName = currentWorkspaceName;
-          _isLoading = false;
-        });
+      if (currentWorkspace != null &&
+          currentWorkspaceName != null &&
+          workspaceMember != null) {
+        if (workspaceMember == _currentUser!.id) {
+          setState(() {
+            _currentWorkspace = currentWorkspace;
+            _currentWorkspaceName = currentWorkspaceName;
+            _isLoading = false;
+          });
+        }
       } else {
         _selectWorkspace(
-            workspace: _workspaceData![0]['workspace_id'],
-            workspaceName: _workspaceData![0]['workspace']['name']);
+          workspace: _workspaceData![0]['workspace_id'],
+          workspaceName: _workspaceData![0]['workspace']['name'],
+          workspaceMember: _currentUser!.id,
+        );
+
         setState(() {
           _currentWorkspace = _workspaceData![0]['workspace_id'];
           _currentWorkspaceName = _workspaceData![0]['name'];
@@ -94,7 +109,7 @@ class _DashboardViewState extends State<DashboardView> {
     }
   }
 
-  void _createWorkspace() async {
+  void _createWorkspace(BuildContext context) async {
     final isValid = _formKey.currentState?.validate();
     final workspaceName = _workspaceName.text.trim();
 
@@ -139,15 +154,52 @@ class _DashboardViewState extends State<DashboardView> {
   void _selectWorkspace({
     required String workspace,
     required String workspaceName,
+    required String workspaceMember,
   }) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     await prefs.setString('workspaceId', workspace);
     await prefs.setString('workspaceName', workspaceName);
+    await prefs.setString('workspaceMember', workspaceMember);
 
     setState(() {
       _currentWorkspace = workspace;
       _currentWorkspaceName = workspaceName;
+    });
+  }
+
+  void _showWorkspaceMenu(BuildContext context) async {
+    final AuthUser? currentUser = AuthService.supabase().currentUser;
+    await showMenu(
+      context: context,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        side: const BorderSide(color: surface3),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      surfaceTintColor: Colors.white,
+      position: const RelativeRect.fromLTRB(300, 150, 45, 225),
+      items: List.generate(
+        _workspaceData!.length,
+        (index) => PopupMenuItem(
+          value: index,
+          child: Text(
+            _workspaceData![index]['workspace']['name'],
+            style: body2,
+          ),
+        ),
+      ),
+      elevation: 2.0,
+    ).then((value) {
+      if (value != null) {
+        log(value.toString());
+        _selectWorkspace(
+          workspace: _workspaceData![value]['workspace_id'],
+          workspaceName: _workspaceData![value]['workspace']['name'],
+          workspaceMember: currentUser!.id,
+        );
+        _getWorkspaceData();
+      }
     });
   }
 
@@ -167,9 +219,62 @@ class _DashboardViewState extends State<DashboardView> {
         : Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                "Dashboard",
-                style: dashboardHeadline,
+              Row(
+                children: [
+                  const Text(
+                    "Dashboard",
+                    style: dashboardHeadline,
+                  ),
+                  const Expanded(child: SizedBox()),
+                  _currentWorkspaceName != null &&
+                          _workspaceData != null &&
+                          _workspaceData!.isNotEmpty &&
+                          Responsive.isDesktop(context)
+                      ? Row(
+                          children: [
+                            OutlinedAppButton(
+                              onPressed: () async {
+                                await _showAddWorkspaceDialog(context);
+                              },
+                              labelText: 'New Workspace',
+                            ),
+                            const SizedBox(width: 8.0),
+                            InkWell(
+                              onTap: () {
+                                _showWorkspaceMenu(context);
+                              },
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 4.0,
+                                  horizontal: 8.0,
+                                ).copyWith(left: 12.0),
+                                decoration: BoxDecoration(
+                                  color: surface1,
+                                  border: const Border.fromBorderSide(
+                                    BorderSide(color: surface3),
+                                  ),
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "$_currentWorkspaceName's Workspace",
+                                      style: body1,
+                                    ),
+                                    const SizedBox(width: 8.0),
+                                    Icon(
+                                      Icons.edit_outlined,
+                                      color: primary.withOpacity(0.7),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      : const SizedBox(),
+                ],
               ),
               if (_currentWorkspaceName != null &&
                   _workspaceData != null &&
@@ -182,6 +287,58 @@ class _DashboardViewState extends State<DashboardView> {
                   ),
                 ),
               const SizedBox(height: 16.0),
+              _currentWorkspaceName != null &&
+                      _workspaceData != null &&
+                      _workspaceData!.isNotEmpty &&
+                      !Responsive.isDesktop(context)
+                  ? Row(
+                      children: [
+                        OutlinedAppButton(
+                          onPressed: () async {
+                            await _showAddWorkspaceDialog(context);
+                          },
+                          labelText: 'New Workspace',
+                        ),
+                        const Expanded(child: SizedBox()),
+                        InkWell(
+                          onTap: () {
+                            _showWorkspaceMenu(context);
+                          },
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 4.0,
+                              horizontal: 8.0,
+                            ).copyWith(left: 12.0),
+                            decoration: BoxDecoration(
+                              color: surface1,
+                              border: const Border.fromBorderSide(
+                                BorderSide(color: surface3),
+                              ),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "$_currentWorkspaceName's Workspace",
+                                  style: body1,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  softWrap: false,
+                                ),
+                                const SizedBox(width: 8.0),
+                                Icon(
+                                  Icons.edit_outlined,
+                                  color: primary.withOpacity(0.7),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox(),
+              if (!Responsive.isDesktop(context)) const SizedBox(height: 16.0),
               if (_workspaceData != null && _workspaceData!.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 16),
@@ -225,20 +382,11 @@ class _DashboardViewState extends State<DashboardView> {
                               style: TextStyle(fontSize: 16),
                             ),
                             const SizedBox(height: 48.0),
-                            FilledButton(
-                              style: const ButtonStyle(
-                                backgroundColor: MaterialStatePropertyAll(
-                                  Color.fromRGBO(0, 121, 107, 1),
-                                ),
-                              ),
-                              onPressed: () async {
-                                await _showAddWorkspaceDialog(context);
-                              },
-                              child: const Text(
-                                "New workspace",
-                                style: TextStyle(fontSize: 16.0),
-                              ),
-                            ),
+                            FilledAppButton(
+                                onPressed: () async {
+                                  await _showAddWorkspaceDialog(context);
+                                },
+                                labelText: "New workspace"),
                           ],
                         ),
                       ),
@@ -268,45 +416,33 @@ class _DashboardViewState extends State<DashboardView> {
           ),
           content: Form(
             key: _formKey,
-            child: TextFormField(
-              cursorColor: const Color.fromRGBO(0, 121, 107, 1),
-              decoration: const InputDecoration(
-                hoverColor: Color.fromRGBO(0, 121, 107, 1),
-                hintText: "Enter the workspace name",
-                focusColor: Color.fromRGBO(0, 121, 107, 1),
-              ),
-              controller: _workspaceName,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Workspace name required';
-                } else if (value.length < 3) {
-                  return "At least 3 characters";
-                } else if (!validCharacters.hasMatch(value)) {
-                  return "Letters & numbers allowed. No spaces.";
-                }
-                return null;
-              },
-            ),
+            child: NormalTextFormField(
+                controller: _workspaceName,
+                hintText: 'Enter the workspace name',
+                labelText: 'Workspace name',
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Workspace name required';
+                  } else if (value.length < 3) {
+                    return "At least 3 characters";
+                  } else if (!validCharacters.hasMatch(value)) {
+                    return "Letters & numbers allowed. No spaces.";
+                  }
+                  return null;
+                }),
           ),
           actions: [
-            TextButton(
+            TextAppButton(
+                onPressed: () {
+                  _workspaceName.clear();
+                  Navigator.of(context).pop();
+                },
+                labelText: "Cancel"),
+            FilledAppButton(
               onPressed: () {
-                _workspaceName.clear();
-                Navigator.of(context).pop();
+                _createWorkspace(context);
               },
-              child: const Text(
-                "Cancel",
-                style: TextStyle(
-                  color: Color.fromRGBO(0, 121, 107, 1),
-                ),
-              ),
-            ),
-            FilledButton(
-              onPressed: _createWorkspace,
-              style: const ButtonStyle(
-                  backgroundColor:
-                      MaterialStatePropertyAll(Color.fromRGBO(0, 121, 107, 1))),
-              child: const Text("Create Workspace"),
+              labelText: "Create Workspace",
             ),
           ],
         );
@@ -357,6 +493,7 @@ class _DashboardViewState extends State<DashboardView> {
                         workspace: _workspaceData![index]['workspace_id'],
                         workspaceName: _workspaceData![index]['workspace']
                             ['name'],
+                        workspaceMember: _currentUser!.id,
                       );
                     },
                   );

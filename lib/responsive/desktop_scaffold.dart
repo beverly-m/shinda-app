@@ -113,33 +113,6 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
     });
   }
 
-  _showWorkspaceMenu() async {
-    await showMenu(
-      context: context,
-      position: const RelativeRect.fromLTRB(200, 65, 225, 225),
-      items: List.generate(
-        _workspaceData!.length,
-        (index) => PopupMenuItem(
-          value: index,
-          child: Text(
-            _workspaceData![index]['workspace']['name'],
-            style: body2,
-          ),
-        ),
-      ),
-      elevation: 8.0,
-    ).then((value) {
-      if (value != null) {
-        log(value.toString());
-        _selectWorkspace(
-          workspace: _workspaceData![value]['workspace_id'],
-          workspaceName: _workspaceData![value]['workspace']['name'],
-          workspaceMember: _currentUser!.id,
-        );
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return _isLoading
@@ -245,56 +218,8 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
                               vertical: 12.0,
                             ),
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                _currentWorkspaceName != null &&
-                                        _workspaceData != null &&
-                                        _workspaceData!.isNotEmpty
-                                    ? InkWell(
-                                        onTap: () {
-                                          _showWorkspaceMenu();
-                                        },
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 4.0,
-                                            horizontal: 8.0,
-                                          ).copyWith(left: 12.0),
-                                          decoration: BoxDecoration(
-                                            color: surface1,
-                                            border: const Border.fromBorderSide(
-                                              BorderSide(color: surface3),
-                                            ),
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                "$_currentWorkspaceName's workspace",
-                                                style: body2,
-                                              ),
-                                              const SizedBox(width: 8.0),
-                                              const Column(
-                                                children: [
-                                                  Icon(
-                                                    Icons
-                                                        .keyboard_arrow_up_outlined,
-                                                    size: 16.0,
-                                                  ),
-                                                  Icon(
-                                                    Icons
-                                                        .keyboard_arrow_down_outlined,
-                                                    size: 16.0,
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      )
-                                    : const SizedBox(),
-                                const Expanded(child: SizedBox()),
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     vertical: 4.0,

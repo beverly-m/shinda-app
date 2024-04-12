@@ -104,33 +104,54 @@ class _NewSaleViewState extends State<NewSaleView> {
                 ),
               ),
             )
-          : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: GridView.builder(
-                physics: const AlwaysScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: Responsive.isTablet(context) ? 3 : 2,
-                  crossAxisSpacing: 8.0,
-                  mainAxisSpacing: 8.0,
-                ),
-                itemCount: _productsData!.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return AspectRatio(
-                    aspectRatio: 1,
-                    child: ProductCard(
-                      productName: _productsData![index]["product"]['name'],
-                      productPrice: _productsData![index]["product"]['price'],
-                      quantityInStock: _productsData![index]
-                          ['quantity_available'],
-                      onPressed: () async {
-                        await cart.saveData(data: _productsData![index]);
-                      },
+          : _productsData != null && _productsData!.isNotEmpty
+              ? Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: GridView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: Responsive.isTablet(context) ? 3 : 2,
+                      crossAxisSpacing: 8.0,
+                      mainAxisSpacing: 8.0,
                     ),
-                  );
-                },
-              ),
-            ),
+                    itemCount: _productsData!.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return AspectRatio(
+                        aspectRatio: 1,
+                        child: ProductCard(
+                          productName: _productsData![index]["product"]['name'],
+                          productPrice: _productsData![index]["product"]
+                              ['price'],
+                          quantityInStock: _productsData![index]
+                              ['quantity_available'],
+                          onPressed: () async {
+                            await cart.saveData(data: _productsData![index]);
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                )
+              : const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(48.0),
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.inventory_2_outlined,
+                          size: 200,
+                          color: Color.fromRGBO(219, 240, 239, 1),
+                        ),
+                        SizedBox(height: 48.0),
+                        Text(
+                          "Add new products in the inventory to get started",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
     );
   }
 }

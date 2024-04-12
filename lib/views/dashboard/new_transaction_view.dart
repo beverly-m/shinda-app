@@ -947,20 +947,11 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                     style: TextStyle(fontSize: 16),
                                   ),
                                   const SizedBox(height: 48.0),
-                                  FilledButton(
-                                    style: const ButtonStyle(
-                                      backgroundColor: MaterialStatePropertyAll(
-                                        Color.fromRGBO(0, 121, 107, 1),
-                                      ),
-                                    ),
-                                    onPressed: () async {
-                                      await _showAddProductDialog(context);
-                                    },
-                                    child: const Text(
-                                      "Add Product",
-                                      style: TextStyle(fontSize: 16.0),
-                                    ),
-                                  ),
+                                  FilledAppButton(
+                                      onPressed: () async {
+                                        await _showAddProductDialog(context);
+                                      },
+                                      labelText: "Add Product",),
                                 ],
                               ),
                             ),
