@@ -420,10 +420,6 @@ class _InventoryViewState extends State<InventoryView> {
   }
 
   void _addProduct() async {
-    setState(() {
-      _isLoading = true;
-    });
-
     final isValid = _formKey.currentState?.validate();
 
     if (isValid != null && isValid) {
@@ -456,21 +452,11 @@ class _InventoryViewState extends State<InventoryView> {
         );
 
         _getProductData();
-
-        setState(() {
-          _isLoading = false;
-        });
       } on GenericWorkspaceException {
-        setState(() {
-          _isLoading = false;
-        });
         if (context.mounted) {
           showErrorDialog(context, "Failed to add product. Try again");
         }
       } catch (e) {
-        setState(() {
-          _isLoading = false;
-        });
         if (context.mounted) {
           showErrorDialog(context, e.toString());
         }
@@ -514,23 +500,25 @@ class _InventoryViewState extends State<InventoryView> {
             borderRadius: BorderRadius.circular(8.0),
           ),
           scrollable: true,
-          title: const Text("New product"),
-          contentPadding: const EdgeInsets.all(48.0),
+          title: const Text(
+            "New product",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          contentPadding: Responsive.isDesktop(context)
+              ? const EdgeInsets.all(48.0)
+              : const EdgeInsets.all(24.0),
           content: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.6,
+            width: Responsive.isDesktop(context)
+                ? MediaQuery.of(context).size.width * 0.6
+                : MediaQuery.of(context).size.width,
             child: Form(
               key: _formKey,
               child: Column(
                 children: [
-                  TextFormField(
-                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
-                    decoration: const InputDecoration(
-                      hoverColor: Color.fromRGBO(0, 121, 107, 1),
-                      focusColor: Color.fromRGBO(0, 121, 107, 1),
-                      labelText: "Name",
-                      hintText: "Enter the product name",
-                    ),
+                  NormalTextFormField(
                     controller: _productName,
+                    hintText: 'Enter the product name',
+                    labelText: 'Name',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Product name required';
@@ -541,26 +529,19 @@ class _InventoryViewState extends State<InventoryView> {
                     },
                   ),
                   const SizedBox(height: 16.0),
-                  TextFormField(
-                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
-                    decoration: const InputDecoration(
-                        hoverColor: Color.fromRGBO(0, 121, 107, 1),
-                        focusColor: Color.fromRGBO(0, 121, 107, 1),
-                        labelText: "Description (optional)",
-                        hintText: "Enter description"),
+                  NormalTextFormField(
                     controller: _description,
+                    hintText: 'Enter description',
+                    labelText: 'Description (optional)',
                     maxLines: 3,
                   ),
                   const SizedBox(height: 16.0),
-                  TextFormField(
-                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
+                  NormalTextFormField(
+                    controller: _price,
+                    hintText: '0.00',
+                    labelText: 'Selling Price',
                     keyboardType: TextInputType.number,
                     inputFormatters: <TextInputFormatter>[_formatter],
-                    decoration: const InputDecoration(
-                        hoverColor: Color.fromRGBO(0, 121, 107, 1),
-                        focusColor: Color.fromRGBO(0, 121, 107, 1),
-                        labelText: "Selling Price"),
-                    controller: _price,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Price required';
@@ -569,43 +550,46 @@ class _InventoryViewState extends State<InventoryView> {
                     },
                   ),
                   const SizedBox(height: 16.0),
-                  TextFormField(
-                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(
-                        hoverColor: Color.fromRGBO(0, 121, 107, 1),
-                        focusColor: Color.fromRGBO(0, 121, 107, 1),
-                        labelText: "Quantity"),
-                    controller: _quantity,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Quantity required';
-                      } else if (value == "0") {
-                        return "Quantity must be more than 0";
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(width: 16.0),
-                  TextFormField(
-                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(
-                        hoverColor: Color.fromRGBO(0, 121, 107, 1),
-                        focusColor: Color.fromRGBO(0, 121, 107, 1),
-                        labelText: "Reorder quantity level"),
-                    controller: _reorderLevel,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: NormalTextFormField(
+                          controller: _quantity,
+                          hintText: '0',
+                          labelText: 'Quantity',
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Quantity required';
+                            } else if (value == "0") {
+                              return "Quantity must be more than 0";
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 16.0),
+                      Expanded(
+                        child: NormalTextFormField(
+                          controller: _reorderLevel,
+                          hintText: '0',
+                          labelText: 'Reorder quantity level',
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 16.0),
-                  TextFormField(
-                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
-                    decoration: const InputDecoration(
-                        hoverColor: Color.fromRGBO(0, 121, 107, 1),
-                        focusColor: Color.fromRGBO(0, 121, 107, 1),
-                        labelText: "Expiration date (optional)"),
+                  NormalTextFormField(
                     controller: _expirationDate,
+                    hintText: '0000-00-00 00:00:00.000',
+                    labelText: 'Expiration date (optional)',
                     readOnly: true,
                     onTap: () async {
                       FocusScope.of(context).requestFocus(FocusNode());
@@ -627,34 +611,31 @@ class _InventoryViewState extends State<InventoryView> {
             ),
           ),
           actions: [
-            TextButton(
-              onPressed: () {
-                _productName.clear();
-                _description.clear();
-                _price.clear();
-                _quantity.clear();
-                _reorderLevel.clear();
-                _expirationDate.clear();
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                "Cancel",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Color.fromRGBO(0, 121, 107, 1),
-                ),
-              ),
-            ),
-            FilledButton(
-              onPressed: _addProduct,
-              style: const ButtonStyle(
-                  backgroundColor:
-                      MaterialStatePropertyAll(Color.fromRGBO(0, 121, 107, 1))),
-              child: const Text(
-                "Add product",
-                style: TextStyle(
-                  fontSize: 16,
-                ),
+            SizedBox(
+              width: Responsive.isDesktop(context)
+                  ? MediaQuery.of(context).size.width * 0.6
+                  : MediaQuery.of(context).size.width,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextAppButton(
+                      onPressed: () {
+                        _productName.clear();
+                        _description.clear();
+                        _price.clear();
+                        _quantity.clear();
+                        _reorderLevel.clear();
+                        _expirationDate.clear();
+                        Navigator.of(context).pop();
+                      },
+                      labelText: 'Cancel',
+                    ),
+                  ),
+                  const SizedBox(width: 16.0),
+                  Expanded(
+                      child: FilledAppButton(
+                          onPressed: _addProduct, labelText: 'Add product')),
+                ],
               ),
             ),
           ],
