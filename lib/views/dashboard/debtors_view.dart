@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:shinda_app/components/circular_progress_indicator.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/responsive/responsive_layout.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
@@ -56,11 +57,12 @@ class _DebtorsViewState extends State<DebtorsView> {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? const Center(
-            child: Padding(
-              padding: EdgeInsets.all(24.0),
-              child: CircularProgressIndicator(
-                color: primary,
+        ? SizedBox(
+            height: MediaQuery.of(context).size.height * 0.8,
+            child: const Center(
+              child: Padding(
+                padding: EdgeInsets.all(24.0),
+                child: AppCircularProgressIndicator(),
               ),
             ),
           )
@@ -76,15 +78,16 @@ class _DebtorsViewState extends State<DebtorsView> {
                 ],
               ),
               const SizedBox(height: 16.0),
+
+              // WITH DEBTORS DATA
               _debtorsData != null && _debtorsData!.isNotEmpty
+
+                  // MOBILE WITH DEBTORS DATA
                   ? Responsive.isMobile(context)
                       ? ListView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (BuildContext context, int index) {
-                            // DateTime date = DateTime.parse(
-                            //     _debtorsData![index]['created_at']);
-
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
                               child: InkWell(
@@ -199,26 +202,35 @@ class _DebtorsViewState extends State<DebtorsView> {
                           },
                           itemCount: _debtorsData!.length,
                         )
+
+                      // TABLET & DESKTOP WITH DEBTORS DATA
                       : SizedBox(
                           width: MediaQuery.of(context).size.width * 0.9,
                           child: DebtorDataGrid(data: _debtorsData!),
                         )
-                  : const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(48.0),
-                        child: Column(
-                          children: [
-                            Icon(
-                              Icons.wallet_outlined,
-                              size: 200,
-                              color: Color.fromRGBO(219, 240, 239, 1),
-                            ),
-                            SizedBox(height: 48.0),
-                            Text(
-                              "Clients who buy on credit will appear here",
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ],
+
+                  // WITH NO DEBTORS DATA
+                  : SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.6,
+                      child: const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.wallet_outlined,
+                                size: 180,
+                                color: surface3,
+                              ),
+                              SizedBox(height: 48.0),
+                              Text(
+                                "Clients who buy on credit will appear here",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
