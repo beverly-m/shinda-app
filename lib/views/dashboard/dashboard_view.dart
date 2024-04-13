@@ -33,7 +33,6 @@ class _DashboardViewState extends State<DashboardView> {
   List<Map<String, dynamic>>? _workspaceData;
 
   bool _isLoading = false;
-  bool _isWorkspaceCreated = false;
   AuthUser? _currentUser;
 
   String? _currentWorkspace;

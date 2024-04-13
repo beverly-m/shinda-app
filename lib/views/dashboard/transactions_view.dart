@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:shinda_app/components/circular_progress_indicator.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
@@ -54,11 +55,12 @@ class _TransactionsViewState extends State<TransactionsView> {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? const Center(
-            child: Padding(
-              padding: EdgeInsets.all(24.0),
-              child: CircularProgressIndicator(
-                color: primary,
+        ? SizedBox(
+            height: MediaQuery.of(context).size.height * 0.8,
+            child: const Center(
+              child: Padding(
+                padding: EdgeInsets.all(24.0),
+                child: AppCircularProgressIndicator(),
               ),
             ),
           )
@@ -74,7 +76,11 @@ class _TransactionsViewState extends State<TransactionsView> {
                 ],
               ),
               const SizedBox(height: 16.0),
+
+              // ***WITH TRANSACTION DATA***
               _transactionsData != null && _transactionsData!.isNotEmpty
+
+                  // *** MOBILE WITH TRANSACTION DATA ***
                   ? Responsive.isMobile(context)
                       ? ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
@@ -163,26 +169,33 @@ class _TransactionsViewState extends State<TransactionsView> {
                           },
                           itemCount: _transactionsData!.length,
                         )
+
+                      // TABLET & DESKTOP WITH TRANSACTION DATA
                       : SizedBox(
                           width: MediaQuery.of(context).size.width * 0.9,
                           child: TransactionDataGrid(data: _transactionsData!),
                         )
-                  : const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(48.0),
-                        child: Column(
-                          children: [
-                            Icon(
-                              Icons.point_of_sale_outlined,
-                              size: 200,
-                              color: Color.fromRGBO(219, 240, 239, 1),
-                            ),
-                            SizedBox(height: 48.0),
-                            Text(
-                              "No transactions yet",
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ],
+
+                  // WITH NO TRANSACTION DATA
+                  : SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(48.0),
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.point_of_sale_outlined,
+                                size: 180,
+                                color: surface3,
+                              ),
+                              SizedBox(height: 48.0),
+                              Text(
+                                "No transactions yet",
+                                style: body1,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
