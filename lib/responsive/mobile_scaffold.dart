@@ -11,8 +11,6 @@ import 'package:shinda_app/constants/text_syles.dart' show primary;
 import 'package:shinda_app/services/auth/auth_exceptions.dart'
     show GenericAuthException, UserNotLoggedInAuthException;
 import 'package:shinda_app/services/auth/auth_service.dart' show AuthService;
-import 'package:shinda_app/utilities/show_error_dialog.dart'
-    show showErrorDialog;
 import 'package:shinda_app/views/dashboard/new_transaction_view.dart'
     show NewTransactionView;
 

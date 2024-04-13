@@ -69,17 +69,29 @@ class _ExpiringProductsCardState extends State<ExpiringProductsCard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 4.0, vertical: 8.0),
-                    child: Text(
-                      "Products expiring",
-                      overflow: TextOverflow.ellipsis,
-                      softWrap: false,
-                      style: subtitle1.copyWith(fontSize: 18),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 4.0, vertical: 8.0),
+                        child: Text(
+                          "Products expiring",
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: false,
+                          style: subtitle1.copyWith(fontSize: 18),
+                        ),
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: 8.0),
+                    Chip(
+                      label: const Text("In 7 Days"),
+                      color: const MaterialStatePropertyAll(surface3),
+                      shape: RoundedRectangleBorder(
+                          side: const BorderSide(color: primary),
+                          borderRadius: BorderRadius.circular(8.0)),
+                    ),
+                  ],
                 ),
                 const SizedBox(
                   height: 8.0,

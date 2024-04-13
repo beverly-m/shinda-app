@@ -95,7 +95,7 @@ class ChartLine extends StatelessWidget {
   final double rate;
   final String title;
   final int number;
-  final double total;
+  final int total;
 
   @override
   Widget build(BuildContext context) {
