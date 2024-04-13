@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shinda_app/components/snackbar.dart';
 import 'package:shinda_app/utilities/helpers/db_helper.dart';
 import 'package:shinda_app/utilities/models/cart_model.dart';
 
@@ -48,6 +49,8 @@ class CartProvider with ChangeNotifier {
       addQuantity(data["product"]["product_id"]);
       notifyListeners();
     }
+
+    SnackBarService.showSnackBar(content: "Product added to cart");
   }
 
   void _setPrefsItems() async {
