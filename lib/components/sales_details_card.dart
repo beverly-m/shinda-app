@@ -40,13 +40,15 @@ class _SalesDetailsCardState extends State<SalesDetailsCard> {
 
       setState(() {
         _dashboardMetadata = dashboardMeta;
-        
+
         _salesDetails = SalesDetails(
-          totalIncome: _dashboardMetadata!['income'],
+          totalIncome: _dashboardMetadata!['income'] == 0
+              ? 0.0
+              : _dashboardMetadata!['income'],
           transactions: _dashboardMetadata!['transactions'],
           outstandingPayments: _dashboardMetadata!['outstandingPayments'],
           productsLowInStock: _dashboardMetadata!['productsLowInStock'],
-          productsExpiring: _dashboardMetadata!['expiredProducts'],
+          productsExpiring: _dashboardMetadata!['expiredProducts'] ?? 0,
         );
         _isLoading = false;
       });
@@ -69,7 +71,11 @@ class _SalesDetailsCardState extends State<SalesDetailsCard> {
         ? const CircularProgressIndicator()
         : GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: Responsive.isMobile(context) ? 2 : Responsive.isTablet(context) ? 4 : 5,
+              crossAxisCount: Responsive.isMobile(context)
+                  ? 2
+                  : Responsive.isTablet(context)
+                      ? 4
+                      : 5,
               crossAxisSpacing: Responsive.isMobile(context) ? 8.0 : 16.0,
               mainAxisSpacing: Responsive.isMobile(context) ? 8.0 : 16.0,
             ),

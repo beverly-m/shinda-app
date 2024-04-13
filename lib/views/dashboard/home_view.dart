@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:shinda_app/responsive/desktop_scaffold.dart'
     show DesktopScaffold;
