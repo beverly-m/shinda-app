@@ -684,15 +684,10 @@ class WorkspaceService implements WorkspaceProvider {
   Future<void> deleteTransaction(
       {required String transactionId, required String workspaceId}) async {
     try {
-      List<Map<String, dynamic>> deletedTransaction =
-          await supabase.from('transaction').delete().match({
+      await supabase.from('transaction').delete().match({
         'transaction_id': transactionId,
         'workspace_id': workspaceId,
       }).select();
-
-      log("Deleted transaction");
-      log(deletedTransaction.toString());
-      log(deletedTransaction.length.toString());
     } on PostgrestException catch (e) {
       log(e.code ?? "Error occurred");
       log(e.message);

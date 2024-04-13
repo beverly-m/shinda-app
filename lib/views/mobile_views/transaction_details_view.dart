@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:shinda_app/components/buttons.dart';
+import 'package:shinda_app/components/snackbar.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/enums/dropdown_menu.dart';
 import 'package:shinda_app/services/auth/auth_exceptions.dart';
@@ -95,9 +96,10 @@ class _TransactionDetailsViewState extends State<TransactionDetailsView> {
               "Update Transaction",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            contentPadding: const EdgeInsets.all(24.0),
+            contentPadding: const EdgeInsets.all(16.0),
             content: SizedBox(
               height: 120,
+              width: MediaQuery.of(context).size.width,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -141,24 +143,28 @@ class _TransactionDetailsViewState extends State<TransactionDetailsView> {
             actions: [
               Row(
                 children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Cancel'),
+                  Expanded(
+                    child: TextAppButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      labelText: 'Cancel',
+                    ),
                   ),
                   const SizedBox(
                     width: 16.0,
                   ),
-                  FilledButton(
-                    onPressed: () {
-                      _updateTransaction(
-                        transactionId: transactionId,
-                        paymentMode: selectedPaymentMode!.label,
-                      );
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Update Transaction'),
+                  Expanded(
+                    child: FilledAppButton(
+                      onPressed: () {
+                        _updateTransaction(
+                          transactionId: transactionId,
+                          paymentMode: selectedPaymentMode!.label,
+                        );
+                        Navigator.of(context).pop();
+                      },
+                      labelText: 'Update',
+                    ),
                   ),
                 ],
               )
@@ -182,6 +188,8 @@ class _TransactionDetailsViewState extends State<TransactionDetailsView> {
         transactionId: transactionId,
         paymentMode: paymentMode,
       );
+
+      SnackBarService.showSnackBar(content: "Transaction status updated");
 
       setState(() {
         _isLoading = false;
@@ -213,16 +221,26 @@ class _TransactionDetailsViewState extends State<TransactionDetailsView> {
             style: body1,
           ),
           actions: [
-            TextAppButton(
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                },
-                labelText: 'Cancel'),
-            FilledAppButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              labelText: 'Delete transaction',
+            Row(
+              children: [
+                Expanded(
+                  child: TextAppButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                      labelText: 'Cancel'),
+                ),
+                const SizedBox(width: 16.0),
+                Expanded(
+                  child: FilledAppButton(
+                    backgroundColor: Colors.red[900]!,
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                    labelText: 'Delete',
+                  ),
+                ),
+              ],
             ),
           ],
         );
@@ -414,6 +432,9 @@ class _TransactionDetailsViewState extends State<TransactionDetailsView> {
                                   transactionId: widget.id,
                                   workspaceId: _currentWorkspaceId!,
                                 );
+
+                                SnackBarService.showSnackBar(
+                                    content: "Transaction deleted");
 
                                 if (context.mounted) {
                                   Navigator.of(context).pop();

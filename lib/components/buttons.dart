@@ -33,9 +33,10 @@ class OutlinedAppButton extends StatelessWidget {
 class FilledAppButton extends StatelessWidget {
   final void Function() onPressed;
   final String labelText;
+  final Color backgroundColor;
 
   const FilledAppButton(
-      {super.key, required this.onPressed, required this.labelText});
+      {super.key, required this.onPressed, required this.labelText, this.backgroundColor = primary});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +44,7 @@ class FilledAppButton extends StatelessWidget {
       onPressed: onPressed,
       style: FilledButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-        backgroundColor: primary,
+        backgroundColor: backgroundColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
       ),
       child: Text(
