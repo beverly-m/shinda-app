@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -98,7 +97,8 @@ class CartProvider with ChangeNotifier {
         quantity: cart[index].quantity.value,
       );
     } else {
-      log("Max quantity $maxQuantity exceeded");
+      SnackBarService.showSnackBar(
+          content: "Cannot add. Max quantity $maxQuantity reached.");
     }
 
     _setPrefsItems();

@@ -1,10 +1,14 @@
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 import 'package:shinda_app/components/buttons.dart';
 import 'package:shinda_app/components/cart_item_card.dart';
+import 'package:shinda_app/components/snackbar.dart';
+import 'package:shinda_app/components/textfields.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/enums/dropdown_menu.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
@@ -101,7 +105,10 @@ class _CartItemsViewState extends State<CartItemsView> {
             borderRadius: BorderRadius.circular(8.0),
           ),
           scrollable: true,
-          title: const Text("Credit Purchase Details"),
+          title: const Text(
+            "Credit Purchase Details",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           contentPadding: const EdgeInsets.all(24.0),
           content: SizedBox(
             width: MediaQuery.of(context).size.width * 0.8,
@@ -109,15 +116,10 @@ class _CartItemsViewState extends State<CartItemsView> {
               key: _formKey,
               child: Column(
                 children: [
-                  TextFormField(
-                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
-                    decoration: const InputDecoration(
-                      hoverColor: Color.fromRGBO(0, 121, 107, 1),
-                      focusColor: Color.fromRGBO(0, 121, 107, 1),
-                      labelText: "Client Name",
-                      hintText: "Enter the name of the client",
-                    ),
+                  NormalTextFormField(
                     controller: _clientName,
+                    hintText: "Enter the name of the client",
+                    labelText: "Client Name",
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Client name required';
@@ -127,9 +129,9 @@ class _CartItemsViewState extends State<CartItemsView> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16.0),
+                  const SizedBox(height: 24.0),
                   InternationalPhoneNumberInput(
-                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
+                    cursorColor: primary,
                     initialValue: number,
                     onInputChanged: (PhoneNumber number) {
                       setState(() {
@@ -148,59 +150,45 @@ class _CartItemsViewState extends State<CartItemsView> {
                     ),
                     textFieldController: _phoneNumber,
                   ),
-                  const SizedBox(height: 16.0),
-                  TextFormField(
-                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
-                    decoration: const InputDecoration(
-                      hoverColor: Color.fromRGBO(0, 121, 107, 1),
-                      focusColor: Color.fromRGBO(0, 121, 107, 1),
-                      labelText: "Address",
-                      hintText: "Enter your address here",
-                    ),
+                  const SizedBox(height: 24.0),
+                  NormalTextFormField(
                     controller: _address,
+                    hintText: "Enter your address here",
+                    labelText: "Address",
                   ),
                 ],
               ),
             ),
           ),
           actions: [
-            TextButton(
-              onPressed: () {
-                _clientName.clear();
-                _address.clear();
-                _phoneNumber.clear();
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                "Cancel",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Color.fromRGBO(0, 121, 107, 1),
+            Row(
+              children: [
+                Expanded(
+                  child: TextAppButton(
+                      onPressed: () {
+                        _clientName.clear();
+                        _address.clear();
+                        _phoneNumber.clear();
+                        Navigator.of(context).pop();
+                      },
+                      labelText: "Cancel"),
                 ),
-              ),
-            ),
-            FilledButton(
-              onPressed: () {
-                _addDebtor(
-                  workspaceId: workspaceId,
-                  subTotal: subTotal,
-                  grandTotal: grandTotal,
-                  isPaid: isPaid,
-                  products: products,
-                  cart: cart,
-                );
-              },
-              style: const ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(
-                  Color.fromRGBO(0, 121, 107, 1),
+                const SizedBox(width: 16.0),
+                Expanded(
+                  child: FilledAppButton(
+                      onPressed: () {
+                        _addDebtor(
+                          workspaceId: workspaceId,
+                          subTotal: subTotal,
+                          grandTotal: grandTotal,
+                          isPaid: isPaid,
+                          products: products,
+                          cart: cart,
+                        );
+                      },
+                      labelText: "Add Debtor"),
                 ),
-              ),
-              child: const Text(
-                "Add Debtor",
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
+              ],
             ),
           ],
         );
@@ -244,6 +232,8 @@ class _CartItemsViewState extends State<CartItemsView> {
           phoneNumber: phoneNumber,
           address: address.isNotEmpty ? address : null,
         );
+
+        SnackBarService.showSnackBar(content: "Credit purchase added.");
 
         setState(() {
           _isLoading = false;
@@ -317,7 +307,7 @@ class _CartItemsViewState extends State<CartItemsView> {
                       // MOBILE & TABLET WITH CART ITEMS
                       : SizedBox(
                           width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
+                          height: MediaQuery.of(context).size.height * 0.8,
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -329,7 +319,7 @@ class _CartItemsViewState extends State<CartItemsView> {
                                     productName:
                                         provider.cart[index].productName,
                                     productPrice:
-                                        "RWF ${provider.cart[index].productPrice}",
+                                        "RWF ${provider.cart[index].productPrice.toStringAsFixed(2)}",
                                     valueListenable:
                                         provider.cart[index].quantity,
                                     addQuantity: () {
@@ -494,6 +484,9 @@ class _CartItemsViewState extends State<CartItemsView> {
                                             isPaid: true,
                                             products: provider.cart,
                                           );
+
+                                          SnackBarService.showSnackBar(
+                                              content: "Transaction added.");
 
                                           provider.clearCart();
 

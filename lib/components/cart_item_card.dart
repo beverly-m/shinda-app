@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shinda_app/components/buttons.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 
@@ -48,22 +49,28 @@ class CartItemCard extends StatelessWidget {
                 size: 24.0,
               ),
             ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  productName,
-                  style: body1,
-                ),
-                const Flexible(child: SizedBox()),
-                Text(
-                  productPrice,
-                  style: body2.copyWith(color: neutral4),
-                ),
-              ],
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    productName,
+                    style: body1.copyWith(overflow: TextOverflow.ellipsis),
+                    maxLines: 1,
+                    softWrap: false,
+                  ),
+                  const Flexible(child: SizedBox()),
+                  Text(
+                    productPrice,
+                    style: body2.copyWith(color: neutral4),
+                  ),
+                ],
+              ),
             ),
-            const Expanded(child: SizedBox()),
+            const SizedBox(
+              width: 16.0,
+            ),
             ValueListenableBuilder<int>(
               valueListenable: valueListenable,
               builder: (context, value, child) {
