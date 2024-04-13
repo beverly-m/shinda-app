@@ -6,6 +6,7 @@ import 'package:shinda_app/components/circular_progress_indicator.dart';
 import 'package:shinda_app/components/dashboard_widget.dart';
 import 'package:shinda_app/components/sales_details_card.dart';
 import 'package:shinda_app/components/side_dashboard_widget.dart';
+import 'package:shinda_app/components/snackbar.dart';
 import 'package:shinda_app/components/textfields.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
@@ -32,6 +33,7 @@ class _DashboardViewState extends State<DashboardView> {
   List<Map<String, dynamic>>? _workspaceData;
 
   bool _isLoading = false;
+  bool _isWorkspaceCreated = false;
   AuthUser? _currentUser;
 
   String? _currentWorkspace;
@@ -140,40 +142,25 @@ class _DashboardViewState extends State<DashboardView> {
           workspaceName: workspaceName,
           creatorId: AuthService.supabase().currentUser!.id,
         );
-
-        final snackBar = SnackBar(
-          content: const Text('Workspace created.'),
-          backgroundColor: (Colors.black54),
-          action: SnackBarAction(
-            label: 'Dismiss',
-            onPressed: () {
-              ScaffoldMessenger.of(context).removeCurrentSnackBar();
-            },
-          ),
-        );
-
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        }
-
-        // log("Workspace created!");
-
-        _getWorkspaceData();
         setState(() {
           _isLoading = false;
         });
+
+        SnackBarService.showSnackBar(content: "Workspace created!");
+
+        _getWorkspaceData();
       } on GenericWorkspaceException {
         setState(() {
           _isLoading = false;
         });
-        if (mounted) {
+        if (context.mounted) {
           showErrorDialog(context, "Some error occurred");
         }
       } catch (e) {
         setState(() {
           _isLoading = false;
         });
-        if (mounted) {
+        if (context.mounted) {
           showErrorDialog(context, e.toString());
         }
       }
@@ -357,7 +344,7 @@ class _DashboardViewState extends State<DashboardView> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                "$_currentWorkspaceName's Workspaces",
+                                "$_currentWorkspaceName's Workspace",
                                 style: body1,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -564,3 +551,4 @@ class _DashboardViewState extends State<DashboardView> {
   //   );
   // }
 }
+

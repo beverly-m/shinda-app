@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shinda_app/components/snackbar.dart';
 import 'package:shinda_app/constants/routes.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
@@ -26,6 +27,7 @@ void main() {
     ChangeNotifierProvider(
       create: (context) => CartProvider(),
       child: MaterialApp(
+        scaffoldMessengerKey: SnackBarService.scaffoldKey,
         title: 'Shinda',
         theme: _buildTheme(Brightness.light),
         home: const SplashView(),
