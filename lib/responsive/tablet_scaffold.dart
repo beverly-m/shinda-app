@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:shinda_app/components/drawer_item.dart';
+import 'package:shinda_app/components/show_log_out_dialog.dart';
 import 'package:shinda_app/constants/drawer_items.dart';
 import 'package:shinda_app/constants/drawer_views.dart';
 import 'package:shinda_app/constants/routes.dart';

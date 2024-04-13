@@ -1,16 +1,19 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:shinda_app/components/drawer_item.dart';
-import 'package:shinda_app/constants/drawer_items.dart';
-import 'package:shinda_app/constants/drawer_views.dart';
-import 'package:shinda_app/constants/routes.dart';
-import 'package:shinda_app/constants/text_syles.dart';
-import 'package:shinda_app/services/auth/auth_exceptions.dart';
-import 'package:shinda_app/services/auth/auth_service.dart';
-import 'package:shinda_app/utilities/show_error_dialog.dart';
-import 'package:shinda_app/views/dashboard/home_view.dart';
-import 'package:shinda_app/views/dashboard/new_transaction_view.dart';
+import 'package:shinda_app/components/drawer_item.dart' show DrawerItem;
+import 'package:shinda_app/components/show_log_out_dialog.dart'
+    show showLogOutDialog;
+import 'package:shinda_app/constants/drawer_items.dart' show drawerItems;
+import 'package:shinda_app/constants/drawer_views.dart'
+    show drawerViewsMobileTablet;
+import 'package:shinda_app/constants/routes.dart' show loginRoute;
+import 'package:shinda_app/constants/text_syles.dart' show primary;
+import 'package:shinda_app/services/auth/auth_exceptions.dart'
+    show GenericAuthException, UserNotLoggedInAuthException;
+import 'package:shinda_app/services/auth/auth_service.dart' show AuthService;
+import 'package:shinda_app/utilities/show_error_dialog.dart'
+    show showErrorDialog;
+import 'package:shinda_app/views/dashboard/new_transaction_view.dart'
+    show NewTransactionView;
 
 class MobileScaffold extends StatefulWidget {
   const MobileScaffold({super.key});
@@ -29,6 +32,7 @@ class _MobileScaffoldState extends State<MobileScaffold> {
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0.0,
+        elevation: 0.0,
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
@@ -162,37 +166,26 @@ class _MobileScaffoldState extends State<MobileScaffold> {
         _selectedIndex = index;
       });
     } else {
-      log("Logout");
       final isLogout = await showLogOutDialog(context);
       if (isLogout) {
         try {
           await AuthService.supabase().logOut();
-          if (context.mounted) {
-            Navigator.of(context).pushNamedAndRemoveUntil(
-              loginRoute,
-              (_) => false,
-            );
+          if (mounted) {
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil(loginRoute, (_) => false);
           }
         } on UserNotLoggedInAuthException {
-          if (context.mounted) {
-            Navigator.of(context).pushNamedAndRemoveUntil(
-              loginRoute,
-              (_) => false,
-            );
+          if (mounted) {
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil(loginRoute, (_) => false);
           }
         } on GenericAuthException {
-          if (context.mounted) {
-            await showErrorDialog(
-              context,
-              "An error occurred. Try again.",
-            );
+          if (mounted) {
+            await showErrorDialog(context, "An error occurred. Try again.");
           }
         } catch (_) {
-          if (context.mounted) {
-            await showErrorDialog(
-              context,
-              "An error occurred. Try again.",
-            );
+          if (mounted) {
+            await showErrorDialog(context, "An error occurred. Try again.");
           }
         }
       }
