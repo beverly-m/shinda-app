@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/services.dart';
 import 'package:shinda_app/components/buttons.dart';
+import 'package:shinda_app/components/circular_progress_indicator.dart';
 import 'package:shinda_app/components/textfields.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/responsive/responsive_layout.dart';
@@ -256,12 +257,12 @@ class _InventoryViewState extends State<InventoryView> {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? const Center(
-            child: Padding(
-              padding: EdgeInsets.all(24.0),
-              child: CircularProgressIndicator(
-                color: primary,
-              ),
+        ? SizedBox(
+            height: MediaQuery.of(context).size.height * 0.8,
+            child: const Center(
+              child: Padding(
+                  padding: EdgeInsets.all(24.0),
+                  child: AppCircularProgressIndicator()),
             ),
           )
         : Column(
@@ -273,7 +274,11 @@ class _InventoryViewState extends State<InventoryView> {
                     style: dashboardHeadline,
                   ),
                   const Expanded(child: SizedBox()),
+
+                  // ***WITH INVENTORY DATA***
                   _productsData != null && _productsData!.isNotEmpty
+
+                      // ***DESKTOP CREATE PRODUCT BUTTON***
                       ? Responsive.isDesktop(context)
                           ? FilledButton(
                               style: const ButtonStyle(
@@ -299,7 +304,11 @@ class _InventoryViewState extends State<InventoryView> {
                 ],
               ),
               const SizedBox(height: 16.0),
+
+              // ***WITH INVENTORY DATA***
               _productsData != null && _productsData!.isNotEmpty
+
+                  // ***MOBILE WITH INVENTORY DATA***
                   ? Responsive.isMobile(context)
                       ? GridView.builder(
                           shrinkWrap: true,
@@ -377,10 +386,14 @@ class _InventoryViewState extends State<InventoryView> {
                               ),
                             );
                           })
+
+                      // ***DESKTOP WITH INVENTORY DATA***
                       : SizedBox(
                           width: MediaQuery.of(context).size.width * 0.9,
                           child: InventoryDataGrid(data: _productsData!),
                         )
+
+                  // ***WITH NO INVENTORY DATA***
                   : Center(
                       child: Padding(
                         padding: const EdgeInsets.all(48.0),
@@ -388,20 +401,22 @@ class _InventoryViewState extends State<InventoryView> {
                           children: [
                             const Icon(
                               Icons.inventory_2_outlined,
-                              size: 200,
-                              color: Color.fromRGBO(219, 240, 239, 1),
+                              size: 180,
+                              color: surface3,
                             ),
                             const SizedBox(height: 48.0),
                             const Text(
                               "Add a new product to get started",
-                              style: TextStyle(fontSize: 16),
+                              style: body1,
+                              textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 48.0),
                             FilledAppButton(
-                                onPressed: () async {
-                                  await _showAddProductDialog(context);
-                                },
-                                labelText: "Add Product",),
+                              onPressed: () async {
+                                await _showAddProductDialog(context);
+                              },
+                              labelText: "Add Product",
+                            ),
                           ],
                         ),
                       ),
@@ -519,14 +534,14 @@ class _InventoryViewState extends State<InventoryView> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16.0),
+                  const SizedBox(height: 24.0),
                   NormalTextFormField(
                     controller: _description,
                     hintText: 'Enter description',
                     labelText: 'Description (optional)',
                     maxLines: 3,
                   ),
-                  const SizedBox(height: 16.0),
+                  const SizedBox(height: 24.0),
                   NormalTextFormField(
                     controller: _price,
                     hintText: '0.00',
@@ -540,7 +555,7 @@ class _InventoryViewState extends State<InventoryView> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16.0),
+                  const SizedBox(height: 24.0),
                   Row(
                     children: [
                       Expanded(
@@ -562,7 +577,7 @@ class _InventoryViewState extends State<InventoryView> {
                           },
                         ),
                       ),
-                      const SizedBox(width: 16.0),
+                      const SizedBox(width: 24.0),
                       Expanded(
                         child: NormalTextFormField(
                           controller: _reorderLevel,
@@ -576,7 +591,7 @@ class _InventoryViewState extends State<InventoryView> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16.0),
+                  const SizedBox(height: 24.0),
                   NormalTextFormField(
                     controller: _expirationDate,
                     hintText: '0000-00-00 00:00:00.000',
@@ -626,7 +641,7 @@ class _InventoryViewState extends State<InventoryView> {
                   Expanded(
                       child: FilledAppButton(
                     onPressed: _addProduct,
-                    labelText: 'Add product',
+                    labelText: 'Create',
                   )),
                 ],
               ),
