@@ -5,6 +5,7 @@ import 'package:currency_text_input_formatter/currency_text_input_formatter.dart
 import 'package:flutter/services.dart';
 import 'package:shinda_app/components/buttons.dart';
 import 'package:shinda_app/components/circular_progress_indicator.dart';
+import 'package:shinda_app/components/snackbar.dart';
 import 'package:shinda_app/components/textfields.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/responsive/responsive_layout.dart';
@@ -12,7 +13,6 @@ import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
 import 'package:shinda_app/utilities/get_workspace.dart';
 import 'package:shinda_app/utilities/inventory_data.dart';
-import 'package:shinda_app/utilities/show_error_dialog.dart';
 
 class InventoryView extends StatefulWidget {
   const InventoryView({super.key});
@@ -198,7 +198,7 @@ class _InventoryViewState extends State<InventoryView> {
                             quantityAvailable: quantityAvailable.toString(),
                           );
                         },
-                        labelText: 'Update stock'),
+                        labelText: 'Update'),
                   ),
                   const SizedBox(width: 16.0),
                   Expanded(
@@ -242,14 +242,15 @@ class _InventoryViewState extends State<InventoryView> {
           expirationDate: expirationDate2,
           quantityAvailable: quantityAvailable,
         );
+
+        SnackBarService.showSnackBar(content: "Product updated.");
+
+        _getProductData();
       } on GenericWorkspaceException {
-        if (mounted) {
-          showErrorDialog(context, "Failed to add product. Try again");
-        }
+        SnackBarService.showSnackBar(
+            content: "Failed to update product. Try again");
       } catch (e) {
-        if (mounted) {
-          showErrorDialog(context, e.toString());
-        }
+        SnackBarService.showSnackBar(content: e.toString());
       }
     }
   }
@@ -334,8 +335,6 @@ class _InventoryViewState extends State<InventoryView> {
                                 child: InkWell(
                                   borderRadius: BorderRadius.circular(8.0),
                                   onTap: () {
-                                    log(_productsData![index]['stock_id']
-                                        .toString());
                                     _openDetail(
                                         productData: _productsData![index]);
                                   },
@@ -457,15 +456,14 @@ class _InventoryViewState extends State<InventoryView> {
           reorderQuantityLevel: reorderLevel,
         );
 
+        SnackBarService.showSnackBar(content: "Product created!");
+
         _getProductData();
       } on GenericWorkspaceException {
-        if (context.mounted) {
-          showErrorDialog(context, "Failed to add product. Try again");
-        }
+        SnackBarService.showSnackBar(
+            content: "Failed to add product. Try again");
       } catch (e) {
-        if (context.mounted) {
-          showErrorDialog(context, e.toString());
-        }
+        SnackBarService.showSnackBar(content: e.toString());
       }
     }
   }
@@ -512,7 +510,7 @@ class _InventoryViewState extends State<InventoryView> {
           ),
           contentPadding: Responsive.isDesktop(context)
               ? const EdgeInsets.all(48.0)
-              : const EdgeInsets.all(24.0),
+              : const EdgeInsets.all(16.0),
           content: SizedBox(
             width: Responsive.isDesktop(context)
                 ? MediaQuery.of(context).size.width * 0.6
@@ -557,6 +555,7 @@ class _InventoryViewState extends State<InventoryView> {
                   ),
                   const SizedBox(height: 24.0),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: NormalTextFormField(

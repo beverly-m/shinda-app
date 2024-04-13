@@ -170,13 +170,13 @@ class _TransactionsViewState extends State<TransactionsView> {
                           itemCount: _transactionsData!.length,
                         )
 
-                      // TABLET & DESKTOP WITH TRANSACTION DATA
+                      // ***TABLET & DESKTOP WITH TRANSACTION DATA***
                       : SizedBox(
                           width: MediaQuery.of(context).size.width * 0.9,
                           child: TransactionDataGrid(data: _transactionsData!),
                         )
 
-                  // WITH NO TRANSACTION DATA
+                  // ***WITH NO TRANSACTION DATA***
                   : SizedBox(
                       height: MediaQuery.of(context).size.height * 0.6,
                       child: const Center(
