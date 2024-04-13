@@ -178,11 +178,12 @@ class _TransactionsViewState extends State<TransactionsView> {
 
                   // WITH NO TRANSACTION DATA
                   : SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.8,
+                      height: MediaQuery.of(context).size.height * 0.6,
                       child: const Center(
                         child: Padding(
                           padding: EdgeInsets.all(48.0),
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(
                                 Icons.point_of_sale_outlined,
