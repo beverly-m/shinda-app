@@ -1,6 +1,6 @@
 {
-    "name": "shinda_app",
-    "short_name": "shinda_app",
+    "name": "Shinda",
+    "short_name": "Shinda",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

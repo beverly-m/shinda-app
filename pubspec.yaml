@@ -104,6 +104,16 @@ dev_dependencies:
   test: ^1.24.9
   drift_dev: ^2.15.0
   build_runner: ^2.4.8
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  image_path: "assets/logo.png"
+  android: true
+  web: 
+    generate: true
+  adaptive_icon_background: "#eeeeee"
+  adaptive_icon_foreground: "assets/logo_foreground.png"
+  
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -117,9 +127,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/Lottie/shopping_animation.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

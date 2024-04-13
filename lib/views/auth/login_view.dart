@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shinda_app/components/buttons.dart';
 import 'package:shinda_app/components/textfields.dart';
 import 'package:shinda_app/constants/routes.dart';
-import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/auth/auth_exceptions.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
@@ -108,7 +108,11 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        elevation: 0.0,
+        scrolledUnderElevation: 0.0
+
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(
           vertical: 24.0,
@@ -128,7 +132,7 @@ class _LoginViewState extends State<LoginView> {
                     "Login",
                     style: TextStyle(
                       fontSize: 40,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                   const SizedBox(height: 48.0),
@@ -147,20 +151,11 @@ class _LoginViewState extends State<LoginView> {
                   const SizedBox(height: 24.0),
                   PasswordTextFormField(controller: _password),
                   const SizedBox(height: 48.0),
-                  FilledButton(
-                    onPressed: _isLoading ? null : _logIn,
-                    style: const ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(
-                            Color.fromRGBO(0, 121, 107, 1))),
-                    child: _isLoading
-                        ? const Center(
-                            child: CircularProgressIndicator(),
-                          )
-                        : const Text(
-                            'Login',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width, child: FilledAppButton(
+                      onPressed: _logIn,
+                      labelText: 'Login'
+                    ),)
+                  
                   const SizedBox(height: 24.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -168,23 +163,17 @@ class _LoginViewState extends State<LoginView> {
                       const Text(
                         "New to Shinda?",
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 16
                         ),
                       ),
-                      TextButton(
+                      TextAppButton(
                         onPressed: () {
                           Navigator.of(context).pushNamedAndRemoveUntil(
                             registerRoute,
                             (route) => false,
                           );
                         },
-                        child: const Text(
-                          "Register",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Color.fromRGBO(0, 121, 107, 1),
-                          ),
-                        ),
+                        labelText: "Register",
                       ),
                     ],
                   ),
