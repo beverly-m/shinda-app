@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:shinda_app/components/circular_progress_indicator.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
 import 'package:shinda_app/services/workspace/workspace_service.dart';
@@ -54,15 +55,14 @@ class _DebtorDetailsViewState extends State<DebtorDetailsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Debtor Details"),
+        title: const Text("Debtor Details",
+            style: TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: _isLoading
           ? const Center(
               child: Padding(
                 padding: EdgeInsets.all(24.0),
-                child: CircularProgressIndicator(
-                  color: primary,
-                ),
+                child: AppCircularProgressIndicator(),
               ),
             )
           : SingleChildScrollView(

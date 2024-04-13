@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:shinda_app/components/buttons.dart';
+import 'package:shinda_app/components/circular_progress_indicator.dart';
+import 'package:shinda_app/components/linear_progress_indicator.dart';
 import 'package:shinda_app/components/snackbar.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/enums/dropdown_menu.dart';
@@ -261,9 +263,7 @@ class _TransactionDetailsViewState extends State<TransactionDetailsView> {
           ? const Center(
               child: Padding(
                 padding: EdgeInsets.all(24.0),
-                child: CircularProgressIndicator(
-                  color: primary,
-                ),
+                child: AppCircularProgressIndicator(),
               ),
             )
           : SingleChildScrollView(
