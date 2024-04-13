@@ -289,6 +289,7 @@ class _CartItemsViewState extends State<CartItemsView> {
               padding: const EdgeInsets.all(16.0),
               child: Consumer<CartProvider>(
                 builder: (context, provider, widget) {
+                  // ***MOBILE & TABLET EMPTY CART***
                   return provider.cart.isEmpty
                       ? SizedBox(
                           height: MediaQuery.of(context).size.height * 0.8,
@@ -298,7 +299,7 @@ class _CartItemsViewState extends State<CartItemsView> {
                               Center(
                                 child: Icon(
                                   Icons.shopping_cart_checkout_outlined,
-                                  size: 200,
+                                  size: 180,
                                   color: surface3,
                                 ),
                               ),
@@ -312,6 +313,8 @@ class _CartItemsViewState extends State<CartItemsView> {
                             ],
                           ),
                         )
+
+                      // MOBILE & TABLET WITH CART ITEMS
                       : SizedBox(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height,
@@ -337,7 +340,6 @@ class _CartItemsViewState extends State<CartItemsView> {
                                             .cart[index].productPrice
                                             .toString()));
                                       });
-                                      // });
                                     },
                                     deleteQuantity: () {
                                       cart.deleteQuantity(

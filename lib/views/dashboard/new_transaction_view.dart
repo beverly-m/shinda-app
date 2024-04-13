@@ -7,6 +7,7 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 import 'package:shinda_app/components/buttons.dart';
 import 'package:shinda_app/components/cart_item_card.dart';
+import 'package:shinda_app/components/circular_progress_indicator.dart';
 import 'package:shinda_app/components/product_card.dart';
 import 'package:shinda_app/components/textfields.dart';
 import 'package:shinda_app/constants/text_syles.dart';
@@ -504,14 +505,19 @@ class _NewTransactionViewState extends State<NewTransactionView> {
     final cart = Provider.of<CartProvider>(context);
 
     return _isLoading
-        ? const Center(
-            child: Padding(
-              padding: EdgeInsets.all(24.0),
-              child: CircularProgressIndicator(
-                color: primary,
+        ? Container(
+            height: MediaQuery.of(context).size.height * 0.8,
+            width: MediaQuery.of(context).size.width,
+            color: Colors.white,
+            child: const Center(
+              child: Padding(
+                padding: EdgeInsets.all(24.0),
+                child: AppCircularProgressIndicator(),
               ),
             ),
           )
+
+        // *** DESKTOP ***
         : Responsive.isDesktop(context)
             ? SizedBox(
                 width: double.infinity,
@@ -523,6 +529,8 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                       style: dashboardHeadline,
                     ),
                     const SizedBox(height: 16.0),
+
+                    // ***DESKTOP WITH PRODUCTS***
                     _productsData != null && _productsData!.isNotEmpty
                         ? Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -931,6 +939,8 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                               ),
                             ],
                           )
+
+                        // ***DESKTOP WITHOUT PRODUCTS***
                         : Center(
                             child: Padding(
                               padding: const EdgeInsets.all(48.0),
@@ -948,10 +958,11 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                   ),
                                   const SizedBox(height: 48.0),
                                   FilledAppButton(
-                                      onPressed: () async {
-                                        await _showAddProductDialog(context);
-                                      },
-                                      labelText: "Add Product",),
+                                    onPressed: () async {
+                                      await _showAddProductDialog(context);
+                                    },
+                                    labelText: "Add Product",
+                                  ),
                                 ],
                               ),
                             ),
@@ -959,6 +970,8 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                   ],
                 ),
               )
+
+            // ***TABLET & MOBILE VIEW***
             : const NewSaleView();
   }
 }

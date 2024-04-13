@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shinda_app/components/circular_progress_indicator.dart';
 import 'package:shinda_app/components/product_card.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/responsive/responsive_layout.dart';
@@ -96,14 +97,9 @@ class _NewSaleViewState extends State<NewSaleView> {
         ],
       ),
       body: _isLoading
-          ? const Center(
-              child: Padding(
-                padding: EdgeInsets.all(24.0),
-                child: CircularProgressIndicator(
-                  color: primary,
-                ),
-              ),
-            )
+          ? const AppCircularProgressIndicator()
+
+          // ***MOBILE & TABLET WITH PRODUCTS***
           : _productsData != null && _productsData!.isNotEmpty
               ? Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -133,22 +129,29 @@ class _NewSaleViewState extends State<NewSaleView> {
                     },
                   ),
                 )
-              : const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(48.0),
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.inventory_2_outlined,
-                          size: 200,
-                          color: Color.fromRGBO(219, 240, 239, 1),
-                        ),
-                        SizedBox(height: 48.0),
-                        Text(
-                          "Add new products in the inventory to get started",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ],
+
+              // ***MOBILE & TABLET NO PRODUCTS***
+              : SingleChildScrollView(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    child: const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.inventory_2_outlined,
+                            size: 180,
+                            color: Color.fromRGBO(219, 240, 239, 1),
+                          ),
+                          SizedBox(height: 48.0),
+                          Text(
+                            textAlign: TextAlign.center,
+                            "Add new products in the inventory to get started",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
