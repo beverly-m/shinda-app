@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:shinda_app/components/buttons.dart';
-import 'package:shinda_app/components/textfields.dart';
-import 'package:shinda_app/constants/routes.dart';
-import 'package:shinda_app/services/auth/auth_exceptions.dart';
-import 'package:shinda_app/services/auth/auth_service.dart';
-import 'package:shinda_app/utilities/show_error_dialog.dart';
-import 'package:shinda_app/responsive/responsive_layout.dart';
+import 'package:shinda_app/components/buttons.dart'
+    show FilledAppButton, TextAppButton;
+import 'package:shinda_app/components/linear_progress_indicator.dart'
+    show AppLinearProgressIndicator;
+import 'package:shinda_app/components/textfields.dart'
+    show NormalTextFormField, PasswordTextFormField;
+import 'package:shinda_app/constants/routes.dart'
+    show homeRoute, registerRoute, verifyEmailRoute;
+import 'package:shinda_app/services/auth/auth_exceptions.dart'
+    show
+        GenericAuthException,
+        InvalidCredentialAuthException,
+        UnverifiedUserAuthException;
+import 'package:shinda_app/services/auth/auth_service.dart' show AuthService;
+import 'package:shinda_app/utilities/show_error_dialog.dart'
+    show showErrorDialog;
+import 'package:shinda_app/responsive/responsive_layout.dart' show Responsive;
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -19,7 +29,6 @@ class _LoginViewState extends State<LoginView> {
   late final TextEditingController _email;
   late final TextEditingController _password;
   bool _isLoading = false;
-  bool _obscureText = true;
 
   void _logIn() async {
     final isValid = _formKey.currentState?.validate();
@@ -108,11 +117,7 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        scrolledUnderElevation: 0.0
-
-      ),
+      appBar: AppBar(elevation: 0.0, scrolledUnderElevation: 0.0),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(
           vertical: 24.0,
@@ -128,12 +133,15 @@ class _LoginViewState extends State<LoginView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  if (_isLoading)
+                    const Center(
+                      child: Padding(
+                          padding: EdgeInsets.only(bottom: 24.0),
+                          child: AppLinearProgressIndicator()),
+                    ),
                   const Text(
                     "Login",
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold
-                    ),
+                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 48.0),
                   NormalTextFormField(
@@ -150,21 +158,19 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   const SizedBox(height: 24.0),
                   PasswordTextFormField(controller: _password),
-                  const SizedBox(height: 48.0),
-                  SizedBox(width: MediaQuery.of(context).size.width, child: FilledAppButton(
-                      onPressed: _logIn,
-                      labelText: 'Login'
-                    ),)
-                  
+                  const SizedBox(height: 52.0),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child:
+                        FilledAppButton(onPressed: _logIn, labelText: 'Login'),
+                  ),
                   const SizedBox(height: 24.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
                         "New to Shinda?",
-                        style: TextStyle(
-                          fontSize: 16
-                        ),
+                        style: TextStyle(fontSize: 16),
                       ),
                       TextAppButton(
                         onPressed: () {
