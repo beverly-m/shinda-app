@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shinda_app/components/drawer_item.dart' show DrawerItem;
 import 'package:shinda_app/components/show_log_out_dialog.dart'
     show showLogOutDialog;
+import 'package:shinda_app/components/snackbar.dart';
 import 'package:shinda_app/constants/drawer_items.dart' show drawerItems;
 import 'package:shinda_app/constants/drawer_views.dart'
     show drawerViewsMobileTablet;
@@ -180,13 +181,11 @@ class _MobileScaffoldState extends State<MobileScaffold> {
                 .pushNamedAndRemoveUntil(loginRoute, (_) => false);
           }
         } on GenericAuthException {
-          if (mounted) {
-            await showErrorDialog(context, "An error occurred. Try again.");
-          }
+          SnackBarService.showSnackBar(
+              content: "An error occurred. Try again.");
         } catch (_) {
-          if (mounted) {
-            await showErrorDialog(context, "An error occurred. Try again.");
-          }
+          SnackBarService.showSnackBar(
+              content: "An error occurred. Try again.");
         }
       }
     }
