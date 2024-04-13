@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:shinda_app/components/buttons.dart';
-import 'package:shinda_app/constants/routes.dart';
-import 'package:shinda_app/constants/text_syles.dart';
-import 'package:shinda_app/responsive/responsive_layout.dart';
-import 'package:shinda_app/services/auth/auth_exceptions.dart';
-import 'package:shinda_app/services/auth/auth_service.dart';
-import 'package:shinda_app/utilities/show_error_dialog.dart';
+import 'package:shinda_app/components/buttons.dart' show TextAppButton;
+import 'package:shinda_app/constants/routes.dart' show loginRoute;
+import 'package:shinda_app/constants/text_syles.dart' show surface3;
+import 'package:shinda_app/responsive/responsive_layout.dart' show Responsive;
+import 'package:shinda_app/services/auth/auth_exceptions.dart'
+    show GenericAuthException, UserNotLoggedInAuthException;
+import 'package:shinda_app/services/auth/auth_service.dart' show AuthService;
+import 'package:shinda_app/utilities/show_error_dialog.dart'
+    show showErrorDialog;
 
 class VerifyEmailView extends StatefulWidget {
   const VerifyEmailView({super.key});

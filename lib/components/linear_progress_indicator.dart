@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shinda_app/constants/text_syles.dart';
+import 'package:shinda_app/constants/text_syles.dart' show primary;
 
 class AppLinearProgressIndicator extends StatelessWidget {
   const AppLinearProgressIndicator({super.key});
