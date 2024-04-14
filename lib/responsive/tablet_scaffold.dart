@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:shinda_app/components/drawer_item.dart';
 import 'package:shinda_app/components/show_log_out_dialog.dart';
@@ -10,7 +8,6 @@ import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/auth/auth_exceptions.dart';
 import 'package:shinda_app/services/auth/auth_service.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
-import 'package:shinda_app/views/dashboard/home_view.dart';
 import 'package:shinda_app/views/dashboard/new_transaction_view.dart';
 
 class TabletScaffold extends StatefulWidget {
@@ -163,33 +160,32 @@ class _TabletScaffoldState extends State<TabletScaffold> {
         _selectedIndex = index;
       });
     } else {
-      log("Logout");
       final isLogout = await showLogOutDialog(context);
       if (isLogout) {
         try {
           await AuthService.supabase().logOut();
-          if (context.mounted) {
+          if (mounted) {
             Navigator.of(context).pushNamedAndRemoveUntil(
               loginRoute,
               (_) => false,
             );
           }
         } on UserNotLoggedInAuthException {
-          if (context.mounted) {
+          if (mounted) {
             Navigator.of(context).pushNamedAndRemoveUntil(
               loginRoute,
               (_) => false,
             );
           }
         } on GenericAuthException {
-          if (context.mounted) {
+          if (mounted) {
             await showErrorDialog(
               context,
               "An error occurred. Try again.",
             );
           }
         } catch (_) {
-          if (context.mounted) {
+          if (mounted) {
             await showErrorDialog(
               context,
               "An error occurred. Try again.",

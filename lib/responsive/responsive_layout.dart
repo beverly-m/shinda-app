@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart'
     show BuildContext, LayoutBuilder, MediaQuery, StatelessWidget, Widget;
 
@@ -19,13 +17,10 @@ class ResponsiveLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth < 850) {
-        log('is mobile');
         return mobileScaffold;
       } else if (constraints.maxWidth < 1100) {
-        log('is tablet');
         return tabletScaffold;
       } else {
-        log('is desktop');
         return desktopScaffold;
       }
     });

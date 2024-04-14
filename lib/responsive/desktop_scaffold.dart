@@ -1,21 +1,29 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shinda_app/components/circular_progress_indicator.dart';
-import 'package:shinda_app/components/show_log_out_dialog.dart';
-import 'package:shinda_app/constants/drawer_views.dart';
-import 'package:shinda_app/constants/navigation_rail_items.dart';
-import 'package:shinda_app/constants/routes.dart';
-import 'package:shinda_app/constants/text_syles.dart';
-import 'package:shinda_app/services/auth/auth_exceptions.dart';
-import 'package:shinda_app/services/auth/auth_service.dart';
-import 'package:shinda_app/services/auth/auth_user.dart';
-import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
-import 'package:shinda_app/utilities/show_error_dialog.dart';
-import 'package:shinda_app/views/dashboard/home_view.dart';
-import 'package:shinda_app/services/workspace/workspace_service.dart';
-import 'package:shinda_app/utilities/get_workspace.dart';
+import 'package:shared_preferences/shared_preferences.dart'
+    show SharedPreferences;
+import 'package:shinda_app/components/circular_progress_indicator.dart'
+    show AppCircularProgressIndicator;
+import 'package:shinda_app/components/show_log_out_dialog.dart'
+    show showLogOutDialog;
+import 'package:shinda_app/components/snackbar.dart' show SnackBarService;
+import 'package:shinda_app/constants/drawer_views.dart' show drawerViewsDesktop;
+import 'package:shinda_app/constants/navigation_rail_items.dart'
+    show navigationRailItems;
+import 'package:shinda_app/constants/routes.dart' show loginRoute;
+import 'package:shinda_app/constants/text_syles.dart'
+    show body2, subtitle2, surface3;
+import 'package:shinda_app/services/auth/auth_exceptions.dart'
+    show GenericAuthException, UserNotLoggedInAuthException;
+import 'package:shinda_app/services/auth/auth_service.dart' show AuthService;
+import 'package:shinda_app/services/auth/auth_user.dart' show AuthUser;
+import 'package:shinda_app/services/workspace/workspace_exceptions.dart'
+    show GenericWorkspaceException;
+import 'package:shinda_app/utilities/show_error_dialog.dart'
+    show showErrorDialog;
+import 'package:shinda_app/services/workspace/workspace_service.dart'
+    show WorkspaceService;
+import 'package:shinda_app/utilities/get_workspace.dart'
+    show getCurrentWorkspaceId, getCurrentWorkspaceName, getWorkspaceMember;
 
 class DesktopScaffold extends StatefulWidget {
   const DesktopScaffold({super.key});
@@ -97,11 +105,12 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
         });
       }
     } on GenericWorkspaceException {
-      log("Error occurred");
-      _isLoading = false;
+      SnackBarService.showSnackBar(content: "Error occurred");
     } catch (e) {
-      log(e.toString());
-      _isLoading = false;
+      SnackBarService.showSnackBar(content: e.toString());
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
