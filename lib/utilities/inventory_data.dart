@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:shinda_app/components/buttons.dart';
+import 'package:shinda_app/components/circular_progress_indicator.dart';
+import 'package:shinda_app/components/snackbar.dart';
 import 'package:shinda_app/components/textfields.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
@@ -340,6 +342,9 @@ class _InventoryDataGridState extends State<InventoryDataGrid> {
           expirationDate: expirationDate,
           quantityAvailable: quantityAvailable,
         );
+
+        SnackBarService.showSnackBar(content: "Product updated.");
+
       } on GenericWorkspaceException {
         if (mounted) {
           showErrorDialog(context, "Failed to add product. Try again");
@@ -356,9 +361,7 @@ class _InventoryDataGridState extends State<InventoryDataGrid> {
   Widget build(BuildContext context) {
     return _isLoading
         ? const Center(
-            child: CircularProgressIndicator(
-              color: primary,
-            ),
+            child: AppCircularProgressIndicator()
           )
         : SizedBox(
             width: MediaQuery.of(context).size.width * 0.9,

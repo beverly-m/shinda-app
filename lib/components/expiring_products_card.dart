@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
+import 'package:shinda_app/components/circular_progress_indicator.dart';
 import 'package:shinda_app/components/custom_card.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 
@@ -62,7 +63,7 @@ class _ExpiringProductsCardState extends State<ExpiringProductsCard> {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? const Center(child: CircularProgressIndicator())
+        ? const Center(child: AppCircularProgressIndicator())
         : CustomCard(
             child: SizedBox(
             height: 200,

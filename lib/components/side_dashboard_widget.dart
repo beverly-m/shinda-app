@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:shinda_app/components/expiring_products_card.dart';
+import 'package:shinda_app/components/linear_progress_indicator.dart';
 import 'package:shinda_app/components/products_stock_card.dart';
 import 'package:shinda_app/components/sold_products_card.dart';
 import 'package:shinda_app/constants/text_syles.dart';
@@ -65,12 +66,15 @@ class _SideDashboardWidgetState extends State<SideDashboardWidget> {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? const Center(
-            child: CircularProgressIndicator(
-            strokeWidth: 2.0,
-            color: primary,
-            valueColor: AlwaysStoppedAnimation(surface3),
-          ))
+        ? Center(
+            child: SizedBox(
+              width: 64.0,
+              height: 2.0,
+              child: AppLinearProgressIndicator(
+                color: primary.withOpacity(0.5),
+              ),
+            ),
+          )
         : Column(
             children: [
               const SizedBox(height: 16.0),

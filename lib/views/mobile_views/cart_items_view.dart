@@ -7,6 +7,7 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 import 'package:shinda_app/components/buttons.dart';
 import 'package:shinda_app/components/cart_item_card.dart';
+import 'package:shinda_app/components/circular_progress_indicator.dart';
 import 'package:shinda_app/components/snackbar.dart';
 import 'package:shinda_app/components/textfields.dart';
 import 'package:shinda_app/constants/text_syles.dart';
@@ -273,7 +274,7 @@ class _CartItemsViewState extends State<CartItemsView> {
         ),
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: AppCircularProgressIndicator())
           : SingleChildScrollView(
               child: Padding(
               padding: const EdgeInsets.all(16.0),

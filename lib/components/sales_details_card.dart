@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shinda_app/components/custom_card.dart';
+import 'package:shinda_app/components/linear_progress_indicator.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/responsive/responsive_layout.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
@@ -68,7 +69,11 @@ class _SalesDetailsCardState extends State<SalesDetailsCard> {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? const CircularProgressIndicator()
+        ? SizedBox(
+            width: 48,
+            child: AppLinearProgressIndicator(
+              color: primary.withOpacity(0.5),
+            ))
         : GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: Responsive.isMobile(context)

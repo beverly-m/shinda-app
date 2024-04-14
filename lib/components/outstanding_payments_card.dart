@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:shinda_app/components/custom_card.dart';
+import 'package:shinda_app/components/linear_progress_indicator.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/responsive/responsive_layout.dart';
 
@@ -114,9 +115,7 @@ class _OutstandingPaymentsCardState extends State<OutstandingPaymentsCard> {
   Widget build(BuildContext context) {
     return _isLoading
         ? const Center(
-            child: CircularProgressIndicator(
-              color: primary,
-            ),
+            child: AppLinearProgressIndicator(),
           )
         : CustomCard(
             child: Column(

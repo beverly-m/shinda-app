@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shinda_app/components/custom_card.dart';
+import 'package:shinda_app/components/linear_progress_indicator.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 
 class ProductsStockCard extends StatefulWidget {
@@ -40,7 +41,7 @@ class _ProductsStockCardState extends State<ProductsStockCard> {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? const Center(child: CircularProgressIndicator())
+        ? const Center(child: AppLinearProgressIndicator())
         : CustomCard(
             child: SizedBox(
               height: 180,

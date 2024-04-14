@@ -30,7 +30,7 @@ void main() {
         scaffoldMessengerKey: SnackBarService.scaffoldKey,
         title: 'Shinda',
         theme: _buildTheme(Brightness.light),
-        home: const SplashView(),
+        home: const InitApp(),
         routes: {
           loginRoute: (context) => const LoginView(),
           registerRoute: (context) => const RegisterView(),
@@ -81,11 +81,7 @@ class InitApp extends StatelessWidget {
             }
 
           default:
-            return const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
+            return const SplashView();
         }
       },
     );

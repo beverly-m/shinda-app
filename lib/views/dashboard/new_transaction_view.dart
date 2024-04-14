@@ -336,7 +336,8 @@ class _NewTransactionViewState extends State<NewTransactionView> {
             borderRadius: BorderRadius.circular(8.0),
           ),
           scrollable: true,
-          title: const Text("Credit Purchase Details"),
+          title: const Text("Credit Purchase Details",
+              style: TextStyle(fontWeight: FontWeight.bold)),
           contentPadding: const EdgeInsets.all(24.0),
           content: SizedBox(
             width: MediaQuery.of(context).size.width * 0.4,
@@ -344,15 +345,10 @@ class _NewTransactionViewState extends State<NewTransactionView> {
               key: _formKey2,
               child: Column(
                 children: [
-                  TextFormField(
-                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
-                    decoration: const InputDecoration(
-                      hoverColor: Color.fromRGBO(0, 121, 107, 1),
-                      focusColor: Color.fromRGBO(0, 121, 107, 1),
-                      labelText: "Client Name",
-                      hintText: "Enter the name of the client",
-                    ),
+                  NormalTextFormField(
                     controller: _clientName,
+                    hintText: "Enter the name of the client",
+                    labelText: "Client Name",
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Client name required';
@@ -362,7 +358,25 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16.0),
+                  // TextFormField(
+                  //   cursorColor: const Color.fromRGBO(0, 121, 107, 1),
+                  //   decoration: const InputDecoration(
+                  //     hoverColor: Color.fromRGBO(0, 121, 107, 1),
+                  //     focusColor: Color.fromRGBO(0, 121, 107, 1),
+                  //     labelText: "Client Name",
+                  //     hintText: "Enter the name of the client",
+                  //   ),
+                  //   controller: _clientName,
+                  //   validator: (value) {
+                  //     if (value == null || value.isEmpty) {
+                  //       return 'Client name required';
+                  //     } else if (value.length < 3) {
+                  //       return "At least 3 characters";
+                  //     }
+                  //     return null;
+                  //   },
+                  // ),
+                  const SizedBox(height: 24.0),
                   InternationalPhoneNumberInput(
                     cursorColor: const Color.fromRGBO(0, 121, 107, 1),
                     initialValue: number,
@@ -383,60 +397,46 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                     ),
                     textFieldController: _phoneNumber,
                   ),
-                  const SizedBox(height: 16.0),
-                  TextFormField(
-                    cursorColor: const Color.fromRGBO(0, 121, 107, 1),
-                    decoration: const InputDecoration(
-                      hoverColor: Color.fromRGBO(0, 121, 107, 1),
-                      focusColor: Color.fromRGBO(0, 121, 107, 1),
-                      labelText: "Address",
+                  const SizedBox(height: 24.0),
+                  NormalTextFormField(
+                      controller: _address,
                       hintText: "Enter your address here",
-                    ),
-                    controller: _address,
-                  ),
+                      labelText: "Address"),
+                  // TextFormField(
+                  //   cursorColor: const Color.fromRGBO(0, 121, 107, 1),
+                  //   decoration: const InputDecoration(
+                  //     hoverColor: Color.fromRGBO(0, 121, 107, 1),
+                  //     focusColor: Color.fromRGBO(0, 121, 107, 1),
+                  //     labelText: "Address",
+                  //     hintText: "Enter your address here",
+                  //   ),
+                  //   controller: _address,
+                  // ),
                 ],
               ),
             ),
           ),
           actions: [
-            TextButton(
-              onPressed: () {
-                _clientName.clear();
-                _address.clear();
-                _phoneNumber.clear();
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                "Cancel",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Color.fromRGBO(0, 121, 107, 1),
-                ),
-              ),
-            ),
-            FilledButton(
-              onPressed: () {
-                _addDebtor(
-                  workspaceId: workspaceId,
-                  subTotal: subTotal,
-                  grandTotal: grandTotal,
-                  isPaid: isPaid,
-                  products: products,
-                  cart: cart,
-                );
-              },
-              style: const ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(
-                  Color.fromRGBO(0, 121, 107, 1),
-                ),
-              ),
-              child: const Text(
-                "Add Debtor",
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
-            ),
+            TextAppButton(
+                onPressed: () {
+                  _clientName.clear();
+                  _address.clear();
+                  _phoneNumber.clear();
+                  Navigator.of(context).pop();
+                },
+                labelText: "Cancel"),
+            FilledAppButton(
+                onPressed: () {
+                  _addDebtor(
+                    workspaceId: workspaceId,
+                    subTotal: subTotal,
+                    grandTotal: grandTotal,
+                    isPaid: isPaid,
+                    products: products,
+                    cart: cart,
+                  );
+                },
+                labelText: "Add Debtor"),
           ],
         );
       },
@@ -481,9 +481,12 @@ class _NewTransactionViewState extends State<NewTransactionView> {
           address: address.isNotEmpty ? address : null,
         );
 
+        SnackBarService.showSnackBar(content: "Credit purchase added");
+
         setState(() {
           _isLoading = false;
         });
+
         cart.clearCart();
 
         _getProductData();
@@ -911,6 +914,8 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                                 isPaid: true,
                                                                                 products: provider.cart,
                                                                               );
+
+                                                                              SnackBarService.showSnackBar(content: "Transaction added");
 
                                                                               provider.clearCart();
 

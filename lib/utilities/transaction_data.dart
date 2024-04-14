@@ -4,8 +4,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:shinda_app/components/buttons.dart';
+import 'package:shinda_app/components/circular_progress_indicator.dart';
 import 'package:shinda_app/components/client_details_listtile.dart';
 import 'package:shinda_app/components/product_details_listtile.dart';
+import 'package:shinda_app/components/snackbar.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/enums/dropdown_menu.dart';
 import 'package:shinda_app/services/auth/auth_exceptions.dart';
@@ -288,6 +290,9 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
                                   workspaceId: _currentWorkspaceId!,
                                 );
 
+                                SnackBarService.showSnackBar(
+                                    content: "Transaction deleted.");
+
                                 _getData();
 
                                 if (context.mounted) {
@@ -466,6 +471,8 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
         paymentMode: paymentMode,
       );
 
+      SnackBarService.showSnackBar(content: "Transaction updated.");
+
       if (!mounted) {
         return;
       }
@@ -535,9 +542,7 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
   Widget build(BuildContext context) {
     return _isLoading
         ? const Center(
-            child: CircularProgressIndicator(
-              color: primary,
-            ),
+            child: AppCircularProgressIndicator(),
           )
         : SizedBox(
             width: MediaQuery.of(context).size.width * 0.9,
