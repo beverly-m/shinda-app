@@ -31,8 +31,6 @@ class SupabaseAuthProvider implements auth_provider.AuthProvider {
           .limit(1)
           .maybeSingle();
 
-      devtools.log(isEmailExist?['email'].toString() ?? "none");
-
       if (isEmailExist != null && isEmailExist['email'].toString().isNotEmpty) {
         throw EmailAlreadyInUseAuthException();
       }
