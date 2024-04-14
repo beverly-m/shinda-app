@@ -1,16 +1,19 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:shinda_app/components/custom_card.dart';
-import 'package:shinda_app/components/outstanding_payments_card.dart';
-import 'package:shinda_app/components/line_chart_card.dart';
-import 'package:shinda_app/components/pie_chart_card.dart';
-import 'package:shinda_app/components/side_dashboard_widget.dart';
-import 'package:shinda_app/constants/text_syles.dart';
-import 'package:shinda_app/responsive/responsive_layout.dart';
-import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
-import 'package:shinda_app/services/workspace/workspace_service.dart';
+import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
+import 'package:shinda_app/components/custom_card.dart' show CustomCard;
+import 'package:shinda_app/components/outstanding_payments_card.dart'
+    show OutstandingPaymentsCard;
+import 'package:shinda_app/components/line_chart_card.dart' show LineChartCard;
+import 'package:shinda_app/components/pie_chart_card.dart' show PieChartCard;
+import 'package:shinda_app/components/side_dashboard_widget.dart'
+    show SideDashboardWidget;
+import 'package:shinda_app/components/snackbar.dart' show SnackBarService;
+import 'package:shinda_app/constants/text_syles.dart' show neutral4, primary;
+import 'package:shinda_app/responsive/responsive_layout.dart' show Responsive;
+import 'package:shinda_app/services/workspace/workspace_exceptions.dart'
+    show GenericWorkspaceException;
+import 'package:shinda_app/services/workspace/workspace_service.dart'
+    show WorkspaceService;
 
 class DashboardWidget extends StatefulWidget {
   const DashboardWidget({super.key, required this.workspaceId});
@@ -65,12 +68,12 @@ class _DashboardWidgetState extends State<DashboardWidget> {
         _isLoading = false;
       });
     } on GenericWorkspaceException {
-      log("Error occurred");
+      SnackBarService.showSnackBar(content: "Error occurred");
       setState(() {
         _isLoading = false;
       });
     } catch (e) {
-      log(e.toString());
+      SnackBarService.showSnackBar(content: e.toString());
       setState(() {
         _isLoading = false;
       });

@@ -1,9 +1,9 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:shinda_app/components/custom_card.dart';
-import 'package:shinda_app/components/indicator.dart';
-import 'package:shinda_app/constants/text_syles.dart';
-import 'package:shinda_app/responsive/responsive_layout.dart';
+import 'package:shinda_app/components/custom_card.dart' show CustomCard;
+import 'package:shinda_app/components/indicator.dart' show Indicator;
+import 'package:shinda_app/constants/text_syles.dart' show subtitle1, surface3;
+import 'package:shinda_app/responsive/responsive_layout.dart' show Responsive;
 
 class PieChartCard extends StatefulWidget {
   const PieChartCard({super.key, required this.salesData});

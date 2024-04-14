@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:shinda_app/components/custom_card.dart';
-import 'package:shinda_app/components/linear_progress_indicator.dart';
-import 'package:shinda_app/constants/text_syles.dart';
+import 'package:shinda_app/components/custom_card.dart' show CustomCard;
+import 'package:shinda_app/components/linear_progress_indicator.dart'
+    show AppLinearProgressIndicator;
+import 'package:shinda_app/constants/text_syles.dart'
+    show primary, subtitle1, surface3;
 
 class ProductsStockCard extends StatefulWidget {
   const ProductsStockCard({super.key, required this.lowInStockProductsData});

@@ -1,14 +1,16 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:shinda_app/components/custom_card.dart';
-import 'package:shinda_app/components/linear_progress_indicator.dart';
-import 'package:shinda_app/constants/text_syles.dart';
-import 'package:shinda_app/responsive/responsive_layout.dart';
-import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
-import 'package:shinda_app/services/workspace/workspace_service.dart';
-import 'package:shinda_app/utilities/models/sales_model.dart';
+import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
+import 'package:shinda_app/components/custom_card.dart' show CustomCard;
+import 'package:shinda_app/components/linear_progress_indicator.dart'
+    show AppLinearProgressIndicator;
+import 'package:shinda_app/components/snackbar.dart' show SnackBarService;
+import 'package:shinda_app/constants/text_syles.dart' show neutral4, primary;
+import 'package:shinda_app/responsive/responsive_layout.dart' show Responsive;
+import 'package:shinda_app/services/workspace/workspace_exceptions.dart'
+    show GenericWorkspaceException;
+import 'package:shinda_app/services/workspace/workspace_service.dart'
+    show WorkspaceService;
+import 'package:shinda_app/utilities/models/sales_model.dart' show SalesDetails;
 
 class SalesDetailsCard extends StatefulWidget {
   const SalesDetailsCard({super.key, required this.workspaceId});
@@ -54,12 +56,12 @@ class _SalesDetailsCardState extends State<SalesDetailsCard> {
         _isLoading = false;
       });
     } on GenericWorkspaceException {
-      log("Error occurred");
+      SnackBarService.showSnackBar(content: "Error occurred");
       setState(() {
         _isLoading = false;
       });
     } catch (e) {
-      log(e.toString());
+      SnackBarService.showSnackBar(content: e.toString());
       setState(() {
         _isLoading = false;
       });

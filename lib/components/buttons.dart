@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:shinda_app/constants/text_syles.dart';
-import 'package:shinda_app/responsive/responsive_layout.dart';
+import 'package:shinda_app/constants/text_syles.dart'
+    show
+        neutral3,
+        neutral4,
+        primary,
+        primaryButtonStyle,
+        secondaryButtonStyle,
+        subtitle2;
+import 'package:shinda_app/responsive/responsive_layout.dart' show Responsive;
 
 class OutlinedAppButton extends StatelessWidget {
   final void Function() onPressed;
@@ -36,7 +43,10 @@ class FilledAppButton extends StatelessWidget {
   final Color backgroundColor;
 
   const FilledAppButton(
-      {super.key, required this.onPressed, required this.labelText, this.backgroundColor = primary});
+      {super.key,
+      required this.onPressed,
+      required this.labelText,
+      this.backgroundColor = primary});
 
   @override
   Widget build(BuildContext context) {

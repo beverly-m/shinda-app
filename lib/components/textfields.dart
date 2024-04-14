@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:shinda_app/constants/text_syles.dart';
+import 'package:flutter/services.dart'
+    show TextInputAction, TextInputFormatter, TextInputType;
+import 'package:shinda_app/constants/text_syles.dart' show primary;
 
 class NormalTextFormField extends StatelessWidget {
   const NormalTextFormField({
@@ -14,7 +15,8 @@ class NormalTextFormField extends StatelessWidget {
     this.validator,
     this.maxLines = 1,
     this.inputFormatters,
-    this.readOnly = false, this.onTap,
+    this.readOnly = false,
+    this.onTap,
   });
 
   final TextEditingController controller;

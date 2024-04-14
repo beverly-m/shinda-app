@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shinda_app/constants/text_syles.dart';
+import 'package:shinda_app/constants/text_syles.dart' show subtitle2, surface1;
 
 class ProductDetailsListTile extends StatelessWidget {
   const ProductDetailsListTile({

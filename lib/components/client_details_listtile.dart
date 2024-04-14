@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shinda_app/components/buttons.dart';
-import 'package:shinda_app/constants/text_syles.dart';
+import 'package:shinda_app/components/buttons.dart' show OutlinedAppButton;
+import 'package:shinda_app/constants/text_syles.dart' show surface1;
 
 class ClientDetailsListTile extends StatelessWidget {
   const ClientDetailsListTile({

@@ -1,13 +1,18 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:shinda_app/components/expiring_products_card.dart';
-import 'package:shinda_app/components/linear_progress_indicator.dart';
-import 'package:shinda_app/components/products_stock_card.dart';
-import 'package:shinda_app/components/sold_products_card.dart';
-import 'package:shinda_app/constants/text_syles.dart';
-import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
-import 'package:shinda_app/services/workspace/workspace_service.dart';
+import 'package:shinda_app/components/expiring_products_card.dart'
+    show ExpiringProductsCard;
+import 'package:shinda_app/components/linear_progress_indicator.dart'
+    show AppLinearProgressIndicator;
+import 'package:shinda_app/components/products_stock_card.dart'
+    show ProductsStockCard;
+import 'package:shinda_app/components/snackbar.dart' show SnackBarService;
+import 'package:shinda_app/components/sold_products_card.dart'
+    show SoldProductsCard;
+import 'package:shinda_app/constants/text_syles.dart' show primary;
+import 'package:shinda_app/services/workspace/workspace_exceptions.dart'
+    show GenericWorkspaceException;
+import 'package:shinda_app/services/workspace/workspace_service.dart'
+    show WorkspaceService;
 
 class SideDashboardWidget extends StatefulWidget {
   const SideDashboardWidget({super.key, required this.workspaceId});
@@ -49,14 +54,12 @@ class _SideDashboardWidgetState extends State<SideDashboardWidget> {
         _isLoading = false;
       });
     } on GenericWorkspaceException {
-      log("Error occurred");
-      if (!mounted) return;
+      SnackBarService.showSnackBar(content: "Error occurred");
       setState(() {
         _isLoading = false;
       });
     } catch (e) {
-      log(e.toString());
-      if (!mounted) return;
+      SnackBarService.showSnackBar(content: e.toString());
       setState(() {
         _isLoading = false;
       });

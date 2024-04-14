@@ -1,10 +1,10 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
-import 'package:shinda_app/components/circular_progress_indicator.dart';
-import 'package:shinda_app/components/custom_card.dart';
-import 'package:shinda_app/constants/text_syles.dart';
+import 'package:shinda_app/components/circular_progress_indicator.dart'
+    show AppCircularProgressIndicator;
+import 'package:shinda_app/components/custom_card.dart' show CustomCard;
+import 'package:shinda_app/constants/text_syles.dart'
+    show primary, subtitle1, surface1, surface3;
 
 class ExpiringProductsCard extends StatefulWidget {
   const ExpiringProductsCard({super.key, this.expiredProductsData});
@@ -121,9 +121,6 @@ class _ExpiringProductsCardState extends State<ExpiringProductsCard> {
                     onLoaded: (PlutoGridOnLoadedEvent event) {
                       event.stateManager
                           .setSelectingMode(PlutoGridSelectingMode.none);
-                    },
-                    onChanged: (PlutoGridOnChangedEvent event) {
-                      log(event.toString());
                     },
                     configuration: PlutoGridConfiguration(
                       style: PlutoGridStyleConfig(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shinda_app/constants/text_syles.dart';
+import 'package:shinda_app/constants/text_syles.dart' show surface1, surface3;
 
 class CustomCard extends StatelessWidget {
   const CustomCard({

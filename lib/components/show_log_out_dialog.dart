@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shinda_app/components/buttons.dart';
+import 'package:shinda_app/components/buttons.dart'
+    show FilledAppButton, TextAppButton;
 
 Future<bool> showLogOutDialog(BuildContext context) {
   return showDialog<bool>(

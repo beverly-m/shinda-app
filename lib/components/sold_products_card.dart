@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
-import 'package:shinda_app/components/custom_card.dart';
-import 'package:shinda_app/components/linear_progress_indicator.dart';
-import 'package:shinda_app/constants/text_syles.dart';
+import 'package:shinda_app/components/custom_card.dart' show CustomCard;
+import 'package:shinda_app/components/linear_progress_indicator.dart'
+    show AppLinearProgressIndicator;
+import 'package:shinda_app/constants/text_syles.dart'
+    show subtitle1, surface1, surface3;
 
 class SoldProductsCard extends StatefulWidget {
   const SoldProductsCard({super.key, required this.soldProductsData});
