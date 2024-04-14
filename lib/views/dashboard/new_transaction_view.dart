@@ -21,6 +21,7 @@ import 'package:shinda_app/utilities/models/cart_model.dart';
 import 'package:shinda_app/utilities/providers/cart_provider.dart';
 import 'package:shinda_app/utilities/show_error_dialog.dart';
 import 'package:shinda_app/views/mobile_views/new_sale_view.dart';
+import 'package:shinda_app/components/snackbar.dart';
 
 class NewTransactionView extends StatefulWidget {
   const NewTransactionView({super.key});
@@ -267,6 +268,8 @@ class _NewTransactionViewState extends State<NewTransactionView> {
           expirationDate: expirationDate,
           reorderQuantityLevel: reorderLevel,
         );
+
+        SnackBarService.showSnackBar(content: "Product added.");
 
         _getProductData();
       } on GenericWorkspaceException {

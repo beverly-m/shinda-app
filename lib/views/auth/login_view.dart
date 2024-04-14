@@ -3,12 +3,10 @@ import 'package:shinda_app/components/buttons.dart'
     show FilledAppButton, TextAppButton;
 import 'package:shinda_app/components/linear_progress_indicator.dart'
     show AppLinearProgressIndicator;
-import 'package:shinda_app/components/snackbar.dart';
 import 'package:shinda_app/components/textfields.dart'
     show NormalTextFormField, PasswordTextFormField;
 import 'package:shinda_app/constants/routes.dart'
     show homeRoute, registerRoute, verifyEmailRoute;
-import 'package:shinda_app/constants/supabase.dart';
 import 'package:shinda_app/services/auth/auth_exceptions.dart'
     show
         GenericAuthException,
@@ -108,13 +106,6 @@ class _LoginViewState extends State<LoginView> {
 
     _email = TextEditingController();
     _password = TextEditingController();
-
-    if (supabase.auth.currentUser != null) {
-      if (supabase.auth.currentUser!.emailConfirmedAt != null) {
-        SnackBarService.showSnackBar(
-            content: "Email confirmed! Proceed to login");
-      }
-    }
   }
 
   @override
