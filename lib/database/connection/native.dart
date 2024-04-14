@@ -1,13 +1,11 @@
-import 'dart:io' show File, Platform;
+import 'dart:io';
 
-import 'package:drift/drift.dart' show DatabaseConnection;
-import 'package:drift/native.dart' show NativeDatabase;
-import 'package:path_provider/path_provider.dart'
-    show getApplicationDocumentsDirectory, getTemporaryDirectory;
+import 'package:drift/drift.dart';
+import 'package:drift/native.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
-import 'package:sqlite3/sqlite3.dart' show sqlite3;
-import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart'
-    show applyWorkaroundToOpenSqlite3OnOldAndroidVersions;
+import 'package:sqlite3/sqlite3.dart';
+import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
 DatabaseConnection openConnection() {
   return DatabaseConnection.delayed(Future(() async {

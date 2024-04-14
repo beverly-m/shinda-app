@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart'
-    show BuildContext, LayoutBuilder, MediaQuery, StatelessWidget, Widget;
+import 'package:flutter/material.dart';
 
 class ResponsiveLayout extends StatelessWidget {
   const ResponsiveLayout({

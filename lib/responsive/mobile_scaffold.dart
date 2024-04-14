@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:shinda_app/components/drawer_item.dart' show DrawerItem;
-import 'package:shinda_app/components/show_log_out_dialog.dart'
-    show showLogOutDialog;
+import 'package:shinda_app/components/drawer_item.dart';
+import 'package:shinda_app/components/show_log_out_dialog.dart';
 import 'package:shinda_app/components/snackbar.dart';
-import 'package:shinda_app/constants/drawer_items.dart' show drawerItems;
-import 'package:shinda_app/constants/drawer_views.dart'
-    show drawerViewsMobileTablet;
-import 'package:shinda_app/constants/routes.dart' show loginRoute;
-import 'package:shinda_app/constants/text_syles.dart' show primary;
-import 'package:shinda_app/services/auth/auth_exceptions.dart'
-    show GenericAuthException, UserNotLoggedInAuthException;
-import 'package:shinda_app/services/auth/auth_service.dart' show AuthService;
-import 'package:shinda_app/views/dashboard/new_transaction_view.dart'
-    show NewTransactionView;
+import 'package:shinda_app/constants/drawer_items.dart';
+import 'package:shinda_app/constants/drawer_views.dart';
+import 'package:shinda_app/constants/routes.dart';
+import 'package:shinda_app/constants/text_syles.dart';
+import 'package:shinda_app/services/auth/auth_exceptions.dart';
+import 'package:shinda_app/services/auth/auth_service.dart';
+import 'package:shinda_app/views/dashboard/new_transaction_view.dart';
 
 class MobileScaffold extends StatefulWidget {
   const MobileScaffold({super.key});

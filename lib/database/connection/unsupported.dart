@@ -1,4 +1,4 @@
-import 'package:drift/drift.dart' show DatabaseConnection;
+import 'package:drift/drift.dart';
 
 Never _unsupported() {
   throw UnsupportedError(
