@@ -1,7 +1,7 @@
-import 'dart:developer';
+import 'dart:developer' show log;
 
-import 'package:drift/drift.dart';
-import 'package:drift/wasm.dart';
+import 'package:drift/drift.dart' show DatabaseConnection;
+import 'package:drift/wasm.dart' show WasmDatabase;
 
 DatabaseConnection openConnection() {
   return DatabaseConnection.delayed(Future(() async {
