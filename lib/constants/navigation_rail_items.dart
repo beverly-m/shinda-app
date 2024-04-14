@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shinda_app/constants/text_syles.dart';
+import 'package:shinda_app/constants/text_syles.dart' show body2, primary;
 
 final List<NavigationRailDestination> navigationRailItems = [
   NavigationRailDestination(

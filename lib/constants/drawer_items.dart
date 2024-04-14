@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shinda_app/components/drawer_item.dart';
+import 'package:shinda_app/components/drawer_item.dart' show DrawerItem;
 
 final List<DrawerItem> drawerItems = [
   const DrawerItem(
