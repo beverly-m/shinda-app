@@ -39,8 +39,15 @@ class _DebtorsViewState extends State<DebtorsView> {
     try {
       final currentWorkspace = await getCurrentWorkspaceId();
 
+      if (currentWorkspace == null) {
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
+
       final List<Map<String, dynamic>> debtors =
-          await WorkspaceService().getDebtors(workspaceId: currentWorkspace!);
+          await WorkspaceService().getDebtors(workspaceId: currentWorkspace);
 
       if (!mounted) return;
       setState(() {
@@ -48,10 +55,10 @@ class _DebtorsViewState extends State<DebtorsView> {
         _isLoading = false;
       });
     } on GenericWorkspaceException {
-      log("Error occurred");
+      log("Error occurred---getDebtorData");
       _isLoading = false;
     } catch (e) {
-      log(e.toString());
+      log('${e.toString()}---getDebtorData');
       _isLoading = false;
     }
   }

@@ -1,7 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:shinda_app/components/drawer_item.dart';
 import 'package:shinda_app/components/show_log_out_dialog.dart';
-import 'package:shinda_app/components/snackbar.dart';
 import 'package:shinda_app/constants/drawer_items.dart';
 import 'package:shinda_app/constants/drawer_views.dart';
 import 'package:shinda_app/constants/routes.dart';
@@ -176,11 +177,9 @@ class _MobileScaffoldState extends State<MobileScaffold> {
                 .pushNamedAndRemoveUntil(loginRoute, (_) => false);
           }
         } on GenericAuthException {
-          SnackBarService.showSnackBar(
-              content: "An error occurred. Try again.");
+          log("Error occurred---selectItem");
         } catch (_) {
-          SnackBarService.showSnackBar(
-              content: "An error occurred. Try again.");
+          log(_.toString());
         }
       }
     }

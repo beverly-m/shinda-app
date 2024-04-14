@@ -92,6 +92,13 @@ class _DashboardViewState extends State<DashboardView> {
           _isLoading = false;
         });
       } else {
+        if (_workspaceData == null || _workspaceData!.isEmpty) {
+          setState(() {
+            _isLoading = false;
+          });
+          return;
+        }
+
         _selectWorkspace(
           workspace: _workspaceData![0]['workspace_id'],
           workspaceName: _workspaceData![0]['workspace']['name'],
@@ -563,4 +570,3 @@ class _DashboardViewState extends State<DashboardView> {
   //   );
   // }
 }
-

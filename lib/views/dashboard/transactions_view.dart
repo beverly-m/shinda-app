@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:shinda_app/components/circular_progress_indicator.dart';
 import 'package:shinda_app/constants/text_syles.dart';
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart';
@@ -37,8 +38,15 @@ class _TransactionsViewState extends State<TransactionsView> {
     try {
       final currentWorkspace = await getCurrentWorkspaceId();
 
+      if (currentWorkspace == null) {
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
+
       final List<Map<String, dynamic>> transactions = await WorkspaceService()
-          .getTransactions(workspaceId: currentWorkspace!);
+          .getTransactions(workspaceId: currentWorkspace);
 
       if (!mounted) return;
       setState(() {
@@ -46,10 +54,10 @@ class _TransactionsViewState extends State<TransactionsView> {
         _isLoading = false;
       });
     } on GenericWorkspaceException {
-      log("Error occurred");
+      log("Error occurred---getTransactionData");
       _isLoading = false;
     } catch (e) {
-      log(e.toString());
+      log('${e.toString()}---getTransactionData');
       _isLoading = false;
     }
   }

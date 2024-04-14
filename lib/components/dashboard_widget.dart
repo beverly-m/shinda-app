@@ -1,3 +1,5 @@
+import 'dart:developer' show log;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
 import 'package:shinda_app/components/custom_card.dart' show CustomCard;
@@ -7,7 +9,6 @@ import 'package:shinda_app/components/line_chart_card.dart' show LineChartCard;
 import 'package:shinda_app/components/pie_chart_card.dart' show PieChartCard;
 import 'package:shinda_app/components/side_dashboard_widget.dart'
     show SideDashboardWidget;
-import 'package:shinda_app/components/snackbar.dart' show SnackBarService;
 import 'package:shinda_app/constants/text_syles.dart' show neutral4, primary;
 import 'package:shinda_app/responsive/responsive_layout.dart' show Responsive;
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart'
@@ -70,13 +71,13 @@ class _DashboardWidgetState extends State<DashboardWidget> {
         _isLoading = false;
       });
     } on GenericWorkspaceException {
-      SnackBarService.showSnackBar(content: "Error occurred");
+      log("Error occurred--getDashboardMetadata");
       if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
     } catch (e) {
-      SnackBarService.showSnackBar(content: e.toString());
+      log(e.toString());
       if (!mounted) return;
       setState(() {
         _isLoading = false;

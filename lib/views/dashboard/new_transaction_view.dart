@@ -293,9 +293,16 @@ class _NewTransactionViewState extends State<NewTransactionView> {
     try {
       final currentWorkspace = await getCurrentWorkspaceId();
 
+      if (currentWorkspace == null) {
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
+
       final List<Map<String, dynamic>> products = await WorkspaceService()
-          .getPOSProducts(workspaceId: currentWorkspace!);
-      
+          .getPOSProducts(workspaceId: currentWorkspace);
+
       if (!mounted) return;
       setState(() {
         _productsData = products;
@@ -311,10 +318,10 @@ class _NewTransactionViewState extends State<NewTransactionView> {
         _isLoading = false;
       });
     } on GenericWorkspaceException {
-      log("Error occurred");
+      log("Error occurred---getProductData");
       _isLoading = false;
     } catch (e) {
-      log(e.toString());
+      log('${e.toString()}---getProductData');
       _isLoading = false;
     }
   }
@@ -783,7 +790,6 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                         onSelected:
                                                                             (PaymentModeLabel?
                                                                                 paymentMode) {
-                                                                          
                                                                           setState(
                                                                               () {
                                                                             selectedPaymentMode =

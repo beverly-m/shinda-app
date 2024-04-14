@@ -197,6 +197,8 @@ class _InventoryViewState extends State<InventoryView> {
                             stockId: productData['stock_id'].toString(),
                             quantityAvailable: quantityAvailable.toString(),
                           );
+
+                          _getProductData();
                         },
                         labelText: 'Update'),
                   ),
@@ -245,12 +247,12 @@ class _InventoryViewState extends State<InventoryView> {
 
         SnackBarService.showSnackBar(content: "Product updated.");
 
-        _getProductData();
+        // _getProductData();
       } on GenericWorkspaceException {
         SnackBarService.showSnackBar(
             content: "Failed to update product. Try again");
       } catch (e) {
-        SnackBarService.showSnackBar(content: e.toString());
+        log(e.toString());
       }
     }
   }
@@ -454,7 +456,7 @@ class _InventoryViewState extends State<InventoryView> {
         SnackBarService.showSnackBar(
             content: "Failed to add product. Try again");
       } catch (e) {
-        SnackBarService.showSnackBar(content: e.toString());
+        log('${e.toString()}---addProduct');
       }
     }
   }
@@ -468,8 +470,15 @@ class _InventoryViewState extends State<InventoryView> {
     try {
       final currentWorkspace = await getCurrentWorkspaceId();
 
+      if (currentWorkspace == null) {
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
+
       final List<Map<String, dynamic>> products =
-          await WorkspaceService().getProducts(workspaceId: currentWorkspace!);
+          await WorkspaceService().getProducts(workspaceId: currentWorkspace);
 
       if (!mounted) return;
       setState(() {
@@ -477,10 +486,10 @@ class _InventoryViewState extends State<InventoryView> {
         _isLoading = false;
       });
     } on GenericWorkspaceException {
-      log("Error occurred");
+      log("Error occurred---getProductData");
       _isLoading = false;
     } catch (e) {
-      log(e.toString());
+      log('${e.toString()}---getProductData');
       _isLoading = false;
     }
   }

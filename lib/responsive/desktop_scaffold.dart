@@ -1,8 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shinda_app/components/circular_progress_indicator.dart';
 import 'package:shinda_app/components/show_log_out_dialog.dart';
-import 'package:shinda_app/components/snackbar.dart';
 import 'package:shinda_app/constants/drawer_views.dart';
 import 'package:shinda_app/constants/navigation_rail_items.dart';
 import 'package:shinda_app/constants/routes.dart';
@@ -81,8 +82,26 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
             _currentWorkspaceName = currentWorkspaceName;
             _isLoading = false;
           });
+        } else {
+          _selectWorkspace(
+            workspace: _workspaceData![0]['workspace_id'],
+            workspaceName: _workspaceData![0]['workspace']['name'],
+            workspaceMember: _currentUser!.id,
+          );
+
+          if (!mounted) return;
+          setState(() {
+            _currentWorkspaceName = _workspaceData![0]['name'];
+            _isLoading = false;
+          });
         }
       } else {
+        if (_workspaceData == null || _workspaceData!.isEmpty) {
+          setState(() {
+            _isLoading = false;
+          });
+          return;
+        }
         _selectWorkspace(
           workspace: _workspaceData![0]['workspace_id'],
           workspaceName: _workspaceData![0]['workspace']['name'],
@@ -95,9 +114,9 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
         });
       }
     } on GenericWorkspaceException {
-      SnackBarService.showSnackBar(content: "Error occurred");
+      log("Error occurred---getWorkspaceData");
     } catch (e) {
-      SnackBarService.showSnackBar(content: e.toString());
+      log('${e.toString()} ---getWorkspaceData');
       setState(() {
         _isLoading = false;
       });

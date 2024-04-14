@@ -200,9 +200,9 @@ class WorkspaceService implements WorkspaceProvider {
       await supabase.from('stock').update({
         'quantity': newQuantity,
         'quantity_available': newQuantityAvailable,
-        'expiration_date': expirationDateDateTime != null
-            ? '${expirationDateDateTime.year}-${expirationDateDateTime.month}-${expirationDateDateTime.day}'
-            : null,
+        if (expirationDateDateTime != null)
+          'expiration_date':
+              '${expirationDateDateTime.year}-${expirationDateDateTime.month}-${expirationDateDateTime.day}',
       }).match({'stock_id': stockId, 'workspace_id': workspaceId});
     } on PostgrestException catch (e) {
       log(e.message);

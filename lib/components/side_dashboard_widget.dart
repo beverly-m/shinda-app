@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:shinda_app/components/expiring_products_card.dart'
     show ExpiringProductsCard;
@@ -5,7 +7,6 @@ import 'package:shinda_app/components/linear_progress_indicator.dart'
     show AppLinearProgressIndicator;
 import 'package:shinda_app/components/products_stock_card.dart'
     show ProductsStockCard;
-import 'package:shinda_app/components/snackbar.dart' show SnackBarService;
 import 'package:shinda_app/components/sold_products_card.dart'
     show SoldProductsCard;
 import 'package:shinda_app/constants/text_syles.dart' show primary;
@@ -57,13 +58,13 @@ class _SideDashboardWidgetState extends State<SideDashboardWidget> {
         _isLoading = false;
       });
     } on GenericWorkspaceException {
-      SnackBarService.showSnackBar(content: "Error occurred");
+      log("Error occurred---getProductsMetadata");
       if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
     } catch (e) {
-      SnackBarService.showSnackBar(content: e.toString());
+      log(e.toString());
       if (!mounted) return;
       setState(() {
         _isLoading = false;

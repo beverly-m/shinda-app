@@ -1,9 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
 import 'package:shinda_app/components/custom_card.dart' show CustomCard;
 import 'package:shinda_app/components/linear_progress_indicator.dart'
     show AppLinearProgressIndicator;
-import 'package:shinda_app/components/snackbar.dart' show SnackBarService;
 import 'package:shinda_app/constants/text_syles.dart' show neutral4, primary;
 import 'package:shinda_app/responsive/responsive_layout.dart' show Responsive;
 import 'package:shinda_app/services/workspace/workspace_exceptions.dart'
@@ -58,13 +59,13 @@ class _SalesDetailsCardState extends State<SalesDetailsCard> {
         _isLoading = false;
       });
     } on GenericWorkspaceException {
-      SnackBarService.showSnackBar(content: "Error occurred");
+      log("Error occurred---getDashboardMetadata");
       if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
     } catch (e) {
-      SnackBarService.showSnackBar(content: e.toString());
+      log(e.toString());
       if (!mounted) return;
       setState(() {
         _isLoading = false;
