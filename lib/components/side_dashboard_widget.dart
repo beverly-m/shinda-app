@@ -36,6 +36,8 @@ class _SideDashboardWidgetState extends State<SideDashboardWidget> {
 
   void getProductsMetadata() async {
     final Map<String, dynamic> dashboardMetadata;
+
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -43,7 +45,8 @@ class _SideDashboardWidgetState extends State<SideDashboardWidget> {
     try {
       dashboardMetadata = await WorkspaceService()
           .getDashboardMeta(workspaceId: widget.workspaceId);
-
+      
+      if (!mounted) return;
       setState(() {
         _expiredProductsData = dashboardMetadata["expiredProductsData"];
 
@@ -55,11 +58,13 @@ class _SideDashboardWidgetState extends State<SideDashboardWidget> {
       });
     } on GenericWorkspaceException {
       SnackBarService.showSnackBar(content: "Error occurred");
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
     } catch (e) {
       SnackBarService.showSnackBar(content: e.toString());
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });

@@ -92,6 +92,7 @@ class _PasswordTextFormFieldState extends State<PasswordTextFormField> {
           padding: const EdgeInsets.only(right: 8.0),
           child: IconButton(
             onPressed: () {
+              if (!mounted) return;
               setState(() {
                 _obscureText = !_obscureText;
               });

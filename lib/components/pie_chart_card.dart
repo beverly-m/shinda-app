@@ -49,6 +49,7 @@ class _PieChartCardState extends State<PieChartCard> {
               PieChartData(
                 pieTouchData: PieTouchData(
                   touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                    if (!mounted) return;
                     setState(() {
                       if (!event.isInterestedForInteractions ||
                           pieTouchResponse == null ||

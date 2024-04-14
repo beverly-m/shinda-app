@@ -136,6 +136,7 @@ class _InventoryDataGridState extends State<InventoryDataGrid> {
   }
 
   void _getData() {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -157,6 +158,7 @@ class _InventoryDataGridState extends State<InventoryDataGrid> {
         ),
       );
     }
+    if (!mounted) return;
     setState(() {
       _isLoading = false;
     });

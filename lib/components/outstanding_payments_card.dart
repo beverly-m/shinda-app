@@ -79,6 +79,7 @@ class _OutstandingPaymentsCardState extends State<OutstandingPaymentsCard> {
   }
 
   void _getData() {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -106,6 +107,7 @@ class _OutstandingPaymentsCardState extends State<OutstandingPaymentsCard> {
       );
     }
 
+    if (!mounted) return;
     setState(() {
       _isLoading = false;
     });

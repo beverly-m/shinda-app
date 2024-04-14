@@ -91,6 +91,7 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
   }
 
   void _getData() async {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
       // _transactionsData = widget.data;
@@ -102,6 +103,7 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
       final List<Map<String, dynamic>> transactions = await WorkspaceService()
           .getTransactions(workspaceId: currentWorkspace!);
 
+      if (!mounted) return;
       setState(() {
         _transactionsData = transactions;
         _currentWorkspaceId = currentWorkspace;
@@ -124,6 +126,7 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
         );
       }
 
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
@@ -373,6 +376,7 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
                       style: body1,
                     ),
                     onSelected: (PaymentModeLabel? paymentMode) {
+                      if (!mounted) return;
                       setState(() {
                         selectedPaymentMode = paymentMode;
                       });
@@ -459,6 +463,7 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
     required String transactionId,
     required String paymentMode,
   }) async {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -478,6 +483,7 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
       }
       Navigator.of(context).pop();
 
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
@@ -493,6 +499,7 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
   }
 
   Future<void> _getTransactionItemsData({required String transactionId}) async {
+    if (!mounted) return;
     setState(() {
       _isLoading2 = true;
     });
@@ -506,6 +513,7 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
         transactionId: transactionId,
       );
 
+      if (!mounted) return;
       setState(() {
         _transactionItemsData = items;
         _isLoading2 = false;
@@ -528,6 +536,7 @@ class _TransactionDataGridState extends State<TransactionDataGrid> {
         transactionId: transactionId,
       );
 
+      if (!mounted) return;
       setState(() {
         _debtorData = item;
       });

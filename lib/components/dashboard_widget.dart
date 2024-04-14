@@ -45,6 +45,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     final Map<String, dynamic> dashboardMeta;
     Map<String, dynamic>? dashboardMetadata;
 
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -52,7 +53,8 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     try {
       dashboardMeta = await WorkspaceService()
           .getDashboardMeta(workspaceId: widget.workspaceId);
-
+          
+      if (!mounted) return;
       setState(() {
         dashboardMetadata = dashboardMeta;
         _salesData = dashboardMetadata!['salesData'];
@@ -69,11 +71,13 @@ class _DashboardWidgetState extends State<DashboardWidget> {
       });
     } on GenericWorkspaceException {
       SnackBarService.showSnackBar(content: "Error occurred");
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
     } catch (e) {
       SnackBarService.showSnackBar(content: e.toString());
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });

@@ -25,6 +25,7 @@ class _ProductsStockCardState extends State<ProductsStockCard> {
   }
 
   void _getData() {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -35,6 +36,7 @@ class _ProductsStockCardState extends State<ProductsStockCard> {
           total: element["quantity"],
           rate: element["quantity_available"] / element["quantity"]));
     }
+    if (!mounted) return;
     setState(() {
       _isLoading = false;
     });

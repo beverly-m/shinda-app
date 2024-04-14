@@ -39,12 +39,14 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
   }
 
   void _getUser() {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
 
     final AuthUser? currentUser = AuthService.supabase().currentUser;
 
+    if (!mounted) return;
     setState(() {
       _currentUser = currentUser;
       _isLoading = false;
@@ -52,6 +54,7 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
   }
 
   void _getWorkspaceData() async {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -66,6 +69,7 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
       final String? currentWorkspaceName = await getCurrentWorkspaceName();
       final String? workspaceMember = await getWorkspaceMember();
 
+      if (!mounted) return;
       setState(() {
         _workspaceData = workspaces;
       });
@@ -74,6 +78,7 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
           currentWorkspaceName != null &&
           workspaceMember != null) {
         if (workspaceMember == _currentUser!.id) {
+          if (!mounted) return;
           setState(() {
             _currentWorkspaceName = currentWorkspaceName;
             _isLoading = false;
@@ -85,6 +90,7 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
           workspaceName: _workspaceData![0]['workspace']['name'],
           workspaceMember: _currentUser!.id,
         );
+        if (!mounted) return;
         setState(() {
           _currentWorkspaceName = _workspaceData![0]['name'];
           _isLoading = false;
@@ -110,6 +116,7 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
     await prefs.setString('workspaceName', workspaceName);
     await prefs.setString('workspaceMember', workspaceMember);
 
+    if (!mounted) return;
     setState(() {
       _currentWorkspaceName = workspaceName;
     });
@@ -151,6 +158,7 @@ class _DesktopScaffoldState extends State<DesktopScaffold> {
                               groupAlignment: 0.0,
                               onDestinationSelected: (int index) async {
                                 if (index != (navigationRailItems.length - 1)) {
+                                  if (!mounted) return;
                                   setState(() {
                                     _selectedIndex = index;
                                   });

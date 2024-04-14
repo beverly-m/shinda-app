@@ -161,6 +161,7 @@ class _MobileScaffoldState extends State<MobileScaffold> {
   void _selectItem({required int index}) async {
     Navigator.pop(context);
     if (index != (drawerViewsMobileTablet.length)) {
+      if (!mounted) return;
       setState(() {
         _selectedIndex = index;
       });

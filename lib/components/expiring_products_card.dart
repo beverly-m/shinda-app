@@ -38,6 +38,7 @@ class _ExpiringProductsCardState extends State<ExpiringProductsCard> {
   }
 
   void _getData() {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -54,7 +55,7 @@ class _ExpiringProductsCardState extends State<ExpiringProductsCard> {
         );
       }
     }
-
+    if (!mounted) return;
     setState(() {
       _isLoading = false;
     });

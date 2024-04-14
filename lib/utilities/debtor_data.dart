@@ -81,6 +81,7 @@ class _DebtorDataGridState extends State<DebtorDataGrid> {
   }
 
   void _getData() {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -102,7 +103,8 @@ class _DebtorDataGridState extends State<DebtorDataGrid> {
         ),
       );
     }
-
+    
+    if (!mounted) return;
     setState(() {
       _isLoading = false;
     });
@@ -133,7 +135,7 @@ class _DebtorDataGridState extends State<DebtorDataGrid> {
             contentPadding: const EdgeInsets.all(48.0),
             content: SizedBox(
               width: MediaQuery.of(context).size.width * 0.5,
-              height: 300.0,
+              height: 200.0,
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -270,6 +272,7 @@ class _DebtorDataGridState extends State<DebtorDataGrid> {
   }
 
   Future<void> _getTransactionItemsData({required String transactionId}) async {
+    if (!mounted) return;
     setState(() {
       _isLoading2 = true;
     });
@@ -282,7 +285,8 @@ class _DebtorDataGridState extends State<DebtorDataGrid> {
         workspaceId: currentWorkspace!,
         transactionId: transactionId,
       );
-
+      
+      if (!mounted) return;
       setState(() {
         _transactionItemsData = items;
         _isLoading2 = false;
@@ -299,9 +303,7 @@ class _DebtorDataGridState extends State<DebtorDataGrid> {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? const Center(
-            child: AppCircularProgressIndicator()
-          )
+        ? const Center(child: AppCircularProgressIndicator())
         : SizedBox(
             width: MediaQuery.of(context).size.width * 0.9,
             height: MediaQuery.of(context).size.height,

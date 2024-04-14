@@ -39,6 +39,7 @@ class _SoldProductsCardState extends State<SoldProductsCard> {
   }
 
   void _getData() {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -50,6 +51,7 @@ class _SoldProductsCardState extends State<SoldProductsCard> {
       }));
     });
 
+    if (!mounted) return;
     setState(() {
       _isLoading = false;
     });
