@@ -281,20 +281,11 @@ class _InventoryViewState extends State<InventoryView> {
 
                       // ***DESKTOP CREATE PRODUCT BUTTON***
                       ? Responsive.isDesktop(context)
-                          ? FilledButton(
-                              style: const ButtonStyle(
-                                backgroundColor: MaterialStatePropertyAll(
-                                  primary,
-                                ),
-                              ),
+                          ? FilledAppButton(
                               onPressed: () async {
                                 await _showAddProductDialog(context);
                               },
-                              child: const Text(
-                                "Add Product",
-                                style: TextStyle(fontSize: 16.0),
-                              ),
-                            )
+                              labelText: "Add Product")
                           : OutlinedAppButton(
                               onPressed: () async {
                                 await _showAddProductDialog(context);
