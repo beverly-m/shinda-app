@@ -46,6 +46,7 @@ class _TransactionDetailsViewState extends State<TransactionDetailsView> {
   }
 
   void _getTransactionItemsData({required String transactionId}) async {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -66,11 +67,13 @@ class _TransactionDetailsViewState extends State<TransactionDetailsView> {
           transactionId: transactionId,
         );
 
+        if (!mounted) return;
         setState(() {
           _debtor = debtor;
         });
       }
 
+      if (!mounted) return;
       setState(() {
         _transactionItemsData = items;
         _currentWorkspaceId = currentWorkspace;
@@ -179,6 +182,7 @@ class _TransactionDetailsViewState extends State<TransactionDetailsView> {
     required String transactionId,
     required String paymentMode,
   }) async {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -193,6 +197,7 @@ class _TransactionDetailsViewState extends State<TransactionDetailsView> {
 
       SnackBarService.showSnackBar(content: "Transaction status updated");
 
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });

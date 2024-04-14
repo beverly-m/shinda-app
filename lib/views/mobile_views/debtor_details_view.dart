@@ -27,6 +27,7 @@ class _DebtorDetailsViewState extends State<DebtorDetailsView> {
   }
 
   void _getTransactionItemsData({required String transactionId}) async {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -40,6 +41,7 @@ class _DebtorDetailsViewState extends State<DebtorDetailsView> {
         transactionId: transactionId,
       );
 
+      if (!mounted) return;
       setState(() {
         _transactionItemsData = items;
         _isLoading = false;

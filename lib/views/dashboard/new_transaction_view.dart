@@ -285,6 +285,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
   }
 
   void _getProductData() async {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -294,7 +295,8 @@ class _NewTransactionViewState extends State<NewTransactionView> {
 
       final List<Map<String, dynamic>> products = await WorkspaceService()
           .getPOSProducts(workspaceId: currentWorkspace!);
-
+      
+      if (!mounted) return;
       setState(() {
         _productsData = products;
         _currentWorkspace = currentWorkspace;
@@ -304,6 +306,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
         setState(() {});
       }
 
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
@@ -381,6 +384,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                     cursorColor: const Color.fromRGBO(0, 121, 107, 1),
                     initialValue: number,
                     onInputChanged: (PhoneNumber number) {
+                      if (!mounted) return;
                       setState(() {
                         _phoneNumberWithCode = number.phoneNumber!;
                       });
@@ -454,6 +458,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
   }) async {
     final isValid = _formKey2.currentState?.validate();
 
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -483,6 +488,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
 
         SnackBarService.showSnackBar(content: "Credit purchase added");
 
+        if (!mounted) return;
         setState(() {
           _isLoading = false;
         });
@@ -492,15 +498,19 @@ class _NewTransactionViewState extends State<NewTransactionView> {
         _getProductData();
       } catch (e) {
         log(e.toString());
+        if (!mounted) return;
         setState(() {
           _isLoading = false;
         });
       }
 
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
     }
+
+    if (!mounted) return;
     setState(() {
       _isLoading = false;
     });
@@ -773,6 +783,7 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                         onSelected:
                                                                             (PaymentModeLabel?
                                                                                 paymentMode) {
+                                                                          
                                                                           setState(
                                                                               () {
                                                                             selectedPaymentMode =

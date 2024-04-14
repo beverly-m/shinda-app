@@ -32,6 +32,7 @@ class _NewSaleViewState extends State<NewSaleView> {
   }
 
   void _getProductData() async {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -42,6 +43,7 @@ class _NewSaleViewState extends State<NewSaleView> {
       final List<Map<String, dynamic>> products = await WorkspaceService()
           .getPOSProducts(workspaceId: currentWorkspace!);
 
+      if (!mounted) return;
       setState(() {
         _productsData = products;
       });
@@ -50,6 +52,7 @@ class _NewSaleViewState extends State<NewSaleView> {
         setState(() {});
       }
 
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });

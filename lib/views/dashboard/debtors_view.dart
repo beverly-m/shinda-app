@@ -31,6 +31,7 @@ class _DebtorsViewState extends State<DebtorsView> {
   }
 
   void _getDebtorData() async {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -41,6 +42,7 @@ class _DebtorsViewState extends State<DebtorsView> {
       final List<Map<String, dynamic>> debtors =
           await WorkspaceService().getDebtors(workspaceId: currentWorkspace!);
 
+      if (!mounted) return;
       setState(() {
         _debtorsData = debtors;
         _isLoading = false;
@@ -239,6 +241,7 @@ class _DebtorsViewState extends State<DebtorsView> {
   }
 
   void _getProductData() async {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -249,6 +252,7 @@ class _DebtorsViewState extends State<DebtorsView> {
       final List<Map<String, dynamic>> products =
           await WorkspaceService().getProducts(workspaceId: currentWorkspace!);
 
+      if (!mounted) return;
       setState(() {
         _productsData = products;
       });
@@ -257,6 +261,7 @@ class _DebtorsViewState extends State<DebtorsView> {
         log(element.toString());
       }
 
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });

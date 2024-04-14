@@ -34,6 +34,7 @@ class _LoginViewState extends State<LoginView> {
     final isValid = _formKey.currentState?.validate();
 
     if (isValid != null && isValid) {
+      if (!mounted) return;
       setState(() {
         _isLoading = true;
       });
@@ -52,6 +53,7 @@ class _LoginViewState extends State<LoginView> {
 
         final user = AuthService.supabase().currentUser;
 
+        if (!mounted) return;
         setState(() {
           _isLoading = false;
         });
@@ -70,6 +72,7 @@ class _LoginViewState extends State<LoginView> {
           );
         }
       } on UnverifiedUserAuthException {
+        if (!mounted) return;
         setState(() {
           _isLoading = false;
         });
@@ -77,6 +80,7 @@ class _LoginViewState extends State<LoginView> {
           Navigator.of(context).pushNamed(verifyEmailRoute);
         }
       } on InvalidCredentialAuthException {
+        if (!mounted) return;
         setState(() {
           _isLoading = false;
         });
@@ -87,6 +91,7 @@ class _LoginViewState extends State<LoginView> {
           );
         }
       } on GenericAuthException {
+        if (!mounted) return;
         setState(() {
           _isLoading = false;
         });

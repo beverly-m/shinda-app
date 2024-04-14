@@ -54,6 +54,7 @@ class _DashboardViewState extends State<DashboardView> {
   }
 
   void _getWorkspaceData() async {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -67,6 +68,7 @@ class _DashboardViewState extends State<DashboardView> {
       );
 
       if (workspaces.isEmpty) {
+        if (!mounted) return;
         setState(() {
           _isLoading = false;
         });
@@ -77,11 +79,13 @@ class _DashboardViewState extends State<DashboardView> {
       final String? currentWorkspaceName = await getCurrentWorkspaceName();
       final String? workspaceMember = await getWorkspaceMember();
 
+      if (!mounted) return;
       setState(() {
         _workspaceData = workspaces;
         _currentUser = currentUser;
       });
       if (workspaceMember == _currentUser!.id) {
+        if (!mounted) return;
         setState(() {
           _currentWorkspace = currentWorkspace;
           _currentWorkspaceName = currentWorkspaceName;
@@ -94,6 +98,7 @@ class _DashboardViewState extends State<DashboardView> {
           workspaceMember: _currentUser!.id,
         );
 
+        if (!mounted) return;
         setState(() {
           _currentWorkspace = _workspaceData![0]['workspace_id'];
           _currentWorkspaceName = _workspaceData![0]['workspace']['name'];
@@ -101,6 +106,7 @@ class _DashboardViewState extends State<DashboardView> {
         });
       }
     } on GenericWorkspaceException {
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
@@ -111,6 +117,7 @@ class _DashboardViewState extends State<DashboardView> {
         );
       }
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
@@ -132,6 +139,7 @@ class _DashboardViewState extends State<DashboardView> {
 
       Navigator.of(context).pop();
 
+      if (!mounted) return;
       setState(() {
         _isLoading = true;
       });
@@ -141,6 +149,8 @@ class _DashboardViewState extends State<DashboardView> {
           workspaceName: workspaceName,
           creatorId: AuthService.supabase().currentUser!.id,
         );
+
+        if (!mounted) return;
         setState(() {
           _isLoading = false;
         });
@@ -149,6 +159,7 @@ class _DashboardViewState extends State<DashboardView> {
 
         _getWorkspaceData();
       } on GenericWorkspaceException {
+        if (!mounted) return;
         setState(() {
           _isLoading = false;
         });
@@ -156,6 +167,7 @@ class _DashboardViewState extends State<DashboardView> {
           showErrorDialog(context, "Some error occurred");
         }
       } catch (e) {
+        if (!mounted) return;
         setState(() {
           _isLoading = false;
         });
@@ -177,6 +189,7 @@ class _DashboardViewState extends State<DashboardView> {
     await prefs.setString('workspaceName', workspaceName);
     await prefs.setString('workspaceMember', workspaceMember);
 
+    if (!mounted) return;
     setState(() {
       _currentWorkspace = workspace;
       _currentWorkspaceName = workspaceName;

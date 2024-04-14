@@ -53,6 +53,7 @@ class _RegisterViewState extends State<RegisterView> {
     final isValid = _formKey.currentState?.validate();
 
     if (isValid != null && isValid) {
+      if (!mounted) return;
       setState(() {
         _isLoading = true;
       });
@@ -74,6 +75,7 @@ class _RegisterViewState extends State<RegisterView> {
           },
         );
 
+        if (!mounted) return;
         setState(() {
           _isLoading = false;
         });
@@ -82,6 +84,7 @@ class _RegisterViewState extends State<RegisterView> {
           Navigator.of(context).pushNamed(loginRoute);
         }
       } on EmailAlreadyInUseAuthException {
+        if (!mounted) return;
         setState(() {
           _isLoading = false;
         });
@@ -92,6 +95,7 @@ class _RegisterViewState extends State<RegisterView> {
           );
         }
       } on UserNotLoggedInAuthException {
+        if (!mounted) return;
         setState(() {
           _isLoading = false;
         });
@@ -99,6 +103,7 @@ class _RegisterViewState extends State<RegisterView> {
           Navigator.of(context).pushNamed(loginRoute);
         }
       } on InvalidEmailAuthException {
+        if (!mounted) return;
         setState(() {
           _isLoading = false;
         });
@@ -109,6 +114,7 @@ class _RegisterViewState extends State<RegisterView> {
           );
         }
       } on GenericAuthException {
+        if (!mounted) return;
         setState(() {
           _isLoading = false;
         });

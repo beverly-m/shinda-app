@@ -62,6 +62,7 @@ class _CartItemsViewState extends State<CartItemsView> {
   }
 
   void _getWorkspaceId() async {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -69,17 +70,22 @@ class _CartItemsViewState extends State<CartItemsView> {
     try {
       final currentWorkspace = await getCurrentWorkspaceId();
 
+      if (!mounted) return;
       setState(() {
         _currentWorkspace = currentWorkspace;
         _isLoading = false;
       });
     } on GenericWorkspaceException {
       log("Error occurred");
+
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
     } catch (e) {
       log(e.toString());
+
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
@@ -206,7 +212,7 @@ class _CartItemsViewState extends State<CartItemsView> {
     required CartProvider cart,
   }) async {
     final isValid = _formKey.currentState?.validate();
-
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -235,7 +241,7 @@ class _CartItemsViewState extends State<CartItemsView> {
         );
 
         SnackBarService.showSnackBar(content: "Credit purchase added.");
-
+        if (!mounted) return;
         setState(() {
           _isLoading = false;
         });
@@ -247,15 +253,17 @@ class _CartItemsViewState extends State<CartItemsView> {
         Navigator.of(context).pop();
       } catch (e) {
         log(e.toString());
+        if (!mounted) return;
         setState(() {
           _isLoading = false;
         });
       }
-
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
     }
+    if (!mounted) return;
     setState(() {
       _isLoading = false;
     });

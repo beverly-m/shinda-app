@@ -29,6 +29,7 @@ class _TransactionsViewState extends State<TransactionsView> {
   }
 
   void _getTransactionData() async {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -39,6 +40,7 @@ class _TransactionsViewState extends State<TransactionsView> {
       final List<Map<String, dynamic>> transactions = await WorkspaceService()
           .getTransactions(workspaceId: currentWorkspace!);
 
+      if (!mounted) return;
       setState(() {
         _transactionsData = transactions;
         _isLoading = false;

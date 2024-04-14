@@ -460,6 +460,7 @@ class _InventoryViewState extends State<InventoryView> {
   }
 
   void _getProductData() async {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -470,6 +471,7 @@ class _InventoryViewState extends State<InventoryView> {
       final List<Map<String, dynamic>> products =
           await WorkspaceService().getProducts(workspaceId: currentWorkspace!);
 
+      if (!mounted) return;
       setState(() {
         _productsData = products;
         _isLoading = false;
