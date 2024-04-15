@@ -505,6 +505,10 @@ class _CartItemsViewState extends State<CartItemsView> {
                                             Navigator.of(context).pop();
                                             Navigator.of(context).pop();
                                           }
+                                        } on GenericWorkspaceException {
+                                          SnackBarService.showSnackBar(
+                                              content:
+                                                  "Payment mode required.");
                                         } catch (e) {
                                           log(e.toString());
                                         }

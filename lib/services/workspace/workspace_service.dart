@@ -261,6 +261,12 @@ class WorkspaceService implements WorkspaceProvider {
     try {
       final List transactionItems = [];
 
+      log('Is paid: $isPaid');
+      log('Payment mode: $paymentMode');
+      if (isPaid == true && (paymentMode == null || paymentMode == '')) {
+        throw GenericWorkspaceException();
+      }
+
       List<Map<String, dynamic>> transaction =
           await supabase.from('transaction').insert({
         'workspace_id': workspaceId,
@@ -298,6 +304,8 @@ class WorkspaceService implements WorkspaceProvider {
       log(e.message);
       log(e.hint!);
       log(e.details.toString());
+    } on GenericWorkspaceException {
+      throw GenericWorkspaceException();
     } catch (e) {
       log("${e.toString()} -- in add transaction");
     }
@@ -664,6 +672,9 @@ class WorkspaceService implements WorkspaceProvider {
           .from('week_sales_view')
           .select()
           .eq('workspace_id', workspaceId)
+          .lt('day',
+              '${findLastDateOfTheWeek(DateTime.now().add(const Duration(days: 7)))}T00:00:00')
+          .gte('day', '${findFirstDateOfTheWeek(DateTime.now())}T00:00:00')
           .then((value) {
         dashboardMeta['salesData'] = value;
         log("Sales overview: ${dashboardMeta['salesData']}");
@@ -697,4 +708,18 @@ class WorkspaceService implements WorkspaceProvider {
       throw GenericWorkspaceException();
     }
   }
+}
+
+/// Find the first date of the week which contains the provided date.
+String findFirstDateOfTheWeek(DateTime dateTime) {
+  DateTime firstDate = dateTime.subtract(Duration(days: dateTime.weekday - 1));
+
+  return "${firstDate.year}-${firstDate.month}-${firstDate.day}";
+}
+
+/// Find last date of the week which contains provided date.
+String findLastDateOfTheWeek(DateTime dateTime) {
+  DateTime lastDate =
+      dateTime.add(Duration(days: DateTime.daysPerWeek - dateTime.weekday));
+  return "${lastDate.year}-${lastDate.month}-${lastDate.day}";
 }

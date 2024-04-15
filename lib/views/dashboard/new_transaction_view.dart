@@ -937,6 +937,8 @@ class _NewTransactionViewState extends State<NewTransactionView> {
                                                                               provider.clearCart();
 
                                                                               _getProductData();
+                                                                            } on GenericWorkspaceException {
+                                                                              SnackBarService.showSnackBar(content: "Payment mode required.");
                                                                             } catch (e) {
                                                                               log(e.toString());
                                                                             }
