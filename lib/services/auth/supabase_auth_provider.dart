@@ -12,9 +12,9 @@ class SupabaseAuthProvider implements auth_provider.AuthProvider {
   @override
   Future<void> initialize() async {
     await Supabase.initialize(
-      url: "https://hdbygttixkijaqnefgij.supabase.co",
+      url: SUPABASE_URL,
       anonKey:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkYnlndHRpeGtpamFxbmVmZ2lqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDgyODY2MjcsImV4cCI6MjAyMzg2MjYyN30.k30IsfVyU49RJySCVm6Ajuz4OcltTM2ZbbK6RU_ZSm0",
+          SUPABASE_KEY,
     );
     await Future.delayed(const Duration(seconds: 5));
   }
